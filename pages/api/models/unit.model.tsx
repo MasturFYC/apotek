@@ -3,18 +3,6 @@ import { iUnit } from '../../../components/interfaces'
 //import { nestQuery } from './nest'
 import { UniqueIntegrityConstraintViolationError } from 'slonik'
 
-type errorMessage = {
-  id: 0,
-  rowCount: number;
-  rows: iUnit[]
-  message: string;
-}
-
-type ApiUnitType = {
-  message?: errorMessage,
-  data?: iUnit | iUnit[] | any
-}
-
 const apiUnit = {
   getUnit: async (id: number) => {
     return await db.query<iUnit>(
