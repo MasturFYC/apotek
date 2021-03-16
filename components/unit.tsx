@@ -117,13 +117,11 @@ const Unit = ({ product }: UnitType) => {
 
       if (currentUnit.id === 0) {
         footerDispatch({ type: FooterActionEnum.plus })
-        //setUnit(newUnit(product))
         setCurrentUnit(newUnit(product));
         setCurrentIndex(units && units?.length || -1)
       }
     } else {
       alert(data.message)
-      //throw new Error (data.message)
     }
 
   }
@@ -148,10 +146,8 @@ const Unit = ({ product }: UnitType) => {
   const marginChanged = (margin: number) => {
 
     if (document.activeElement?.id === "margin") {
-      //const margin: number = val / 100;
       const buy_price: number = +currentUnit.buy_price;
       const price: number = ((buy_price * margin) + buy_price);
-
 
       setCurrentUnit(prevState => {
         return {
@@ -162,45 +158,14 @@ const Unit = ({ product }: UnitType) => {
 
       })
 
-      //console.log(sale_price)
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        margin: margin,
-        sale_price: roundToTwo(sale_price, 2)
-      }
-
-      setUnit({
-        ...unit,
-        margin: val,
-        sale_price: dataChanged.sale_price.toString(),
-      })
-      setCurrentUnit(dataChanged)
-      */
       setFormDirty(true)
-      //reload(dataChanged);
     }
   }
 
   const memberMarginChanged = (margin: number) => {
     if (document.activeElement?.id === "member_margin") {
-      //const margin: number = val / 100;
       const buy_price: number = +currentUnit.buy_price;
       const price: number = ((buy_price * margin) + buy_price);
-      //console.log(sale_price)
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        member_margin: margin,
-        member_price: roundToTwo(sale_price, 2)
-      }
-      setUnit({
-        ...unit,
-        member_margin: val,
-        member_price: dataChanged.member_price.toString(),
-      })
-      setCurrentUnit(dataChanged)
-      */
 
       setCurrentUnit(prevState => {
         return {
@@ -212,31 +177,13 @@ const Unit = ({ product }: UnitType) => {
       })
       setFormDirty(true)
     }
-    //reload(dataChanged);
   }
 
   const agentMarginChanged = (margin: number) => {
 
     if (document.activeElement?.id === "agent_margin") {
-      //const margin: number = val / 100;
       const buy_price: number = +currentUnit.buy_price;
       const price: number = ((buy_price * margin) + buy_price);
-
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        agent_margin: margin,
-        agent_price: roundToTwo(sale_price, 2)
-      }
-      setUnit({
-        ...unit,
-        agent_margin: val,
-        agent_price: dataChanged.agent_price.toString(),
-      })
-      setCurrentUnit(dataChanged)
-      */
-
-      //console.log(margin, ' : ',  price)
 
       setCurrentUnit(prevState => {
         return {
@@ -249,7 +196,6 @@ const Unit = ({ product }: UnitType) => {
 
       setFormDirty(true)
     }
-    //reload(dataChanged);
   }
 
   const priceChanged = (price: number) => {
@@ -265,45 +211,15 @@ const Unit = ({ product }: UnitType) => {
           sale_price: price
         }
       })
-      //console.log(sale_price)
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        margin: margin,
-        sale_price: price
-      }
-      */
-      /*
-      setUnit({
-        ...unit,
-        margin: roundToTwo((dataChanged.margin * 100), 4).toString(),
-        sale_price: val,
-      })
-      setCurrentUnit(dataChanged)
-      */
       setFormDirty(true)
     }
-    //reload(dataChanged);
   }
 
   const memberPriceChanged = (price: number) => {
     if (document.activeElement?.id === "member_price") {
       const buy_price: number = +currentUnit.buy_price;
       const margin: number = (price - buy_price) / buy_price;
-      //console.log(sale_price)
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        member_margin: margin,
-        member_price: price
-      }
-      setUnit({
-        ...unit,
-        member_margin: roundToTwo((dataChanged.member_margin * 100), 4).toString(),
-        member_price: val,
-      })
-      setCurrentUnit(dataChanged)
-      */
+
       setCurrentUnit(prevState => {
         return {
           ...prevState,
@@ -313,7 +229,6 @@ const Unit = ({ product }: UnitType) => {
       })
       setFormDirty(true)
     }
-    //reload(dataChanged);
   }
 
   const agentPriceChanged = (price: number) => {
@@ -321,19 +236,7 @@ const Unit = ({ product }: UnitType) => {
     if (document.activeElement?.id === "agent_price") {
       const buy_price: number = +currentUnit.buy_price;
       const margin: number = (price - buy_price) / buy_price;
-      /*
-      const dataChanged = {
-        ...currentUnit,
-        member_margin: margin,
-        member_price: price
-      }
-      setUnit({
-        ...unit,
-        member_margin: roundToTwo((dataChanged.member_margin * 100), 4).toString(),
-        member_price: val,
-      })
-      setCurrentUnit(dataChanged)
-      */
+
       setCurrentUnit(prevState => {
 
         return {
@@ -345,11 +248,9 @@ const Unit = ({ product }: UnitType) => {
 
       setFormDirty(true)
     }
-    //reload(dataChanged);
   }
 
   const handlerChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //setUnit({ ...unit, [e.target.name]: e.target.value })
     setCurrentUnit(prevState => {
       return { ...prevState, [e.target.name]: e.target.value }
     })
@@ -436,17 +337,6 @@ const Unit = ({ product }: UnitType) => {
                       agentPriceChanged(e.floatValue || 0)
                     }} className={styles.tdInputNumber
                     } /></td>
-                  {/*
-                   <td className={styles.tdEdit2}><input type='text' value={unit.content} onChange={(e) => contentChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdOff2}>{formatters.weight.format(+unit.weight)}{' kg'}</td>
-                  <td className={styles.tdOff2}>{formatters.auto(0).format(+unit.buy_price)}</td>
-                   */}
-                  {/* <td className={styles.tdEdit2}><input type='text' value={unit.margin} onChange={(e) => marginChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdEdit2}><input type='text' value={unit.member_margin} onChange={(e) => memberMarginChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdEdit2}><input type='text' value={unit.agent_margin} onChange={(e) => agentMarginChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdEdit2}><input type='text' value={unit.sale_price} onChange={(e) => priceChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdEdit2}><input type='text' value={unit.member_price} onChange={(e) => memberPriceChanged(e.target.value)} className={styles.tdInputNumber} /></td>
-                  <td className={styles.tdEdit2}><input type='text' value={unit.agent_price} onChange={(e) => agentPriceChanged(e.target.value)} className={styles.tdInputNumber} /></td> */}
                   <td className={styles.tdOff1}>
                     {formDirty && <img title="Simpan" className={styles.imgControl} height="22px" src={EditSvg} onClick={updateUnit} />}
                     {item.id > 0 &&
@@ -467,24 +357,6 @@ const Unit = ({ product }: UnitType) => {
   )
 }
 
-/*
-interface iSUnit {
-  id: string,
-  barcode: string,
-  name: string,
-  content: string,
-  weight: string,
-  buy_price: string,
-  margin: string,
-  agent_margin: string,
-  member_margin: string,
-  sale_price: string,
-  agent_price: string,
-  member_price: string,
-  profit: string,
-  product_id: string,
-}
-*/
 const fetcher = async (url: string): Promise<iUnit[]> => {
   const res = await fetch(url);
   const data: iUnit[] | any = await res.json();
@@ -497,18 +369,7 @@ const fetcher = async (url: string): Promise<iUnit[]> => {
   //console.log(data)
   return data;
 }
-/*
-const formatters = {
-  default: new Intl.NumberFormat(),
-  currency: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USR', minimumFractionDigits: 0, maximumFractionDigits: 0 }),
-  auto: (dec: number) => (new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: dec })),
-  weight: new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 0, maximumFractionDigits: 2 }),
-  percent: new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 0, maximumFractionDigits: 4 }),
-  remove: (dec: number) => (new Intl.NumberFormat('en-US', { style: 'decimal', useGrouping: false, minimumFractionDigits: 0, maximumFractionDigits: dec }))
-  // oneDecimal: new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 1, maximumFractionDigits: 1 }),
-  // twoDecimal: new Intl.NumberFormat('en-US', { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 })
-};
-*/
+
 const fetchDelete = async (id: number) => {
   const res = await fetch(`/api/unit/${id}`, {
     method: 'DELETE'
@@ -591,12 +452,7 @@ const useUnit = (product: iProduct) => {
     }
   }
 }
-/*
-function roundToTwo(num: number, dec: number) {
-  const d: number = parseFloat(`${num}e+${dec}`)
-  return +(Math.round(d) + `e-${dec}`);
-}
-*/
+
 function useOutsideAlerter(ref: any, clearSelection: Function) {
   useEffect(() => {
     /**
@@ -667,46 +523,5 @@ const newUnit = (product: iProduct): iUnit => {
   }
 }
 
-/*
-const newUnit = (product: iProduct): iSUnit => {
 
-  return {
-    id: '0',
-    barcode: '',
-    name: product.base_unit,
-    content: '1',
-    weight: formatters.remove(2).format(product.base_weight),
-    buy_price: formatters.remove(2).format(product.base_price),
-    margin: '10',
-    member_margin: '7',
-    agent_margin: '5',
-    sale_price: formatters.remove(2).format(product.base_price + (product.base_price * 0.1)),
-    agent_price: formatters.remove(2).format(product.base_price + (product.base_price * 0.07)),
-    member_price: formatters.remove(2).format(product.base_price + (product.base_price * 0.05)),
-    profit: '0',
-    product_id: product.id.toString()
-
-  }
-}
-*/
-/*
-function ConvertToStringUnit(item: iUnit): iSUnit {
-  return {
-    id: item.id.toString(),
-    barcode: item.barcode,
-    name: item.name,
-    content: formatters.remove(2).format(item.content),
-    weight: formatters.remove(4).format(item.weight),
-    buy_price: formatters.remove(2).format(item.buy_price),
-    margin: formatters.auto(4).format(item.margin * 100),
-    agent_margin: formatters.auto(4).format(item.agent_margin * 100),
-    member_margin: formatters.auto(4).format(item.member_margin * 100),
-    sale_price: formatters.remove(2).format(item.sale_price),
-    agent_price: formatters.remove(2).format(item.agent_price),
-    member_price: formatters.remove(2).format(item.member_price),
-    profit: item.profit.toString(),
-    product_id: item.product_id.toString()
-  }
-}
-*/
 export default Unit;
