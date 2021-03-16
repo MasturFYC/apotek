@@ -1,35 +1,36 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import apiUnit from '../models/unit.model'
-import { iUnit, METHOD_DELETE, METHOD_GET, METHOD_POST, METHOD_PUT } from '../../../components/interfaces'
+import apiCustomer from '../models/customer.model'
+import { iCustomer, METHOD_DELETE, METHOD_GET, METHOD_POST, METHOD_PUT } from '../../../components/interfaces'
 
-export default async function unitIDHandler(req: NextApiRequest, res: NextApiResponse) {
+
+export default async function customerIDHandler(req: NextApiRequest, res: NextApiResponse) {
   let result;
 
   switch (req.method) {
     case METHOD_POST:
       {
-        const unit = req.body as iUnit;
-        result = await apiUnit.insertUnit(unit);
+        const cust: iCustomer = req.body as iCustomer;
+        result = await apiCustomer.insertCustomer(cust);
       }
       break;
     case METHOD_PUT:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        const unit = req.body as iUnit;
-        result = await apiUnit.updateUnit(id, unit);
+        const cust: iCustomer = req.body as iCustomer;
+        result = await apiCustomer.updateCustomer(id, cust);
       }
       break;
     case METHOD_DELETE:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        result = await apiUnit.deleteUnit(id);
+        result = await apiCustomer.deleteCustomer(id);
       }
       break;
     case METHOD_GET:
     default:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        result = await apiUnit.getUnit(id)
+        result = await apiCustomer.getCustomer(id)
       }
       break;
   }

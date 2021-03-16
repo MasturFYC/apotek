@@ -26,7 +26,7 @@ export default function Layout({ children, home }: any) {
       </Head>
       <header className={styles.header}>
         {home ? (
-            <h1 className={utilStyles.heading2Xl}>{name}</h1>
+          <h1 className={utilStyles.heading2Xl}>{name}</h1>
         ) : (
           <h2 className={utilStyles.headingLg}>
             <Link href="/">
@@ -36,6 +36,10 @@ export default function Layout({ children, home }: any) {
 
         )}
       </header>
+      <section style={{ padding: '6px', backgroundColor: '#ececec'}}><Link href="/customer">
+        <a>Pelanggan</a>
+      </Link>
+      </section>
       <main>{children}</main>
       {!home && (
         <div className={styles.backToHome}>

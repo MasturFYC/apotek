@@ -1,9 +1,20 @@
 import db, { sql } from '../../../config';
 import { iUnit } from '../../../components/interfaces'
 //import { nestQuery } from './nest'
-import { UniqueIntegrityConstraintViolationError } from 'slonik'
+//import { UniqueIntegrityConstraintViolationError } from 'slonik'
 
-const apiUnit = {
+
+type apiUnitReturnType = Promise<any[] | (readonly iUnit[] | undefined)[]>;
+
+interface apiProductFunction {
+  getUnit(id: number): apiUnitReturnType;
+  deleteUnit: (id: number) => apiUnitReturnType; // same as above
+  updateUnit(id: number, p: iUnit): apiUnitReturnType;
+  insertUnit(p: iUnit): apiUnitReturnType;
+  getUnits: () => apiUnitReturnType;
+}
+
+const apiUnit: apiProductFunction = {
   getUnit: async (id: number) => {
     return await db.query<iUnit>
       (
