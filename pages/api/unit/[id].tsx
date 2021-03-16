@@ -13,15 +13,15 @@ export default async function unitIDHandler(req: NextApiRequest, res: NextApiRes
   switch (req.method) {
     case METHOD_POST:
       {
-        const data = req.body as iUnit;
-        result = await apiUnit.insertUnit(data);
+        const unit = req.body as iUnit;
+        result = await apiUnit.insertUnit(unit);
       }
       break;
     case METHOD_PUT:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        const data = req.body as iUnit;
-        result = await apiUnit.updateUnit(id, data);
+        const unit = req.body as iUnit;
+        result = await apiUnit.updateUnit(id, unit);
       }
       break;
     case METHOD_DELETE:
@@ -31,16 +31,17 @@ export default async function unitIDHandler(req: NextApiRequest, res: NextApiRes
       }
       break;
     case METHOD_GET:
-    default: {
-      const id: number = req.query.id ? +req.query.id : 0;
-      result = await apiUnit.getUnit(id)
-    }
+    default:
+      {
+        const id: number = req.query.id ? +req.query.id : 0;
+        result = await apiUnit.getUnit(id)
+      }
       break;
   }
 
   const [data, error] = result;
   if (data) {
-    res.status(200).json(result);
+    res.status(200).json(data);
   } else {
     res.status(403).json({ message: error.message })
   }

@@ -97,24 +97,7 @@ const Unit = ({ product }: UnitType) => {
   }
 
   const updateUnit = async () => {
-    /*
-        const xData: iUnit = {
-          id: currentUnit.id,
-          barcode: unit.barcode,
-          name: unit.name,
-          content: +unit.content,
-          weight: +unit.weight,
-          buy_price: +unit.buy_price,
-          margin: +unit.margin / 100.0,
-          agent_margin: +unit.agent_margin / 100.0,
-          member_margin: +unit.member_margin / 100.0,
-          sale_price: +unit.sale_price,
-          agent_price: +unit.agent_price,
-          member_price: +unit.member_price,
-          profit: +unit.profit,
-          product_id: product.id
-        }
-    */
+
     const url = `/api/unit/${currentUnit.id}`
     const fetchOptions = {
       method: currentUnit.id === 0 ? 'POST' : 'PUT',
@@ -127,21 +110,20 @@ const Unit = ({ product }: UnitType) => {
     const res = await fetch(url, fetchOptions);
     const data: iUnit | any = await res.json();
 
-    if (res.status !== 200) {
+    if (res.status === 200) {
+
+      reload(data)
+      setFormDirty(false)
+
+      if (currentUnit.id === 0) {
+        footerDispatch({ type: FooterActionEnum.plus })
+        //setUnit(newUnit(product))
+        setCurrentUnit(newUnit(product));
+        setCurrentIndex(units && units?.length || -1)
+      }
+    } else {
       alert(data.message)
-      return; //throw new Error (data.message)
-    }
-
-    //console.log(data)
-
-    reload(data)
-    setFormDirty(false)
-
-    if (currentUnit.id === 0) {
-      footerDispatch({ type: FooterActionEnum.plus })
-      //setUnit(newUnit(product))
-      setCurrentUnit(newUnit(product));
-      setCurrentIndex(units && units?.length || -1)
+      //throw new Error (data.message)
     }
 
   }
