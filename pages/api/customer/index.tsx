@@ -3,7 +3,7 @@ import apiCustomer from '../models/customer.model'
 
 export default async function customerHandler(req: NextApiRequest, res: NextApiResponse) {
   const [data, error] = await apiCustomer.getCustomers();
-  console.log(data);
+  //console.log(data);
 
   if (data) {
     res.status(200).json(data);
