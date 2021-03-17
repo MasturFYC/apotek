@@ -3,16 +3,37 @@ import React, { useState } from 'react'
 import Select from 'react-select'
 import useSWR, { useSWRInfinite } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import utilStyles from '../../styles/utils.module.css'
+import utilStyles from '../../styles/utils.module.scss'
 import { iCustomer, iRayon } from '../../components/interfaces'
+import { isOptionDisabled } from 'react-select/src/builtins'
 
 interface iSelectOptions {
   value: number;
   label: string
 }
 
+const revalidationOptions = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  refreshWhenOffline: false,
+  refreshWhenHidden: false,
+  refreshInterval: 0
+};
+
+const initCustomer: iCustomer = {
+  id: 0,
+  name: '',
+  street: '',
+  city: '',
+  phone: '',
+  rayon_id: 0,
+  created_at: new Date,
+  updated_at: new Date,
+  credit_limit: 0
+}
+
 export default function Home() {
-  const { data: customers, error } = useSWR(`/api/customer`, fetcher);
+  const { data: customers, error, mutate } = useSWR(`/api/customer`, fetcher, revalidationOptions);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
   //const [rayons, setRayons] = useState<iRayon[]>([])
@@ -59,12 +80,45 @@ export default function Home() {
     // })
   }
 
+  const refreshCustomer = async (e: iCustomer, opt: number) => {
+    const url = `/api/customer/${e.id}`
+    const fetchOptions = {
+      method: e.id === -1 ? 'DELETE' : e.id === 0 ? 'POST' : 'PUT',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify(e)
+    }
+
+    const res = await fetch(url, fetchOptions);
+    const data: iCustomer | any = await res.json();
+
+    if (res.status === 200) {
+      if (opt === -1) {
+        mutate(customers.filter(item => item.id !== e.id), false);
+        setCurrentIndex(-1);
+      } else {
+        customers.splice(currentIndex, 1, data);
+        if (e.id === 0) {
+          mutate([...customers, initCustomer], false)
+          setCurrentIndex(customers && customers?.length || -1)
+        } else {
+          //customers.splice(currentIndex, 1, data);
+          mutate(customers, false)
+        }
+      }
+    } else {
+      alert(data.message)
+    }
+
+  }
+
   return (
     <Layout home>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={utilStyles.headingMd}>
+      <section>
         {customers && customers.map((item: iCustomer, i: number) => {
           return <CustomerList
             key={`cust-key-${i}`}
@@ -73,7 +127,12 @@ export default function Home() {
             property={{ backColor: backColors[(isSelected && currentIndex === i) ? 2 : i % 2], onClick: selectCustomer }}
           >
             {(currentIndex === i) && isSelected &&
-              <CustomerForm key={`cust-sel-${i}`} options={selOptions} customer={item} />
+              <CustomerForm
+                key={`cust-sel-${i}`}
+                options={selOptions}
+                customer={item}
+                reload={(e, opt) => refreshCustomer(e, opt)}
+              />
             }
           </CustomerList>
         })
@@ -103,26 +162,31 @@ const CustomerStyle = (backColor: string) => ({
 
 const CustomerList = ({ customer, index, property, children }: CustomerListType) => {
   return (
-    <div key={index}>
+    <div key={index} className={'rounded-3 rounded-bottom'}>
       <div key={`div-cust-sel-${index}`}
+         className={`${customer.id === 0 && 'rounded-3 rounded-top border-bottom'} ${index === 0 ? 'rounded-3 rounded-bottom border-top' : 'border-top-0'} border border-1`}
         style={CustomerStyle(property?.backColor!)}>
-        <span onMouseDown={(e) => {
-          e.preventDefault()
-          return false
-        }} onClick={(e) => property?.onClick(index)} style={{ cursor: 'pointer' }}>
-          <strong>{customer.name}</strong>
-        </span><br />
-        <span>{customer.street} - {customer.city}</span><br />
-        <span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
+        <span
+          className={'cust-name'}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            return false
+          }} onClick={(e) => property?.onClick(index)}
+        >
+          {customer.id === 0 ? 'New Customer' : customer.name}
+        </span>
+        <br /><span>{customer.street} - {customer.city}</span>
+        <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
+        {children}
       </div>
-      {children}
     </div>
   )
 }
 
 type CustomerFormType = {
   customer: iCustomer,
-  options: iSelectOptions[]
+  options: iSelectOptions[],
+  reload?: (cust: iCustomer, opt: number) => void
 }
 
 const customerInit: iCustomer = {
@@ -137,7 +201,7 @@ const customerInit: iCustomer = {
   credit_limit: 0
 }
 
-const CustomerForm = ({ customer: cust, options }: CustomerFormType) => {
+const CustomerForm = ({ customer: cust, options, reload }: CustomerFormType) => {
   const [customer, setCustomer] = useState<iCustomer>(cust);
   // React.useEffect(() => {
   //   let isLoaded: boolean = false;
@@ -148,20 +212,31 @@ const CustomerForm = ({ customer: cust, options }: CustomerFormType) => {
   //     isLoaded = true;
   //   }
   // }, [cust])
+
+  const submitForm = (e: React.FormEvent) => {
+    e.preventDefault();
+    reload && reload(customer, 0);
+  }
+  const deleteCustomer = (e: React.MouseEvent) => {
+    e.preventDefault();
+    reload && reload(customer, -1);
+  }
   return (
-    <form className={'form-floating border p-3 row g-2 m-0 pb-3'} >
+    <form className={'form-floating bg-light rounded-3 mt-3 p-2 row g-2'}
+      onSubmit={submitForm}
+    >
 
       <div className={'col-md-6'}>
 
-        <div className={'col-md-12 form-floating mb-1'}>
+        <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-name'} className={'form-control form-control-sm'}
-            type={'text'} value={customer.name}
+            type={'text'} value={customer.name} autoFocus={true}
             onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
             placeholder={'Enter Name'} />
           <label htmlFor={'txt-name'} className={'mx-0 col-form-label-sm'}>Nama Pelanggan</label>
         </div>
 
-        <div className={'col-md-12 form-floating mb-1'}>
+        <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-credit'} type={'text'}
             placeholder={'Batas kridit'}
             className={'form-control form-control-sm'} value={customer.credit_limit}
@@ -186,21 +261,21 @@ const CustomerForm = ({ customer: cust, options }: CustomerFormType) => {
 
       <div className={'col-md-6'}>
 
-        <div className={'col-md-12 form-floating mb-1'}>
+        <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-address'} className={'form-control form-control-sm'}
             value={customer.street} placeholder="Nama jalan, blok, rt/rw"
             onChange={(e) => setCustomer({ ...customer, street: e.target.value })} />
           <label htmlFor={'txt-address'} className={'mx-0 col-form-label-sm'}>Alamat</label>
         </div>
 
-        <div className={'col-md-12 form-floating mb-1'}>
+        <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-city'} className={'form-control form-control-sm'}
             type={'text'} value={customer.city} placeholder={'Kota / kecamatan / kabupaten'}
             onChange={(e) => setCustomer({ ...customer, city: e.target.value })} />
           <label htmlFor={'txt-city'} className={'mx-0 col-form-label-sm'}>Kota</label>
         </div>
 
-        <div className={'col-md-12 form-floating mb-1'}>
+        <div className={'col-md-12 form-floating'}>
           <input className={'form-control form-control-sm'}
             id={'txt-zip'}
             placeholder={'Kode Pos'}
@@ -236,11 +311,14 @@ const CustomerForm = ({ customer: cust, options }: CustomerFormType) => {
 
       <div className="col-md-2">
         <div className="d-grid gap-2">
-          <button type="button" className={'btn btn-sm btn-primary'}>
+          <button type="submit" className={'btn btn-sm btn-primary'}>
             Save
           </button>
 
-          <button type="button" className={'btn btn-sm btn-danger'}>
+          <button type="button" className={'btn btn-sm btn-danger'}
+            onClick={(e) => deleteCustomer(e)}
+            disabled={customer.id === 0}
+          >
             Delete
           </button>
         </div>
@@ -257,7 +335,7 @@ const fetcher = async (url: string) => {
     throw new Error(data.message)
   }
 
-  return data
+  return [...data, initCustomer];
 }
 
 
@@ -268,7 +346,7 @@ type colorReducerType = {
   isSelected: boolean;
 }
 
-const backColors: string[] = ['#cecece', '#dedede', '#7eca9c']
+const backColors: string[] = ['#f8f9fa', '#e9ecef', '#ffc107']
 const initSelected: colorReducerType = {
   color: backColors[0],
   index: 0,

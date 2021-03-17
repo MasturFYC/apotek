@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import utilStyles from '../../styles/utils.module.css'
+import utilStyles from '../../styles/utils.module.scss'
 import { iProduct, iCategory } from '../../components/interfaces'
 import Unit from '../../components/unit'
 

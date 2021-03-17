@@ -69,12 +69,13 @@ const apiCustomer: apiProductFunction = {
   },
 
   insertCustomer: async (c: iCustomer) => {
+    console.log(c)
     return await db.query<iCustomer>
       (
         sql`INSERT INTO customers (name, street, city, phone,
           cell, zip, rayon_id, credit_limit, descriptions)
-        VALUES (${c.name}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell!},
-          ${c.zip!}, ${c.rayon_id}, ${c.credit_limit}, ${c.descriptions!})
+        VALUES (${c.name}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell || null},
+          ${c.zip!}, ${c.rayon_id}, ${c.credit_limit}, ${c.descriptions || null})
         RETURNING id`
       )
       .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))

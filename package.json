@@ -21,7 +21,7 @@
     "react-dom": "^17.0.1",
     "react-number-format": "^4.4.4",
     "react-select": "^4.2.1",
-    "sass": "^1.30.0",
+    "sass": "^1.32.8",
     "slonik": "^23.6.2",
     "swr": "^0.3.11",
     "tailwindcss": "^2.0.2"

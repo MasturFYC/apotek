@@ -1,14 +1,13 @@
 import Head from 'next/head'
 import Link from 'next/link'
-
-import styles from './layout.module.css'
-import utilStyles from '../styles/utils.module.css'
+import styles from './layout.module.scss'
+import utilStyles from '../styles/utils.module.scss'
 
 const name = 'Your Name'
 export const siteTitle = 'Next.js Sample Website'
 export default function Layout({ children, home }: any) {
   return (
-    <div className={styles.container}>
+    <div>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -24,7 +23,7 @@ export default function Layout({ children, home }: any) {
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <header className={styles.header}>
+      <header className={`bg-light ${styles.header}`}>
         {home ? (
           <h1 className={utilStyles.heading2Xl}>{name}</h1>
         ) : (
@@ -36,11 +35,16 @@ export default function Layout({ children, home }: any) {
 
         )}
       </header>
-      <section style={{ padding: '6px', backgroundColor: '#ececec'}}><Link href="/customer">
-        <a>Pelanggan</a>
-      </Link>
+      <section className={'border-bottom'}>
+        <div className={'text-dark container p-2 my-menu'}><Link href="/customer">
+          <a><img src={'/images/customer.svg'} width={24} />{' '}Pelanggan</a>
+        </Link>
+        </div>
       </section>
-      <main>{children}</main>
+
+      <main className={'bg-white pt-4 mb-5'}>
+        <div className={'container bg-light mb-0 p-0'}>{children}</div>
+      </main>
       {!home && (
         <div className={styles.backToHome}>
           <Link href="/">

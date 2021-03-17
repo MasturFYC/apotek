@@ -1,0 +1,76 @@
+$headings-font-weight: 700;
+$border-radius: 0 !default;
+$body-bg: #f8f9fa !default;
+
+$input-btn-focus-box-shadow: none;
+$input-btn-focus-width: 2px !default;
+$btn-focus-box-shadow: none;
+$input-focus-width: $input-btn-focus-width !default;
+
+.form-control {
+  &:focus {
+    border-width: 2px !important;
+  }
+}
+
+@import "~bootstrap/scss/bootstrap.scss";
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: #0070f3;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+$menu-hover-color: #6c757d;
+$menu-active-color: #fd7e14;
+
+.my-menu {
+  font-size: 10pt;
+  margin-bottom: -5px;
+  a {
+    color: #212529;
+    text-decoration: none;
+    padding: 3px 3px 10px 3px;
+    &:hover {
+      border-bottom: 2px solid $menu-hover-color;
+    }
+    &:active {
+      border-bottom: 2px solid $menu-active-color;
+    }
+  }
+
+  img {
+    display: inline;
+  }
+}
+
+.cust-name {
+  cursor: pointer;
+  font-weight: 700;
+  padding: 3px 6px;
+  margin-left: -6px;
+  &:hover {
+    background-color: #ced4da;
+  }
+}

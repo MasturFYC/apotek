@@ -3,7 +3,7 @@ import Head from 'next/head'
 import useSWR from 'swr'
 import Layout, { siteTitle } from '../components/layout'
 import Category from '../components/category'
-import utilStyles from '../styles/utils.module.css'
+import utilStyles from '../styles/utils.module.scss'
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
