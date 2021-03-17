@@ -32,7 +32,7 @@ createDateTypeParser();
 export { sql };
 
 const db = createPool(
-  process.env.DATABASE_URL || 'postgres://root:t2z00a8y@localhost:5432/trader',
+  process.env.DATABASE_URL || 'postgres://root:********@localhost:5432/trader',
   {
     typeParsers: []
     //     {
