@@ -83,7 +83,7 @@ export default function Home() {
   const refreshCustomer = async (e: iCustomer, opt: number) => {
     const url = `/api/customer/${e.id}`
     const fetchOptions = {
-      method: e.id === -1 ? 'DELETE' : e.id === 0 ? 'POST' : 'PUT',
+      method: opt === -1 ? 'DELETE' : e.id === 0 ? 'POST' : 'PUT',
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
       },
