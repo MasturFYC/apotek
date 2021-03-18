@@ -26,10 +26,13 @@ const initCustomer: iCustomer = {
   street: '',
   city: '',
   phone: '',
+  cell: '',
   rayon_id: 0,
   created_at: new Date,
   updated_at: new Date,
-  credit_limit: 0
+  credit_limit: 0,
+  descriptions: '',
+  zip: ''
 }
 
 export default function Home() {
