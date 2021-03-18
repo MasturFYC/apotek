@@ -257,9 +257,118 @@ const Unit = ({ product }: UnitType) => {
     setFormDirty(true);
   }
 
+  // const ModeDiv = () => (
 
-  return (
-    <table className={styles.unitTable}>
+  //   <section>
+  //     <div className={'row align-middle border rounded text-center'}>
+  //       <div className={'col border-end pt-2 m-0'}>ID</div>
+  //       <div className={'col-1 border-end pt-2'}>BARCODE</div>
+  //       <div className={'col-1 border-end pt-2'}>NAMA</div>
+  //       <div className={'col-1 border-end pt-2'}>ISI ({product.base_unit})</div>
+  //       <div className={'col-1 border-end pt-2'}>BERAT (kg)</div>
+  //       <div className={'col border-end pt-2 text-nowrap'}>HARGA BELI</div>
+  //       <div className={'col-3 border-end'}>
+  //         <div className={'row'}>
+  //           <div className={'col border-bottom'}>MARGIN</div>
+  //         </div>
+  //         <div className={'row'}>
+  //           <div className={'col-4'}>UMUM</div>
+  //           <div className={'col-5'}>MEMBER</div>
+  //           <div className={'col-3'}>AGEN</div>
+  //         </div>
+  //       </div>
+  //       <div className={'col-3 border-end'}>
+  //         <div className={'row'}>
+  //           <div className={'col'}>HARGA JUAL</div>
+  //         </div>
+  //         <div className={'row'}>
+  //           <div className={'col-4'}>UMUM</div>
+  //           <div className={'col-5'}>MEMBER</div>
+  //           <div className={'col-3'}>AGEN</div>
+  //         </div>
+  //       </div>
+  //       <div className={'col'}>Cmd</div>
+  //     </div>
+
+  //     <tbody ref={wrapperRef}>
+  //       {
+  //         (units && product.id > 0) && units.map((item: iUnit, index: number) => (
+  //           <tr key={index} onClick={() => {
+  //             handleTrClick(index, item)
+  //           }
+  //           }>
+  //             {currentIndex !== index ?
+  //               <React.Fragment>
+  //                 <td className={styles.tdOff2}>{item.id}</td>
+  //                 <td className={styles.tdOff1}>{item.barcode}</td>
+  //                 <td className={styles.tdOff1}>{item.name}</td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.content} renderText={(e => <span>{+e * 1}</span>)} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.weight} renderText={(e => <span>{+e * 1}</span>)} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.buy_price} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.member_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /> </td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.agent_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.sale_price} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.member_price} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.agent_price} /></td>
+  //                 <td className={styles.tdOff1}>
+  //                   {item.id > 0 &&
+  //                     <img title="Hapus" className={styles.imgControl} height="22px" src={DeleteSvg} onClick={(e) => deleteUnit(item.id)} />
+  //                   }
+  //                 </td>
+  //               </React.Fragment> :
+  //               <React.Fragment>
+  //                 <td className={styles.tdOff2}>{currentUnit.id}</td>
+  //                 <td className={styles.tdEdit}><input autoFocus type='text' value={currentUnit.barcode} name={'barcode'} onChange={(e) => handlerChanged(e)} /></td>
+  //                 <td className={styles.tdEdit}><input type='text' value={currentUnit.name} name={'name'} onChange={(e) => handlerChanged(e)} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat id={"unit_content"}
+  //                   displayType={'input'} value={currentUnit.content} onValueChange={(e) => contentChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat id={"unit_weight"}
+  //                   displayType={'text'} thousandSeparator={false} decimalScale={2} value={currentUnit.weight} renderText={value => <span>{+value * 1}</span>} /></td>
+  //                 <td className={styles.tdOff2}><NumberFormat id={"buy_price"}
+  //                   displayType={'text'} thousandSeparator={true} decimalScale={0} value={currentUnit.buy_price} renderText={value => <span>{value}</span>} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat id={"margin"}
+  //                   displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.margin * 100} onValueChange={(e) => marginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat id={"member_margin"}
+  //                   displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.member_margin * 100} onValueChange={(e) => memberMarginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat id={"agent_margin"}
+  //                   displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.agent_margin * 100}
+  //                   onValueChange={(e) => {
+  //                     agentMarginChanged(e.floatValue && (e.floatValue / 100) || 0)
+  //                   }} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"sale_price"}
+  //                   thousandSeparator={false} decimalScale={0} value={currentUnit.sale_price} onValueChange={(e) => priceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"member_price"}
+  //                   thousandSeparator={false} decimalScale={0} value={currentUnit.member_price} onValueChange={(e) => memberPriceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+  //                 <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"agent_price"}
+  //                   thousandSeparator={false} decimalScale={0} value={currentUnit.agent_price}
+  //                   onValueChange={(e) => {
+  //                     agentPriceChanged(e.floatValue || 0)
+  //                   }} className={styles.tdInputNumber
+  //                   } /></td>
+  //                 <td className={styles.tdOff1}>
+  //                   {formDirty && <img title="Simpan" className={styles.imgControl} height="22px" src={EditSvg} onClick={updateUnit} />}
+  //                   {item.id > 0 &&
+  //                     <img title="Hapus" className={styles.imgControl} height="22px" src={DeleteSvg} onClick={(e) => deleteUnit(item.id)} />
+  //                   }
+  //                 </td>
+  //               </React.Fragment>}
+  //           </tr>
+  //         ))
+  //       }
+  //     </tbody>
+  //     <tfoot>
+  //       <tr>
+  //         <td colSpan={13}>Total: {footer.total}{' '}{footer.message}</td>
+  //       </tr>
+  //     </tfoot>
+  //   </section>
+  // )
+
+
+  const ModeTable = () => (
+
+    <table className={`${styles.unitTable}`}>
       <thead>
         <tr key={`tr_${1}`}>
           <th rowSpan={2}>ID</th>
@@ -355,6 +464,9 @@ const Unit = ({ product }: UnitType) => {
       </tfoot>
     </table>
   )
+
+  return <ModeTable />
+
 }
 
 const fetcher = async (url: string): Promise<iUnit[]> => {

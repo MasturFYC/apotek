@@ -1,13 +1,14 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import React from 'react'
 import styles from './layout.module.scss'
 import utilStyles from '../styles/utils.module.scss'
 
-const name = 'Your Name'
-export const siteTitle = 'Next.js Sample Website'
-export default function Layout({ children, home }: any) {
+const name = 'Apotek SR-II'
+export const siteTitle = 'Apotek SR-II'
+export default function Layout({ children, home, menuActive = 0 }: any) {
   return (
-    <div>
+    <React.Fragment>
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta
@@ -23,9 +24,11 @@ export default function Layout({ children, home }: any) {
         <meta name="og:title" content={siteTitle} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <header className={`bg-light ${styles.header}`}>
+      <header className={`bg-light text-start ${styles.header}`}>
         {home ? (
-          <h1 className={utilStyles.heading2Xl}>{name}</h1>
+          <div className={'bg-dark text-white container-fluid py-2 mb-3'}>
+          <h3 className={'mt-3 text-start container'}>{name}</h3>
+          </div>
         ) : (
           <h2 className={utilStyles.headingLg}>
             <Link href="/">
@@ -35,15 +38,19 @@ export default function Layout({ children, home }: any) {
 
         )}
       </header>
-      <section className={'border-bottom'}>
-        <div className={'text-dark container p-2 my-menu'}><Link href="/customer">
-          <a><img src={'/images/customer.svg'} width={24} />{' '}Pelanggan</a>
+      <section className={'border-bottom pb-2'}>
+      <div className={`text-dark container p-2 my-menu`}>
+        <Link href="/customer">
+          <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={24} />{' '}Pelanggan</a>
+        </Link>
+        <Link href="/category/24">
+          <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={24} />{' '}Product</a>
         </Link>
         </div>
       </section>
 
-      <main className={'bg-white pt-4 mb-5'}>
-        <div className={'container bg-light mb-0 p-0'}>{children}</div>
+      <main className={'bg-white pt-4 mb-5 pb-5'}>
+        <div className={'container bg-light p-0'}>{children}</div>
       </main>
       {!home && (
         <div className={styles.backToHome}>
@@ -52,6 +59,6 @@ export default function Layout({ children, home }: any) {
           </Link>
         </div>
       )}
-    </div>
+    </React.Fragment>
   )
 }

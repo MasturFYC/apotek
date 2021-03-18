@@ -114,11 +114,11 @@ export default function Home() {
   }
 
   return (
-    <Layout home>
+    <Layout home menuActive={0}>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section>
+      <section className={'border border-1 rounded-3'}>
         {customers && customers.map((item: iCustomer, i: number) => {
           return <CustomerList
             key={`cust-key-${i}`}
@@ -127,12 +127,15 @@ export default function Home() {
             property={{ backColor: backColors[(isSelected && currentIndex === i) ? 2 : i % 2], onClick: selectCustomer }}
           >
             {(currentIndex === i) && isSelected &&
-              <CustomerForm
-                key={`cust-sel-${i}`}
-                options={selOptions}
-                customer={item}
-                reload={(e, opt) => refreshCustomer(e, opt)}
-              />
+
+              <div style={{ margin: '0px -15px -11px -15px', padding: '0px 13px 6px 13px' }}>
+                <CustomerForm
+                  key={`cust-sel-${i}`}
+                  options={selOptions}
+                  customer={item}
+                  reload={(e, opt) => refreshCustomer(e, opt)}
+                />
+              </div>
             }
           </CustomerList>
         })
@@ -162,23 +165,22 @@ const CustomerStyle = (backColor: string) => ({
 
 const CustomerList = ({ customer, index, property, children }: CustomerListType) => {
   return (
-    <div key={index} className={'rounded-3 rounded-bottom'}>
-      <div key={`div-cust-sel-${index}`}
-         className={`${customer.id === 0 && 'rounded-3 rounded-top border-bottom'} ${index === 0 ? 'rounded-3 rounded-bottom border-top' : 'border-top-0'} border border-1`}
-        style={CustomerStyle(property?.backColor!)}>
-        <span
-          className={'cust-name'}
-          onMouseDown={(e) => {
-            e.preventDefault()
-            return false
-          }} onClick={(e) => property?.onClick(index)}
-        >
-          {customer.id === 0 ? 'New Customer' : customer.name}
-        </span>
-        <br /><span>{customer.street} - {customer.city}</span>
-        <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
-        {children}
-      </div>
+
+    <div key={`div-cust-sel-${index}`}
+      style={CustomerStyle(property?.backColor!)}
+      className={`border-bottom ${index === 0 && " rounded-top"} ${customer.id === 0 && "border-bottom-0 rounded-bottom"}`}>
+      <span
+        className={'cust-name'}
+        onMouseDown={(e) => {
+          e.preventDefault()
+          return false
+        }} onClick={(e) => property?.onClick(index)}
+      >
+        {customer.id === 0 ? 'New Customer' : customer.name}
+      </span>
+      <br /><span>{customer.street && `${customer.street} - `}{customer.city}</span>
+      <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
+      {children}
     </div>
   )
 }
@@ -222,33 +224,32 @@ const CustomerForm = ({ customer: cust, options, reload }: CustomerFormType) => 
     reload && reload(customer, -1);
   }
   return (
-    <form className={'form-floating bg-light rounded-3 mt-3 p-2 row g-2'}
+    <form className={'form-floating p-3 pt-0 mt-3 row g-3 bg-light'}
       onSubmit={submitForm}
     >
 
       <div className={'col-md-6'}>
 
         <div className={'col-md-12 form-floating mb-2'}>
-          <input id={'txt-name'} className={'form-control form-control-sm'}
+          <input id={'txt-name'} className={'form-control'}
             type={'text'} value={customer.name} autoFocus={true}
             onChange={(e) => setCustomer({ ...customer, name: e.target.value })}
             placeholder={'Enter Name'} />
-          <label htmlFor={'txt-name'} className={'mx-0 col-form-label-sm'}>Nama Pelanggan</label>
+          <label htmlFor={'txt-name'} className={'mx-0 col-form-label'}>Nama Pelanggan</label>
         </div>
 
         <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-credit'} type={'text'}
             placeholder={'Batas kridit'}
-            className={'form-control form-control-sm'} value={customer.credit_limit}
+            className={'form-control'} value={customer.credit_limit}
             onChange={(e) => setCustomer({ ...customer, credit_limit: +e.target.value })} />
-          <label htmlFor={'txt-credit'} className={'mx-0 col-form-label-sm'}>Limit Credit</label>
-
+          <label htmlFor={'txt-credit'} className={'mx-0 col-form-label'}>Limit Credit</label>
         </div>
 
-        <div className={'col-md-12 mb-1'}>
-          <div className={'row p-0 px-1'}>
-            <label htmlFor={'txt-rayon'} className={'col-2 py-2 col-form-label-sm'}>Rayon</label>
-            <Select id={'txt-rayon'} className={'col form-control-sm'}
+        <div className={'col-md-12'}>
+          <div className={'row p-0'}>
+            <label htmlFor={'txt-rayon'} className={'col-2 pt-2 col-form-label-md'}>Rayon</label>
+            <Select id={'txt-rayon'} className={'col mt-0 py-0'}
               value={options.filter(x => x.value === customer.rayon_id)}
               onChange={(e) => setCustomer({ ...customer, rayon_id: e?.value || 0 })}
               options={options}
@@ -259,68 +260,74 @@ const CustomerForm = ({ customer: cust, options, reload }: CustomerFormType) => 
       </div>
 
 
-      <div className={'col-md-6'}>
+      <div className={'col-md-6 col-lg-6'}>
 
-        <div className={'col-md-12 form-floating mb-2'}>
-          <input id={'txt-address'} className={'form-control form-control-sm'}
-            value={customer.street} placeholder="Nama jalan, blok, rt/rw"
-            onChange={(e) => setCustomer({ ...customer, street: e.target.value })} />
-          <label htmlFor={'txt-address'} className={'mx-0 col-form-label-sm'}>Alamat</label>
-        </div>
+        <div className={'row form-floating'}>
 
-        <div className={'col-md-12 form-floating mb-2'}>
-          <input id={'txt-city'} className={'form-control form-control-sm'}
-            type={'text'} value={customer.city} placeholder={'Kota / kecamatan / kabupaten'}
-            onChange={(e) => setCustomer({ ...customer, city: e.target.value })} />
-          <label htmlFor={'txt-city'} className={'mx-0 col-form-label-sm'}>Kota</label>
-        </div>
+          <div className={'col-md-12 col-lg-12 form-floating mb-2'}>
+            <input id={'txt-address'} className={'form-control'}
+              value={customer.street} placeholder="Nama jalan, blok, rt/rw"
+              onChange={(e) => setCustomer({ ...customer, street: e.target.value })} />
+            <label htmlFor={'txt-address'} className={'mx-2 col-form-label'}>Alamat</label>
+          </div>
 
-        <div className={'col-md-12 form-floating'}>
-          <input className={'form-control form-control-sm'}
-            id={'txt-zip'}
-            placeholder={'Kode Pos'}
-            type={'text'} value={customer.zip || ''}
-            onChange={(e) => setCustomer({ ...customer, zip: e.target.value })} />
-          <label htmlFor={'txt-zip'} className={'mx-0 col-form-label-sm'}>Kode Pos</label>
+          <div className={'col-md-8 col-lg-8 form-floating mb-2'}>
+            <input id={'txt-city'} className={'form-control'}
+              type={'text'} value={customer.city} placeholder={'Kota / kecamatan / kabupaten'}
+              onChange={(e) => setCustomer({ ...customer, city: e.target.value })} />
+            <label htmlFor={'txt-city'} className={'mx-2 col-form-label'}>Kota</label>
+          </div>
+
+          <div className={'col-md-4 col-lg-4 form-floating mb-2'}>
+            <input className={'form-control'}
+              id={'txt-zip'}
+              placeholder={'Kode Pos'}
+              type={'text'} value={customer.zip || ''}
+              onChange={(e) => setCustomer({ ...customer, zip: e.target.value })} />
+            <label htmlFor={'txt-zip'} className={'mx-2 col-form-label'}>Kode Pos</label>
+          </div>
+
+
+          <div className={'col-md-6 form-floating mb-2'}>
+            <input id={"txt-phone"} type={'text'}
+              placeholder={'Nomor contact'} className={'form-control'} value={customer.phone}
+              onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} />
+            <label htmlFor={'txt-phone'} className={'mx-2 col-form-label'}>Telephone</label>
+          </div>
+
+          <div className={'col-md-6 form-floating mb-2'}>
+            <input id={"txt-cell"} type={'text'}
+              placeholder={'Nomor handphone / cellular'}
+              className={'form-control'} value={customer.cell || ''}
+              onChange={(e) => setCustomer({ ...customer, cell: e.target.value })} />
+            <label htmlFor={'txt-cell'} className={'mx-2 col-form-label'}>Cellular</label>
+          </div>
+
         </div>
 
       </div>
 
-      <div className={'col-md-6 form-floating form-floating mb-1'}>
-        <input id={"txt-phone"} type={'text'}
-          placeholder={'Nomor contact'} className={'form-control form-control-sm'} value={customer.phone}
-          onChange={(e) => setCustomer({ ...customer, phone: e.target.value })} />
-        <label htmlFor={'txt-phone'} className={'mx-1 col-form-label-sm'}>Telephone</label>
-      </div>
-
-      <div className={'col-md-6 form-floating mb-1'}>
-        <input id={"txt-cell"} type={'text'}
-          placeholder={'Nomor handphone / cellular'}
-          className={'form-control form-control-sm'} value={customer.cell || ''}
-          onChange={(e) => setCustomer({ ...customer, cell: e.target.value })} />
-        <label htmlFor={'txt-cell'} className={'mx-1 col-form-label-sm'}>Cellular</label>
-      </div>
-
-      <div className={'col-md-10 form-floating mb-1'}>
-        <textarea rows={5} style={{ height: '72px' }} id={'txt-desc'}
-          placeholder={'Keterangan'} className={'form-control form-control-sm'}
+      <div className={'col-md-8 col-lg-8 form-floating m-0 mb-2'}>
+        <textarea style={{ height: '90px' }} id={'txt-desc'}
+          placeholder={'Keterangan'} className={'form-control'}
           value={customer.descriptions || ''}
           onChange={(e) => setCustomer({ ...customer, descriptions: e.target.value })} />
-        <label htmlFor={'txt-desc'} className={'mx-1 col-form-label-sm'}>Keterangan</label>
+        <label htmlFor={'txt-desc'} className={'mx-2 col-form-label'}>Keterangan</label>
       </div>
 
-      <div className="col-md-2">
-        <div className="d-grid gap-2">
-          <button type="submit" className={'btn btn-sm btn-primary'}>
-            Save
-          </button>
+      <div className="col-md-4 col-lg-4 form-floating">
+        <div className={'row g-2'}>
+          <div className={'col-md-6'}>
+            <button type="submit" className={'btn w-100 btn-primary mb-2'}>
+              Save</button>
+          </div>
 
-          <button type="button" className={'btn btn-sm btn-danger'}
-            onClick={(e) => deleteCustomer(e)}
-            disabled={customer.id === 0}
-          >
-            Delete
-          </button>
+          <div className={'col-md-6'}>
+            <button type="button" className={'btn w-100 btn-danger mb-2'}
+              onClick={(e) => deleteCustomer(e)}
+              disabled={customer.id === 0}>
+              Delete</button>
+          </div>
         </div>
       </div>
     </form >

@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import utilStyles from '../../styles/utils.module.scss'
 import { iProduct, iCategory } from '../../components/interfaces'
 import Unit from '../../components/unit'
 
@@ -21,7 +20,8 @@ type editParam = {
 type updateProductParam = {
   data: iProduct,
   updateCommand: Function,
-  categories: iCategory[]
+  categories: iCategory[],
+  index: number,
 }
 
 const fetchCategories = async (url: string): Promise<iCategory[]> => {
@@ -105,7 +105,7 @@ const useCategory = (id: number) => {
       if (start === -1) {
         newData.push(p)
       } else {
-        newData.splice(start,1,p)
+        newData.splice(start, 1, p)
       }
       /*
 
@@ -147,7 +147,7 @@ function findElements(arr: iProduct[] | undefined, id: number) {
 
 const ProductInfo = (product: iProduct) => {
   return (
-    <div>
+    <div className={'px-3 py-2'}>
       <strong style={{ cursor: 'pointer' }}>{product.name || 'New Product'}</strong><br />
       Kode: {product.code}, Spec: {product.spec}
     </div>
@@ -193,9 +193,11 @@ const ShowProducts = ({ products, updateCommand, categories }: productType) => {
     <React.Fragment>
       {products && products.map((item: iProduct, i: number) => (
         <div key={i}
-          style={{marginBottom: '10px'}}
+          className={`${item.id !== 0 && 'border-bottom'} ${(i % 2 === 0 && 'bg-white rounded-top')}`}
           onClick={() => { updateSelectedIndex(products[i].id) }}
-        >{currentId === (products && products[i].id || 0) ? <EditProduct data={item} updateCommand={refreshData} categories={categories} /> : <ProductInfo {...item} />}
+        >{currentId === (products && products[i].id || 0) ?
+          <EditProduct data={item} updateCommand={refreshData} categories={categories} index={i} /> :
+          <ProductInfo {...item} />}
         </div>
       ))}
     </React.Fragment>
@@ -221,22 +223,26 @@ export default function categoryPage({ data: categories }: any) {
   if (isLoading) return <div>Loading...</div>
 
   return (
-    <Layout home>
+    <Layout home menuActive={1}>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={utilStyles.headingMd}>
-        <h1>{category.name}</h1>
-        <ShowProducts products={products} updateCommand={reload} categories={categories} />
+      <section className={'bg-white'}>
+        <h1 className={'m7-3 py-3'}>{category.name}</h1>
+        <section className={'container bg-light border rounded-3 m-0 p-0'}>
+          <ShowProducts products={products} updateCommand={reload} categories={categories} />
+        </section>
+        <div className={'mt-3'}>
         <Link href="/">
-          Go Back
+            Go Back
         </Link>
+        </div>
       </section>
     </Layout>
   )
 }
 
-const EditProduct = ({ data, updateCommand, categories }: updateProductParam) => {
+const EditProduct = ({ data, updateCommand, categories, index }: updateProductParam) => {
   const [product, setProduct] = useState(data);
   /*
   const baseUrl: any = () => `/api/product/${productId}`;
@@ -277,8 +283,8 @@ const EditProduct = ({ data, updateCommand, categories }: updateProductParam) =>
   }
 
   return (
-    <div style={{ backgroundColor: "#cecece", padding: "10px" }}>
-      <table style={{width:'100%'}}>
+    <div className={`${index % 2 === 0 && 'rounded-top '}bg-white p-3 m-0`}>
+      <table style={{ width: '100%' }}>
         <tbody>
           <tr>
             <td>Nama:</td>
@@ -323,7 +329,7 @@ const EditProduct = ({ data, updateCommand, categories }: updateProductParam) =>
           </tr>
         </tbody>
       </table>
-      <button onClick={(e) => sendData()}>
+      <button onClick={(e) => sendData()} className='btn btn-outline-dark mt-3'>
         Save Data
       </button>
     </div>
