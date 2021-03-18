@@ -6,6 +6,7 @@ import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
 import { iProduct, iCategory } from '../../components/interfaces'
 import Unit from '../../components/unit'
+import apiCategory from '../api/models/category.model'
 
 type productType = {
   products: iProduct[] | undefined,
@@ -35,11 +36,6 @@ const fetchCategories = async (url: string): Promise<iCategory[]> => {
 
   //console.log(data)
   return data;
-}
-
-export async function getServerSideProps() {
-  const data = await fetchCategories('http://localhost:3000/api/category/')
-  return { props: { data } }
 }
 
 const fetcher = async (url: string): Promise<iCategory> => {
@@ -212,6 +208,7 @@ export default function categoryPage({ data: categories }: any) {
   const { query } = useRouter();
   const { category, products, isLoading, isError, reload } = useCategory(parseInt('' + query.id));
 
+  //console.log(categories)
   //const refreshProduct = () => {
   //const newArr = data?.products?.filter(o => o.id !== id);
   //const test = [{ ...newArr, p }];
@@ -265,7 +262,7 @@ const EditProduct = ({ data, updateCommand, categories, index }: updateProductPa
     //console.log('after update: ', data)
 
     if (res.status !== 200) {
-      throw new Error(data.message)
+      alert(data.message)
     } else {
       //updateIndex(false)
       updateCommand(data)
@@ -334,4 +331,14 @@ const EditProduct = ({ data, updateCommand, categories, index }: updateProductPa
       </button>
     </div>
   )
+}
+
+export async function getServerSideProps() {
+  const [data, error] = await apiCategory.getCategories();
+
+  if (data) {
+   return { props: { data: [...data] } }
+  } else {
+    return { props: { data: null } }
+  }
 }

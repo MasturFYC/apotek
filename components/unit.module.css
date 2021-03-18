@@ -4,6 +4,24 @@
   background-color: #cecece;
   border-collapse: collapse;
 }
+
+.unitTable tbody tr td input {
+  /* margin: 0px -5px 0px -5px; */
+  width: 100%;
+  padding: 2px 5px 2px 5px;
+  border: 0;
+}
+.unitTable tbody tr td input:active,
+.unitTable tbody tr td input[type="text"]:focus {
+  /* margin: 0px -5px 0px -5px; */
+  width: 100%;
+  outline: thick solid \9;
+  border-width: 0.175rem;
+  padding: 2px 5px 2px 5px;
+  border: 1;
+}
+
+
 .unitTable tr th,
 .unitTable tr td {
   font-size: 14px;
@@ -52,6 +70,7 @@
 */
 
 .unitTable tr td:last-child {
+  padding: 0;
   text-align: center;
   background-color: #fff;
 }
@@ -101,13 +120,6 @@
 }
 
 
-.unitTable tbody tr td input {
-  /* margin: 0px -5px 0px -5px; */
-  width: 100%;
-  padding: 2px 5px 2px 5px;
-  border: 1px solid #cecece;
-}
-
 .unitTable td img {
   display: inline;
   margin-bottom: -4px;
@@ -145,8 +157,9 @@
 }
 
 .imgControl {
-  padding: 2px;
-  border-radius: 2px;
+  display: inline-block;
+  margin: -8px 2px 0 2px;
+  padding: 3px;
   background-color: #fff;
 }
 

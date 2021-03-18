@@ -1,9 +1,9 @@
 import Head from 'next/head'
 // import { useRouter } from 'next/router'
 import useSWR from 'swr'
-import Layout, { siteTitle } from '../components/layout'
 import Category from '../components/category'
-import utilStyles from '../styles/utils.module.scss'
+import utilStyles from '../styles/utils.module.css'
+import Layout, { siteTitle } from '../components/layout'
 
 const fetcher = async (url: string) => {
   const res = await fetch(url)
