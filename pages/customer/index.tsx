@@ -117,11 +117,11 @@ export default function Home() {
   }
 
   return (
-    <Layout home menuActive={0}>
+    <Layout home menuActive={0} heading={'Data Pelanggan'}>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={'border border-1 rounded-3'}>
+     <section className={'border border-1 rounded-3'}>
         {customers && customers.map((item: iCustomer, i: number) => {
           return <CustomerList
             key={`cust-key-${i}`}
@@ -224,7 +224,7 @@ const CustomerForm = ({ customer: cust, options, reload }: CustomerFormType) => 
   //   }
   // }, [cust])
 
-  const submitForm = (e: React.FormEvent) => {
+   const submitForm = (e: React.FormEvent) => {
     e.preventDefault();
     reload && reload(customer, 0);
   }

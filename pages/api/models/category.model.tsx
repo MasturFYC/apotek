@@ -5,9 +5,9 @@ type apiCategoryReturnType = Promise<any[] | (readonly iCategory[] | undefined)[
 interface apiCategoryFunction {
   getCategory(id: number): apiCategoryReturnType;
   getCategories: () => apiCategoryReturnType; // same as above
-  //updateProduct(id: number, p: iProduct): apiCategoryReturnType;
-  //insertProduct(p: iProduct): apiCategoryReturnType;
-  //getUnits(id: number): apiCategoryReturnType;
+  updateCategory(id: number, p: iCategory): apiCategoryReturnType;
+  insertCategory(p: iCategory): apiCategoryReturnType;
+  deleteCategory(id: number): apiCategoryReturnType;
 }
 
 
@@ -19,7 +19,8 @@ const apiCategory: apiCategoryFunction = {
       FROM products AS p
       WHERE p.category_id = t.id`)} AS products
       FROM categories AS t
-      WHERE t.id = ${id}`)
+      WHERE t.id = ${id}
+      ORDER BY t.name`)
       .then((data) => ([data.rows[0], undefined]))
       .catch((error) => ([undefined, error]));
   }
@@ -30,8 +31,41 @@ const apiCategory: apiCategoryFunction = {
       ORDER BY name`)
       .then((data) => ([data.rows, undefined]))
       .catch((error) => ([undefined, error]))
-  }
+  },
 
+  insertCategory: async (c: iCategory) => {
+    return await db.query<iCategory>
+      (
+        sql`INSERT INTO categories (name)
+        VALUES (${c.name})
+        RETURNING id`
+      )
+      .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))
+      .catch(error => ([undefined, error]));
+  },
+
+  updateCategory: async (id: number, c: iCategory) => {
+    return await db.query<iCategory>
+      (
+        sql`UPDATE categories  SET
+        name = ${c.name}
+        WHERE id = ${id}
+        RETURNING *`
+      )
+      .then(data => ([data.rows[0], undefined]))
+      .catch(error => ([undefined, error]));
+  },
+
+  deleteCategory: async (id: number) => {
+    return await db.query<iCategory>
+      (
+        sql`DELETE FROM categories
+        WHERE id = ${id}
+        RETURNING id`
+      )
+      .then(data => ([{ id: data.rows[0].id }, undefined]))
+      .catch(error => ([undefined, error]));
+  }
 }
 
 export default apiCategory;

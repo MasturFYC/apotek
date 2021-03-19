@@ -69,7 +69,6 @@ const apiCustomer: apiProductFunction = {
   },
 
   insertCustomer: async (c: iCustomer) => {
-    console.log(c)
     return await db.query<iCustomer>
       (
         sql`INSERT INTO customers (name, street, city, phone,

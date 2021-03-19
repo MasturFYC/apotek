@@ -1,4 +1,4 @@
-import categoryFecther from './category'
+import categoryFetcher from './category'
 
 export const revalidationOptions = {
   revalidateOnFocus: false,
@@ -8,4 +8,4 @@ export const revalidationOptions = {
   refreshInterval: 0
 };
 
-export {categoryFecther}
+export {categoryFetcher}

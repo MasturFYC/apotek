@@ -11,8 +11,8 @@
   box-shadow: none;
 }
 
-.form-control:focus,
-textarea:focus,
+.form-control:focus
+/* textarea:focus,
 input[type="text"]:focus,
 input[type="password"]:focus,
 input[type="datetime"]:focus,
@@ -27,17 +27,18 @@ input[type="url"]:focus,
 input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
-.uneditable-input:focus {
-  border-color: rgba(82, 168, 236, 0.8);
-  outline: 0;
-  outline: thick solid \9;
-  border-width: 0.175rem;
+.uneditable-input:focus */
+{
+  box-shadow: 0 0 0.155rem #0856ca;
+    /* border-color: rgba(82, 168, 236, 0.8);
+
+ */
   /* IE6-9 */
   /*
    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
    -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
    */
-  box-shadow: none; /* inset 0 px 0px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6); */
+  /* box-shadow: none; inset 0 px 0px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6); */
 }
 
 * {
@@ -63,22 +64,28 @@ img {
 
 .my-menu {
   font-size: 10pt;
-  margin-bottom: -5px;
+  margin-bottom: -1px;
 }
 .my-menu a {
   color: #212529;
   text-decoration: none;
-  padding: 3px 6px 14px 6px;
+  padding: 6px 12px 13px 12px;
 }
 .my-menu a:hover {
   border-bottom: 2px solid #adb5bd;
+  background-color: #edeffe;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
 .my-menu a:active {
   border-bottom: 2px solid #fd7e14;
+  background-color: #e1e8fe;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 .my-menu a:first-child {
-  margin-left: -6px;
+  margin-left: -18px;
 }
 .my-menu > .an-active {
   border-bottom: 2px solid #fd7e14;
@@ -86,6 +93,8 @@ img {
 
 .my-menu img {
   display: inline;
+  margin-right: 6px;
+  margin-top: -2px;
 }
 
 .cust-name {
@@ -108,4 +117,31 @@ img {
 .btn-outline-dark {
   background-color: #f8f9fa;
   border-color: #6c757d;
+}
+
+.see-child {
+  padding: 6px 6px;
+  border-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.see-child img {
+    display: inline;
+    margin-right: 6px;
+    margin-top: -2px;
+    width: 18px;
+    height: 18px;
+}
+
+.see-child:hover {
+  background-color: #edeffe;
+  text-decoration: none;
+}
+
+.see-child:active {
+background-color: #e1e8fe;
+}
+
+.w85 {
+  width: 85px;
 }

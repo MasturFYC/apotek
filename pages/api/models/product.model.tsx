@@ -36,6 +36,7 @@ const apiProduct: apiProductFunction = {
     return await db.query<iProduct>(
       sql`UPDATE products SET
         name = ${p.name}, code = ${p.code}, spec = ${p.spec},
+        base_price = ${p.base_price},
         category_id = ${p.category_id}
       WHERE id = ${id}
       RETURNING *`)
