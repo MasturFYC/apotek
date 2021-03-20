@@ -10,17 +10,33 @@ interface apiCategoryFunction {
   deleteCategory(id: number): apiCategoryReturnType;
 }
 
-
 const apiCategory: apiCategoryFunction = {
   getCategory: async (id: number) => {
+/*
+    return await db.query(
+      sql`SELECT t.id, t.name,
+        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id,
+        ${nestQuery(sql`SELECT id, barcode, name, content, weight, buy_price,
+        margin, agent_margin, member_margin,
+        sale_price, agent_price, member_price,
+        profit, product_id
+      FROM units
+      WHERE product_id = p.id
+      ORDER BY content`)} AS units
+      FROM products AS p
+      WHERE p.category_id = t.id`)} AS products
+      FROM categories AS t
+      WHERE t.id = ${id}`)
+      .then((data) => ([data.rows[0], undefined]))
+      .catch((error) => ([undefined, error]));
+*/
     return await db.query(
       sql`SELECT t.id, t.name,
         ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
       FROM products AS p
       WHERE p.category_id = t.id`)} AS products
       FROM categories AS t
-      WHERE t.id = ${id}
-      ORDER BY t.name`)
+      WHERE t.id = ${id}`)
       .then((data) => ([data.rows[0], undefined]))
       .catch((error) => ([undefined, error]));
   }

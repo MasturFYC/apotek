@@ -6,6 +6,32 @@ export const METHOD_GET: string = 'GET';
 export interface iCategory {
   id: number;
   name: string;
+  created_at?: Date;
+  updated_at?: Date;
+  products: iProduct[]
+}
+
+export interface iWarehouse {
+  id: number;
+  name: string;
+  location?: string;
+  created_at?: Date;
+  updated_at?: Date;
+  products: iProduct[]
+}
+
+
+export interface iSupplier {
+  id: number;
+  name: string;
+  contact_name: string,
+  sreet: string;
+  city: string;
+  phone: string;
+  cell?: string;
+  zip?: string;
+  created_at?: Date;
+  updated_at?: Date;
   products: iProduct[]
 }
 
@@ -13,7 +39,7 @@ export interface iProduct {
   id: number;
   code: string;
   name: string;
-  spec: string;
+  spec?: string;
   base_unit: string;
   base_price: number;
   base_weight: number;

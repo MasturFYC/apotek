@@ -62,12 +62,12 @@ export default function categoriesPage() {
               <div key={`div-key-${index}`} className={'px-3 pt-3'}>
                 <div className={'row'}>
                   <div className={'col-4'}>
-                    <strong
+                    <span
                       role={'button'}
                       onClick={() => { setSelectedCategory(item, index) }}
-                      className={'text-bold cursor-pointer'}>
+                      className={'cust-name'}>
                       {item.id === 0 ? 'New Category' : item.name}
-                    </strong>
+                    </span>
                   </div>
                   {item.id !== 0 &&
                     <div className={'col-md-4 d-flex flex-row-reverse'}>

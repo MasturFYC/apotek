@@ -11,6 +11,14 @@
   box-shadow: none;
 }
 
+.form-floating>label {
+  padding-top: .75rem;
+  padding-left: 1rem;
+}
+.form-floating>.form-control:focus, .form-floating>.form-control:not(:placeholder-shown) {
+  padding-bottom: .35rem;
+}
+
 .form-control:focus
 /* textarea:focus,
 input[type="text"]:focus,
@@ -28,8 +36,8 @@ input[type="search"]:focus,
 input[type="tel"]:focus,
 input[type="color"]:focus,
 .uneditable-input:focus */
-{
-  box-shadow: 0 0 0.155rem #0856ca;
+{  
+  box-shadow: 0 0 0.135rem #0856ca;
     /* border-color: rgba(82, 168, 236, 0.8);
 
  */
@@ -98,10 +106,9 @@ img {
 }
 
 .cust-name {
-  cursor: pointer;
   font-weight: 700;
   font-size: 1rem;
-  padding: 3px 6px;
+  padding: 3px 6px 5px 6px;
   margin-left: -6px;
   border-radius: 0.25rem;
 }

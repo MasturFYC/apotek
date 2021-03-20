@@ -8,26 +8,25 @@ import DeleteSvg from '../public/images/delete.svg'
 //import SaveSvg from '../public/images/save.svg'
 
 export type UnitType = {
-  product: iProduct
+  product: iProduct;
 }
 
-const Unit = ({ product }: UnitType) => {
+const Unit = ({ product: currentProduct }: UnitType) => {
   //const [controlName, setControlName] = useState('');
   const wrapperRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(-1)
   useOutsideAlerter(wrapperRef, setCurrentIndex);
   const [formDirty, setFormDirty] = useState(false);
-  const { units, isLoading, isError, reload, removeUnit } = useUnit(product);
-  const [currentUnit, setCurrentUnit] = useState<iUnit>(newUnit(product))
+  const { product, isLoading, isError, reload, removeUnit } = useUnit(currentProduct);
+  const [currentUnit, setCurrentUnit] = useState<iUnit>(newUnit(currentProduct))
   //const [unit, setUnit] = useState<iSUnit>(newUnit(product))
   const [footer, footerDispatch] = React.useReducer(footerReducer, initialFooter);
 
   React.useEffect(() => {
     var start: boolean = false;
-
     const reloadFooter = () => {
-      if (!start && units) {
-        footerDispatch({ type: FooterActionEnum.reload, init: (units?.length - 1) || 0 })
+      if (!start) {
+        footerDispatch({ type: FooterActionEnum.reload, init: product && (product.units.length - 1) || 0 })
       }
     }
 
@@ -37,8 +36,63 @@ const Unit = ({ product }: UnitType) => {
       start = true
     }
   }, [isLoading])
+/*
+  React.useEffect(() => {
+    let isLoaded = false;
+
+    const changeDefaultUnits = () => {
+      const basePrice = product.base_price;
+      if (units) {
+        
+        const newUnit: iUnit[] = units.filter(item => item.id > 0).map((item, c) => {
+          const price = item.content * basePrice;
+          item.buy_price = price;
+          item.sale_price = price + (price * item.margin);
+          item.member_price = price + (price * item.member_margin);
+          item.agent_price = price + (price * item.agent_margin);
+          return item;
+        })
+        console.log(newUnit)
+        reloadAll(newUnit);
+      }
+
+    }
+
+    if (!isLoaded) {
+      changeDefaultUnits()
+    }
+
+    return () => { isLoaded = true }
+  }, [product.base_price])
 
 
+  React.useEffect(() => {
+    let isLoaded = false;
+
+    const changeDefaultUnits = () => {
+      const newUnit: iUnit[] = [];
+      if (units) {
+        for (let c = 0; c < units.length; c++) {
+          const unit = units[c];
+          if (unit.id > 0) {
+            const weight = unit.content * defaultWeightChanged;
+            unit.weight = weight;
+            newUnit.push(unit)
+          }
+        }
+
+        reloadAll(newUnit);
+      }
+    }
+
+    if (!isLoaded) {
+      changeDefaultUnits()
+    }
+
+    return () => { isLoaded = true }
+  }, [product.base_weight])
+
+*/
   if (isError) return <div>{isError.message}</div>
   //footerDispatch({ type: FooterActionEnum.reload, init: units?.length || 0})
   if (isLoading) return <div>Loading...</div>
@@ -76,22 +130,6 @@ const Unit = ({ product }: UnitType) => {
         }
 
       })
-      // const dataChanged = {
-      //   ...currentUnit,
-      //   agent_price: agent_price, member_price: member_price, sale_price: sale_price, weight: weight, content: content, buy_price: price
-      // }
-
-      // setUnit({
-      //   ...unit,
-      //   content: val,
-      //   weight: dataChanged.weight.toString(),
-      //   buy_price: dataChanged.buy_price.toString(),
-      //   sale_price: dataChanged.sale_price.toString(),
-      //   member_price: dataChanged.member_price.toString(),
-      //   agent_price: dataChanged.agent_price.toString()
-      // })
-      // setCurrentUnit(dataChanged)
-      //reload(currentUnit);
       setFormDirty(true)
     }
   }
@@ -284,7 +322,8 @@ const Unit = ({ product }: UnitType) => {
       </thead>
       <tbody ref={wrapperRef}>
         {
-          (units && product.id > 0) && units.map((item: iUnit, index: number) => (
+          // (units && product.id > 0) 
+          units && units.map((item: iUnit, index: number) => (
             <tr key={index} onClick={() => {
               handleTrClick(index, item)
             }
@@ -351,7 +390,7 @@ const Unit = ({ product }: UnitType) => {
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={13}>Total: {footer.total}{' '}{footer.message}</td>
+          <td colSpan={13}>Total: {units.length-1}{' item'}{units.length-1 > 1 && 's'}</td>
         </tr>
       </tfoot>
     </table>
@@ -359,12 +398,12 @@ const Unit = ({ product }: UnitType) => {
 
 }
 
-const fetcher = async (url: string): Promise<iUnit[]> => {
+const fetcher = async (url: string): Promise<iProduct | any> => {
   const res = await fetch(url);
-  const data: iUnit[] | any = await res.json();
+  const data: iProduct | any = await res.json();
 
   if (res.status !== 200) {
-    return [];
+    return null;
     // throw new Error('Produk ini tidak mempunyai units.')
   }
 
@@ -414,42 +453,47 @@ const useUnit = (product: iProduct) => {
     refreshInterval: 0
   };
 
-  const { data, error, mutate } = useSWR<iUnit[], Error>(baseUrl, fetcher, revalidationOptions);
+  const { data, error, mutate } = useSWR<iProduct, Error>(baseUrl, fetcher, revalidationOptions);
 
   return {
-    units: data && [...data, initUnit] || [initUnit], //newUnit(product)],
+    product: data && {...data, units: data.units && [...data.units, initUnit] || [initUnit]}, //newUnit(product)],
     isLoading: !error && !data,
     isError: error,
     removeUnit: (id: number) => {
       const newData: iUnit[] = [];
-      if (data) {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].id !== id) {
-            newData.push(data[i]);
+      if (data && data.units) {
+        for (let i = 0; i < data.units.length; i++) {
+          if (data.units[i].id !== id) {
+            newData.push(data.units[i]);
           }
         }
-        mutate([...newData], false);
+        mutate({...data, units: [...newData]}, false);
       }
     },
+
+    reloadAll: (units: iUnit[]) => {
+      data && mutate({...data, units: [...units]}, false)
+    },
+
     reload: (p: iUnit) => {
       if (p.id === 0) return;
       const newData: iUnit[] = [];
       let start: number = -1;
-      const iLength = (data && data?.length || 0);
-      if (data) {
+      const iLength = (data && data.units && data.units.length || 0);
+      if (data && data.units) {
         for (let i = 0; i < iLength; i++) {
-          if (data[i].id === p.id) {
+          if (data.units[i].id === p.id) {
             newData.push(p);
             start++;
           } else {
-            newData.push(data[i]);
+            newData.push(data.units[i]);
           }
         }
         if (start === -1) {
           newData.push(p)
         }
 
-        mutate([...newData], false); //{ ...data, products: newData && [...newData] || [p] }, false)
+        mutate({...data, units: newData}, false); //{ ...data, products: newData && [...newData] || [p] }, false)
       }
     }
   }

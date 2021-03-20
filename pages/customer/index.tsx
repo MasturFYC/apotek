@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Select from 'react-select'
-import useSWR, { useSWRInfinite } from 'swr'
+import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import utilStyles from '../../styles/utils.module.scss'
+//import utilStyles from '../../styles/utils.module.scss'
 import { iCustomer, iRayon } from '../../components/interfaces'
-import { isOptionDisabled } from 'react-select/src/builtins'
+//import { isOptionDisabled } from 'react-select/src/builtins'
 
 interface iSelectOptions {
   value: number;

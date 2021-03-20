@@ -42,6 +42,7 @@ export default async function categoryHandler(req: NextApiRequest, res: NextApiR
   }
 
   const [data, error] = result;
+
   if (data) {
     res.status(200).json(data);
   } else {

@@ -4,15 +4,18 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import { iProduct, iCategory } from '../../components/interfaces'
+import { iProduct, iCategory, iSupplier, iWarehouse } from '../../components/interfaces'
 import Unit from '../../components/unit'
 import apiCategory from '../api/models/category.model'
-import { classNames } from 'react-select/src/utils'
+import apiWarehouse from '../api/models/warehouse.model'
+import apiSupplier from '../api/models/supplier.model'
 
 type productType = {
   products: iProduct[] | undefined,
   updateCommand: (e: reloadParam) => void,
-  categories: iCategory[]
+  categories: iCategory[],
+  suppliers: iSupplier[],
+  warehouses: iWarehouse[]
 }
 
 type editParam = {
@@ -28,6 +31,8 @@ type updateProductParam = {
   data: iProduct,
   updateCommand: (e: reloadParam) => void,
   categories: iCategory[],
+  suppliers: iSupplier[],
+  warehouses: iWarehouse[],
   index: number,
 }
 
@@ -42,17 +47,17 @@ const initProduct = (categoryId: number): iProduct => ({
   spec: '',
   base_unit: '',
   base_price: 0,
-  base_weight: 0.5,
+  base_weight: 0,
   is_active: true,
   first_stock: 0,
   unit_in_stock: 0,
-  supplier_id: 3,
-  category_id: categoryId,
-  warehouse_id: 2
+  supplier_id: 0,
+  category_id: 0,
+  warehouse_id: 0
 })
 
 
-export default function categoryPage({ data: categories }: any) {
+export default function categoryPage({ categories, suppliers, warehouses }: any) {
   const { query } = useRouter();
   const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
 
@@ -97,7 +102,9 @@ export default function categoryPage({ data: categories }: any) {
           <ShowProducts
             products={category && ([...category.products, initProduct(category.id)] || [initProduct(category.id)])}
             updateCommand={(e) => refreshData(e)}
-            categories={categories} />
+            categories={categories}
+            suppliers={suppliers}
+            warehouses={warehouses} />
         </section>
         <div className={'mt-3'}>
           <Link href="/">
@@ -110,7 +117,7 @@ export default function categoryPage({ data: categories }: any) {
 }
 
 
-const ShowProducts = ({ products, updateCommand, categories }: productType) => {
+const ShowProducts = ({ products, updateCommand, categories, suppliers, warehouses }: productType) => {
   const [currentId, setCurrentId] = useState<number>(-1);
 
   const refreshData = (p: iProduct, method: string) => {
@@ -139,16 +146,22 @@ const ShowProducts = ({ products, updateCommand, categories }: productType) => {
         <div key={i}
           className={`${item.id !== 0 && 'border-bottom'} ${(i % 2 === 0 && 'bg-white rounded-top')}`}
         >{currentId === (products && products[i].id || 0) ?
-          <EditProduct data={item} updateCommand={(e) => refreshData(e.data, e.method)} categories={categories} index={i} /> :
-            <ProductInfo product={item} onSelect={() => updateSelectedIndex(products[i].id)} />}
+          <EditProduct data={item} updateCommand={(e) => refreshData(e.data, e.method)}
+            suppliers={suppliers}
+            categories={categories}
+            warehouses={warehouses}
+            index={i} /> :
+          <ProductInfo product={item} onSelect={() => updateSelectedIndex(products[i].id)} />}
         </div>
       ))}
     </React.Fragment>
   )
 }
 
-const EditProduct = ({ data, updateCommand, categories, index }: updateProductParam) => {
+const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, index }: updateProductParam) => {
   const [product, setProduct] = useState<iProduct>(initProduct(0));
+  const [defaultPriceChanged, setDefaultPriceChanged] = useState(0)
+  const [defaultWeightChanged, setDefaultWeightChanged] = useState(0)
 
   React.useEffect(() => {
     let isLoaded = false;
@@ -166,6 +179,8 @@ const EditProduct = ({ data, updateCommand, categories, index }: updateProductPa
     const baseUrl = `/api/product/${product.id}`;
 
     e.preventDefault();
+
+    console.log(product.id)
 
     const res = await fetch(baseUrl, {
       method: product.id === 0 ? 'POST' : 'PUT',
@@ -221,56 +236,122 @@ const EditProduct = ({ data, updateCommand, categories, index }: updateProductPa
         <div className={'row'}>
           <div className={'col-md-6 form-floating mb-3'}>
             <input autoFocus type="text" className={'form-control'}
-              id={'txt-name'}
+              id={ids[0]}
               placeholder={labels[0]}
               value={product.name}
               onChange={e => setProduct({ ...product, name: e.target.value })} />
-            <label htmlFor={'txt-name'} className={'col-form-label mx-2'}>{labels[0]}</label>
+            <label htmlFor={ids[0]} className={'col-form-label mx-2'}>{labels[0]}</label>
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
             <input className={'form-control'} type="text"
-              id={'txt-code'}
+              id={ids[1]}
               placeholder={labels[1]}
               value={product.code}
               onChange={e => setProduct({ ...product, code: e.target.value })} />
-            <label htmlFor={'txt-code'} className={'col-form-label mx-2'}>{labels[1]}</label>
+            <label htmlFor={ids[1]} className={'col-form-label mx-2'}>{labels[1]}</label>
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
             <input className={'form-control'} type="text"
-              id={'txt-spec'}
+              id={ids[2]}
               placeholder={labels[2]}
               value={product.spec}
               onChange={e => setProduct({ ...product, spec: e.target.value })} />
-            <label htmlFor={'txt-spec'} className={'col-form-label mx-2'}>{labels[2]}</label>
+            <label htmlFor={ids[2]} className={'col-form-label mx-2'}>{labels[2]}</label>
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
             <input className={'form-control'} type="text"
-              id={'txt-price'}
+              id={ids[3]}
               placeholder={labels[3]}
-              value={product.base_price}
-              onChange={e => setProduct({ ...product, base_price: +e.target.value })}
+              value={product.base_unit}
+              onChange={e => setProduct({ ...product, base_unit: e.target.value })}
             />
-            <label htmlFor={'txt-price'} className={'col-form-label mx-2'}>{labels[3]}</label>
+            <label htmlFor={ids[3]} className={'col-form-label mx-2'}>{labels[3]}</label>
+          </div>
+
+          <div className={'col-md-6 form-floating mb-3'}>
+            <input className={'form-control'} type="text"
+              id={ids[4]}
+              placeholder={labels[4]}
+              value={product.base_price === 0 ? '' : product.base_price}
+              onChange={e => {
+                setDefaultPriceChanged(+e.target.value)
+                setProduct({ ...product, base_price: +e.target.value });
+              }}
+            />
+            <label htmlFor={ids[4]} className={'col-form-label mx-2'}>{labels[4]}</label>
+          </div>
+
+          <div className={'col-md-6 form-floating mb-3'}>
+            <input className={'form-control'} type="text"
+              id={ids[5]}
+              placeholder={labels[5]}
+              value={product.base_weight === 0 ? '' : product.base_weight}
+              onChange={e => {
+                setDefaultWeightChanged(+e.target.value);
+                setProduct({ ...product, base_weight: +e.target.value });
+              }}
+            />
+            <label htmlFor={ids[5]} className={'col-form-label mx-2'}>{labels[5]}</label>
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
             <select className={'form-control'}
               aria-label="Floating label select example"
-              id={'txt-category'}
-              placeholder={labels[4]}
+              id={ids[7]}
+              placeholder={labels[7]}
               value={product.category_id}
               style={{ marginBottom: 2 }}
               onChange={e => {
-                //console.log(e.target.value)
                 const i: number = parseInt(e.target.value)
                 setProduct({ ...product, category_id: i })
               }}>{
                 categories && categories.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
               }</select>
-            <label htmlFor={'txt-category'} className={'col-form-label mx-2'}>{labels[4]}</label>
+            <label htmlFor={ids[7]} className={'col-form-label mx-2'}>{labels[7]}</label>
+          </div>
+
+          <div className={'col-md-6 form-floating mb-3'}>
+            <select className={'form-control'}
+              aria-label="Floating label select example"
+              id={ids[8]}
+              placeholder={labels[8]}
+              value={product.supplier_id}
+              style={{ marginBottom: 2 }}
+              onChange={e => {
+                setProduct({ ...product, supplier_id: +e.target.value })
+              }}>{
+                suppliers && suppliers.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+              }</select>
+            <label htmlFor={ids[8]} className={'col-form-label mx-2'}>{labels[8]}</label>
+          </div>
+
+          <div className={'col-md-6 form-floating mb-3'}>
+            <select className={'form-control'}
+              aria-label="Floating label select example"
+              id={ids[9]}
+              placeholder={labels[9]}
+              value={product.warehouse_id}
+              style={{ marginBottom: 2 }}
+              onChange={e => {
+                setProduct({ ...product, warehouse_id: +e.target.value })
+              }}>{
+                warehouses && warehouses.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+              }</select>
+            <label htmlFor={ids[9]} className={'col-form-label mx-2'}>{labels[9]}</label>
+          </div>
+
+          <div className="col-md-6 form-check">
+            <input className="form-check-input"
+              type="checkbox"
+              checked={product.is_active}
+              onChange={e => {
+                setProduct({ ...product, is_active: !product.is_active })
+              }}
+              value={product.is_active ? 1 : 0} id={ids[6]} />
+            <label className="form-check-label" htmlFor={ids[6]}>{labels[6]}</label>
           </div>
 
           <div className={'container'}>
@@ -282,7 +363,8 @@ const EditProduct = ({ data, updateCommand, categories, index }: updateProductPa
               Save Data
               </button>
             <button type={'submit'}
-              style={{width: '85px'}}
+              disabled={product.id === 0}
+              style={{ width: '85px' }}
               onClick={(e) => deleteData(e)} className='btn w85 btn-danger'>
               Delete
               </button>
@@ -306,21 +388,21 @@ const useCategory = (id: number) => {
   const { data, error, mutate } = useSWR<iCategory, Error>(baseUrl, fetcher, revalidationOptions);
 
   return {
-    category: data, //{ id: data?.id as number, name: data?.name as string },
+    category: data, //{id: data?.id as number, name: data?.name as string },
     isLoading: !error && !data,
     isError: error,
     mutate: mutate,
   }
   /*
 
-    ({ data: p, method }: reloadParam) => {
+    ({data: p, method }: reloadParam) => {
     if (data) {
       switch (method) {
         case 'insert':
           {
             const products = data.products;
             products.push(p);
-            mutate({ ...data, products: [...products] }, false);
+            mutate({...data, products: [...products] }, false);
           }
           break;
         case 'update':
@@ -328,13 +410,13 @@ const useCategory = (id: number) => {
             const products = data.products;
             const index: number = findElements(products, p.id);
             products.splice(index, 1, p)
-            mutate({ ...data, products: [...products] }, false);
+            mutate({...data, products: [...products] }, false);
           }
           break;
         case 'delete':
           {
             const products = data.products.filter(x => x.id !== p.id)
-            mutate({ ...data, products: [...products] }, false);
+            mutate({...data, products: [...products] }, false);
           }
           break;
       }
@@ -367,41 +449,71 @@ type ProductInfoParam = {
 const ProductInfo = ({ product, onSelect }: ProductInfoParam): JSX.Element => {
   return (
     <div className={'px-3 py-2'}>
-      <strong onClick={(e) => onSelect()} role={'button'}>{product.name || 'New Product'}</strong><br />
+      <span className={'cust-name'} onClick={(e) => onSelect()} role={'button'}>{product.name || 'New Product'}</span><br />
       Kode: {product.code}, Spec: {product.spec}
     </div>
   )
 }
 
+type startType = {
+  categories?: iCategory[];
+  suppliers?: iSupplier[],
+  warehouses?: iWarehouse[]
+}
+
 export async function getServerSideProps() {
-  const [data, error] = await apiCategory.getCategories();
 
-  if (data) {
-    return { props: { data: [...data] } }
-  } else {
-    return { props: { data: null } }
+  const loadCategories = async () => {
+    const [data, error] = await apiCategory.getCategories();
+    if (data) {
+      return data;
+    }
+    return [];
   }
+
+  const loadSuppliers = async () => {
+    const [data, error] = await apiSupplier.getListSuppliers();
+    if (data) {
+      return data;
+    }
+    return [];
+  }
+
+  const loadWarehouses = async () => {
+    const [data, error] = await apiWarehouse.getWarehouses();
+    if (data) {
+      return data;
+    }
+    return [];
+  }
+
+  const suppliers = await loadSuppliers();
+  const categories = await loadCategories();
+  const warehouses = await loadWarehouses();
+  return { props: { suppliers: suppliers, categories: categories, warehouses: warehouses } }
 }
 
+/**
+ * @param values index of label control
+ * @returns 0: Nama Produk, 1: Kode, 2: Spek, 3: Unit (Terkecil), 4: Harga (Terkecil), 5: Berat (Terkecil),
+6: Masih Aktif?, 7: Kategori, 8: Supplier, 9: Gudang
+ */
+const labels: string[] = ['Nama Produk', 'Kode', 'Spek',
+  'Unit (Terkecil)', 'Harga (Terkecil)', 'Berat (Terkecil)',
+  'Masih Aktif?',
+  'Kategori', 'Supplier', 'Gudang']
 
-const labels: string[] = ['Nama Produk', 'Kode', 'Spek', 'Harga', 'Kategori']
-/*
-const initProduct: iProduct = {
-  id: 0,
-  code: '',
-  name: '',
-  spec: '',
-  base_unit: '',
-  base_price: 0,
-  base_weight: 0,
-  is_active: true,
-  first_stock: 0,
-  unit_in_stock: 0,
-  category_id: 0,
-  supplier_id: 0,
-  warehouse_id: 0,
-}
+/**
+* @param values index of id control
+* @returns 0: prod-name, 1: prod-code, 2: prod-spec, 3: prod-unit, 4: prod-price, 5: prod-price,
+* 6: prod-acive, 7: prod-categori, 8: prod-supplier, 9: prod-warehouse
 */
+const ids: string[] = [
+  'prod-name', 'prod-code', 'prod-spec',
+  'prod-unit', 'prod-price', 'prod-price',
+  'prod-active',
+  'prod-categori', 'prod-supplier', 'prod-warehouse'
+]
 
 const fetchCategories = async (url: string): Promise<iCategory[]> => {
   //console.log(url)
@@ -437,6 +549,6 @@ const fetchProduct = async (url: string): Promise<iProduct> => {
   }
 
   //console.log(data)
-  return { ...data };
+  return {...data};
 }
 */

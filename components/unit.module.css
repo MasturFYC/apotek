@@ -15,10 +15,9 @@
 .unitTable tbody tr td input[type="text"]:focus {
   /* margin: 0px -5px 0px -5px; */
   width: 100%;
-  outline: thick solid \9;
-  border-width: 0.175rem;
+  outline: #fd7e14 solid 1px ;
   padding: 2px 5px 2px 5px;
-  border: 1;
+  /* border-bottom: 1px soid ;*/
 }
 
 

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import apiProduct from '../models/product.model'
-import { iProduct, METHOD_POST, METHOD_PUT } from '../../../components/interfaces'
+import { iProduct, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_GET } from '../../../components/interfaces'
 
 
 export default async function productHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -10,7 +10,6 @@ export default async function productHandler(req: NextApiRequest, res: NextApiRe
     case METHOD_PUT:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        console.log('ID: ', id, 'Data:', req.body);
         result = await apiProduct.updateProduct(id, req.body);
       }
       break;
@@ -19,6 +18,13 @@ export default async function productHandler(req: NextApiRequest, res: NextApiRe
         result = await apiProduct.insertProduct(req.body);
       }
       break;
+    case METHOD_DELETE:
+      {
+        const id: number = req.query.id ? +req.query.id : 0;
+        result = await apiProduct.deleteProduct(id);
+      }
+      break
+    case METHOD_GET:
     default:
       {
         const id: number = req.query.id ? +req.query.id : 0;
