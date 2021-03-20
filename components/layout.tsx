@@ -48,19 +48,22 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
       <section className={'border-bottom bg-light pb-2'}>
         <div className={`text-dark container p-2 my-menu`}>
           <Link href="/customer">
-            <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16} />Pelanggan</a>
+            <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16} crossOrigin={'anonymous'}/>Pelanggan</a>
           </Link>
           <Link href="/category/24">
-            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16} />Product</a>
+            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16} crossOrigin={'anonymous'}/>Product</a>
           </Link>
           <Link href="/category">
-            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} />Kategori</a>
+            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} crossOrigin={'anonymous'}/>Kategori</a>
+          </Link>
+          <Link href="/sales">
+            <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
           </Link>
         </div>
       </section>
       <main className={'bg-white pt-4 mb-5 pb-5'}>
         <div className={'my-3 container'}><h3>{heading && heading}</h3></div>
-        <div key="child-100" className={'container bg-light p-0'}>{children}</div>
+        <div key="child-100" className={'container p-0 bg-light'}>{children}</div>
       </main>
       {!home && (
         <div className={styles.backToHome}>

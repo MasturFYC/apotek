@@ -3,8 +3,6 @@ import useSWR, { mutate } from 'swr'
 import NumberFormat from 'react-number-format';
 import { iUnit, iProduct } from './interfaces'
 import styles from './unit.module.css'
-import EditSvg from '../public/images/edit.svg'
-import DeleteSvg from '../public/images/delete.svg'
 //import SaveSvg from '../public/images/save.svg'
 
 export type UnitType = {
@@ -350,7 +348,7 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.agent_price} /></td>
                   <td>
                     {item.id > 0 &&
-                      <img title="Hapus" className={`${styles.imgControl}`} height="16px" src={DeleteSvg} onClick={(e) => deleteUnit(item.id)} />
+                      <img title="Hapus" className={`${styles.imgControl}`} height="16px" src={'/images/delete.svg'} onClick={(e) => deleteUnit(item.id)} />
                     }
                   </td>
                 </React.Fragment> :
@@ -388,9 +386,9 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                     }} className={styles.tdInputNumber
                     } /></td>
                   <td>
-                    {formDirty && <img title="Simpan" className={`${styles.imgControl}`} height="16px" src={EditSvg} onClick={updateUnit} />}
+                    {formDirty && <img title="Simpan" className={`${styles.imgControl}`} height="16px" src={'/images/edit.svg'} onClick={updateUnit} />}
                     {item.id > 0 &&
-                      <img title="Hapus" className={styles.imgControl} height="16px" src={DeleteSvg} onClick={(e) => deleteUnit(item.id)} />
+                      <img title="Hapus" className={styles.imgControl} height="16px" src={'/images/delete.svg'} onClick={(e) => deleteUnit(item.id)} />
                     }
                   </td>
                 </React.Fragment>}

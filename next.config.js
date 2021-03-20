@@ -9,3 +9,27 @@ module.exports = {
 }
 */
 module.exports = withImages()
+
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: '/index',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+          {
+            key: 'Cross-Origin-Opener-Policy',
+            value: 'same-origin'
+          },
+          {
+            key: 'Cross-Origin-Embedder-Policy',
+            value: 'require-corp'      
+          }
+        ],
+      },
+    ]
+  },
+}

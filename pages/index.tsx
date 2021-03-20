@@ -8,11 +8,7 @@ import Layout, { siteTitle } from '../components/layout'
 const fetcher = async (url: string) => {
 
   const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Cross-Origin-Opener-Policy': 'same-origin',
-      'Cross-Origin-Embedder-Policy': 'require-corp'
-    }
+    method: 'GET'
   })
   const data: any = await res.json()
 
@@ -45,3 +41,20 @@ export default function Home() {
     </Layout>
   )
 }
+
+
+/*
+
+var isEnabledSharedArrayBuffer = typeof SharedArrayBuffer === 'function' && typeof window !== 'undefined' && window.crossOriginIsolated === true
+
+var profilingStateSize = 4;
+// var sharedProfilingBuffer =  // $FlowFixMe Flow doesn't know about SharedArrayBuffer
+// typeof SharedArrayBuffer === 'function' ? new SharedArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : // $FlowFixMe Flow doesn't know about ArrayBuffer
+// typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null // Don't crash the init path on IE9
+// ;
+var sharedProfilingBuffer = isEnabledSharedArrayBuffer ?
+new SharedArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT)
+    : // $FlowFixMe Flow doesn't know about ArrayBuffer
+    typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null
+    
+*/

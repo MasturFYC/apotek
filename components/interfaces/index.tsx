@@ -20,18 +20,38 @@ export interface iWarehouse {
   products: iProduct[]
 }
 
-
-export interface iSupplier {
+export interface iPeople {
   id: number;
   name: string;
-  contact_name: string,
-  sreet: string;
+  street: string;
   city: string;
   phone: string;
   cell?: string;
   zip?: string;
   created_at?: Date;
   updated_at?: Date;
+}
+
+export interface iOrder {
+  id: number;
+  customer_id: number;
+  sales_id: number;
+  due_date: Date;
+  total: number;
+  cash: number;
+  payments: number;
+  remain_payments: number;
+  created_at?: Date;
+  updated_at?: Date;
+  sales?: iSales
+}
+
+export interface iSales extends iPeople {
+  orders?: iOrder[];
+}
+
+export interface iSupplier extends iPeople {
+  contact_name: string,
   products: iProduct[]
 }
 
@@ -84,17 +104,8 @@ export interface iRayon {
   customers?: iCustomer[]
 }
 
-export interface iCustomer {
-  id: number;
-  name: string;
-  street: string;
-  city: string;
-  phone: string;
-  cell?: string;
-  zip?: string;
+export interface iCustomer extends iPeople {
   rayon_id: number;
-  created_at: Date;
-  updated_at: Date;
   credit_limit: number;
   descriptions?: string;
   rayon?: iRayon

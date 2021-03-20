@@ -70,7 +70,7 @@ export default function categoriesPage() {
                 {item.id !== 0 &&
                   <div className={'div-child col-md-4 d-flex flex-row-reverse'}>
                     <Link href={`/category/${item.id}`}>
-                      <a className={'see-child'}><img src={'/images/product.svg'} />Lihat Produk</a>
+                      <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
                     </Link>
                   </div>
                 }
