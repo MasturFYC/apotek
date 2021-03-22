@@ -26,7 +26,6 @@ export default function categoriesPage() {
   }
 
   const refreshData = (p: iCategory, options: string) => {
-    console.log(options)
     switch (options) {
       case 'delete':
         categories && reload(categories.filter(item => item.id !== p.id), false);
@@ -59,35 +58,33 @@ export default function categoriesPage() {
             <div key={`cat-key-${index}`}
               className={`${item.id !== 0 && 'border-bottom'} ${index % 2 === 0 && 'bg-light'} ${index === 0 && 'rounded-top'} ${item.id === 0 && 'rounded-bottom'}`}
             >
-              <div key={`div-key-${index}`} className={'px-3 pt-3'}>
-                <div className={'row'}>
-                  <div className={'col-4'}>
-                    <span
-                      role={'button'}
-                      onClick={() => { setSelectedCategory(item, index) }}
-                      className={'cust-name'}>
-                      {item.id === 0 ? 'New Category' : item.name}
-                    </span>
-                  </div>
-                  {item.id !== 0 &&
-                    <div className={'col-md-4 d-flex flex-row-reverse'}>
-                      <Link href={`/category/${item.id}`}>
-                        <a className={'see-child'}><img src={'/images/product.svg'}/>Lihat Produk</a>
-                      </Link>
-                    </div>
-                  }
+              <div className={'row p-2 ps-3 pt-3 '}>
+                <div className={'col-4'}>
+                  <span
+                    role={'button'}
+                    onClick={() => { setSelectedCategory(item, index) }}
+                    className={'cust-name'}>
+                    {item.id === 0 ? 'New Category' : item.name}
+                  </span>
                 </div>
+                {item.id !== 0 &&
+                  <div className={'div-child col-md-4 d-flex flex-row-reverse'}>
+                    <Link href={`/category/${item.id}`}>
+                      <a className={'see-child'}><img src={'/images/product.svg'} />Lihat Produk</a>
+                    </Link>
+                  </div>
+                }
               </div>
               {currentIndex === index && isSelected &&
-                <React.Fragment>
-                  <EditCategory
-                    key={`edit-key-${index}`}
-                    data={item}
-                    index={categories.length == index ? 0 : index}
-                    updateCommand={(e: { data: iCategory, options: string }) => {
-                      refreshData(e.data, e.options)
-                    }} />
-                </React.Fragment>
+
+                <EditCategory
+                  key={`edit-key-${index}`}
+                  data={item}
+                  index={categories.length == index ? 0 : index}
+                  updateCommand={(e: { data: iCategory, options: string }) => {
+                    refreshData(e.data, e.options)
+                  }} />
+
               }
             </div>
           ))}
@@ -104,15 +101,20 @@ type EditCategoryParam = {
   updateCommand: Function;
 }
 
-const EditCategory = ({ data, updateCommand, index }: EditCategoryParam) => {
+const EditCategory: React.FunctionComponent<EditCategoryParam> = ({
+  data, updateCommand, index
+}) => {
   const [category, setCategory] = useState(initCategory);
 
   React.useEffect(() => {
     let isLoaded = false;
 
-    if (!isLoaded) {
-      setCategory(data);
+    const setCurrentData = () => {
+      if (!isLoaded) {
+        setCategory(data);
+      }
     }
+    setCurrentData();
 
     return () => {
       isLoaded = true;
@@ -130,13 +132,13 @@ const EditCategory = ({ data, updateCommand, index }: EditCategoryParam) => {
       body: JSON.stringify(category)
     })
 
-    const data: any = await res.json()
+    const cat: any = await res.json()
 
     if (res.status !== 200) {
-      alert(data.message)
+      alert(cat.message)
     } else {
-      updateCommand({ data: data, options: category.id === 0 ? 'insert' : 'update' })
-      setCategory(data);
+      updateCommand({ data: cat, options: category.id === 0 ? 'insert' : 'update' })
+      setCategory(cat);
     }
 
     return false;
@@ -151,12 +153,12 @@ const EditCategory = ({ data, updateCommand, index }: EditCategoryParam) => {
       method: 'DELETE'
     })
 
-    const data: any = await res.json()
+    const cat: any = await res.json()
 
     if (res.status !== 200) {
-      alert(data.message)
+      alert(cat.message)
     } else {
-      updateCommand({ data: data, options: 'delete' })
+      updateCommand({ data: cat, options: 'delete' })
     }
 
     return false;

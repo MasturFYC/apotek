@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import * as React from 'react'
 import useSWR, { mutate } from 'swr'
 import NumberFormat from 'react-number-format';
 import { iUnit, iProduct } from './interfaces'
@@ -9,24 +9,28 @@ import DeleteSvg from '../public/images/delete.svg'
 
 export type UnitType = {
   product: iProduct;
+  units: iUnit[];
+  reload: (e: iUnit, option: string) => void
+  //  updatePrice: (units: iUnit[]) => void;
+  //  updateWeight: (units: iUnit[]) => void;
 }
 
-const Unit = ({ product: currentProduct }: UnitType) => {
+const Unit: React.FunctionComponent<UnitType> = (props) => {
   //const [controlName, setControlName] = useState('');
-  const wrapperRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(-1)
+  const wrapperRef = React.useRef(null);
+  const [currentIndex, setCurrentIndex] = React.useState(-1)
   useOutsideAlerter(wrapperRef, setCurrentIndex);
-  const [formDirty, setFormDirty] = useState(false);
-  const { product, isLoading, isError, reload, removeUnit } = useUnit(currentProduct);
-  const [currentUnit, setCurrentUnit] = useState<iUnit>(newUnit(currentProduct))
+  const [formDirty, setFormDirty] = React.useState(false);
+  //const [data, setData] = useState<iUnit[]>([]); //</iUnit>isLoading, isError, reload, removeUnit } = useUnit(product);
+  const [currentUnit, setCurrentUnit] = React.useState<iUnit>(newUnit(props.product))
   //const [unit, setUnit] = useState<iSUnit>(newUnit(product))
   const [footer, footerDispatch] = React.useReducer(footerReducer, initialFooter);
-
+/*
   React.useEffect(() => {
     var start: boolean = false;
     const reloadFooter = () => {
       if (!start) {
-        footerDispatch({ type: FooterActionEnum.reload, init: product && (product.units.length - 1) || 0 })
+        footerDispatch({ type: FooterActionEnum.reload, init: product && (units.length - 1) || 0 })
       }
     }
 
@@ -35,74 +39,77 @@ const Unit = ({ product: currentProduct }: UnitType) => {
     return () => {
       start = true
     }
-  }, [isLoading])
-/*
-  React.useEffect(() => {
-    let isLoaded = false;
+  }, [units])
+  */
+  /*
+    React.useEffect(() => {
+      let isLoaded = false;
 
-    const changeDefaultUnits = () => {
-      const basePrice = product.base_price;
-      if (units) {
-        
-        const newUnit: iUnit[] = units.filter(item => item.id > 0).map((item, c) => {
-          const price = item.content * basePrice;
-          item.buy_price = price;
-          item.sale_price = price + (price * item.margin);
-          item.member_price = price + (price * item.member_margin);
-          item.agent_price = price + (price * item.agent_margin);
-          return item;
-        })
-        console.log(newUnit)
-        reloadAll(newUnit);
-      }
+      const changeDefaultUnits = () => {
+        const basePrice = product.base_price;
+        if (units) {
 
-    }
-
-    if (!isLoaded) {
-      changeDefaultUnits()
-    }
-
-    return () => { isLoaded = true }
-  }, [product.base_price])
-
-
-  React.useEffect(() => {
-    let isLoaded = false;
-
-    const changeDefaultUnits = () => {
-      const newUnit: iUnit[] = [];
-      if (units) {
-        for (let c = 0; c < units.length; c++) {
-          const unit = units[c];
-          if (unit.id > 0) {
-            const weight = unit.content * defaultWeightChanged;
-            unit.weight = weight;
-            newUnit.push(unit)
-          }
+          const newUnit: iUnit[] = units.filter(item => item.id > 0).map((item, c) => {
+            const price = item.content * basePrice;
+            item.buy_price = price;
+            item.sale_price = price + (price * item.margin);
+            item.member_price = price + (price * item.member_margin);
+            item.agent_price = price + (price * item.agent_margin);
+            return item;
+          })
+          console.log(newUnit)
+          reloadAll(newUnit);
         }
 
-        reloadAll(newUnit);
       }
-    }
 
-    if (!isLoaded) {
-      changeDefaultUnits()
-    }
+      if (!isLoaded) {
+        changeDefaultUnits()
+      }
 
-    return () => { isLoaded = true }
-  }, [product.base_weight])
+      return () => { isLoaded = true }
+    }, [product.base_price])
 
-*/
+
+    React.useEffect(() => {
+      let isLoaded = false;
+
+      const changeDefaultUnits = () => {
+        const newUnit: iUnit[] = [];
+        if (units) {
+          for (let c = 0; c < units.length; c++) {
+            const unit = units[c];
+            if (unit.id > 0) {
+              const weight = unit.content * defaultWeightChanged;
+              unit.weight = weight;
+              newUnit.push(unit)
+            }
+          }
+
+          reloadAll(newUnit);
+        }
+      }
+
+      if (!isLoaded) {
+        changeDefaultUnits()
+      }
+
+      return () => { isLoaded = true }
+    }, [product.base_weight])
+
+  */
+  /*
   if (isError) return <div>{isError.message}</div>
   //footerDispatch({ type: FooterActionEnum.reload, init: units?.length || 0})
   if (isLoading) return <div>Loading...</div>
+  */
 
   const handleTrClick = (index: number, item: iUnit): void => {
 
     if (index !== currentIndex) {
       //console.log(index , ': ', units && units?.length - 1)
       //setUnit(item.id === 0 ? newUnit(product) : ConvertToStringUnit(item))
-      setCurrentUnit(item.id === 0 ? newUnit(product) : item)
+      setCurrentUnit(item.id === 0 ? newUnit(props.product) : item)
       setFormDirty(false)
       setCurrentIndex(index)
     }
@@ -112,8 +119,8 @@ const Unit = ({ product: currentProduct }: UnitType) => {
     if (document.activeElement?.id === "unit_content") {
       //    const content: number = parseFloat(val) || 1;
 
-      const price: number = (content * product.base_price)
-      const weight: number = (content * product.base_weight)
+      const price: number = (content * props.product.base_price)
+      const weight: number = (content * props.product.base_weight)
       const sale_price: number = price + (currentUnit.margin * price)
       const member_price: number = price + (currentUnit.member_margin * price)
       const agent_price: number = price + (currentUnit.agent_margin * price)
@@ -150,13 +157,13 @@ const Unit = ({ product: currentProduct }: UnitType) => {
 
     if (res.status === 200) {
 
-      reload(data)
+      props.reload(data, currentUnit.id === 0 ? 'insert' : 'update')
       setFormDirty(false)
 
       if (currentUnit.id === 0) {
         footerDispatch({ type: FooterActionEnum.plus })
-        setCurrentUnit(newUnit(product));
-        setCurrentIndex(units && units?.length || -1)
+        setCurrentUnit(newUnit(props.product));
+        setCurrentIndex(props.units && props.units?.length || -1)
       }
     } else {
       alert(data.message)
@@ -175,7 +182,7 @@ const Unit = ({ product: currentProduct }: UnitType) => {
       throw new Error(data.message)
     }
 
-    removeUnit(id)
+    props.reload(props.units.filter(item=>item.id === id)[0], 'delete')
     setCurrentIndex(-1)
     setFormDirty(false)
     footerDispatch({ type: FooterActionEnum.minus })
@@ -304,7 +311,7 @@ const Unit = ({ product: currentProduct }: UnitType) => {
           <th rowSpan={2}>ID</th>
           <th rowSpan={2}>BARCODE</th>
           <th rowSpan={2}>NAMA</th>
-          <th rowSpan={2}>ISI ({product.base_unit})</th>
+          <th rowSpan={2}>ISI ({props.product.base_unit})</th>
           <th rowSpan={2}>BERAT (kg)</th>
           <th rowSpan={2}>HARGA BELI</th>
           <th colSpan={3}>MARGIN</th>
@@ -322,21 +329,20 @@ const Unit = ({ product: currentProduct }: UnitType) => {
       </thead>
       <tbody ref={wrapperRef}>
         {
-          // (units && product.id > 0) 
-          units && units.map((item: iUnit, index: number) => (
+          // (units && product.id > 0)
+          props.units && props.units.map((item: iUnit, index: number) => (
             <tr key={index} onClick={() => {
               handleTrClick(index, item)
-            }
-            }>
+            }}>
               {currentIndex !== index ?
                 <React.Fragment>
                   <td className={styles.tdOff2}>{item.id}</td>
                   <td className={styles.tdOff1}>{item.barcode}</td>
                   <td className={styles.tdOff1}>{item.name}</td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.content} renderText={(e => <span>{+e * 1}</span>)} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.weight} renderText={(e => <span>{+e * 1}</span>)} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.buy_price} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.content} renderText={(e => <span>{+e * 1.0}</span>)} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.weight} renderText={(e => <span>{+e * 1.0}</span>)} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.buy_price * 1.0} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.margin * 100} renderText={(e => <span>{+e * 1.0}%</span>)} /></td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.member_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /> </td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.agent_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.sale_price} /></td>
@@ -353,11 +359,15 @@ const Unit = ({ product: currentProduct }: UnitType) => {
                   <td className={styles.tdEdit}><input autoFocus type='text' value={currentUnit.barcode} name={'barcode'} onChange={(e) => handlerChanged(e)} /></td>
                   <td className={styles.tdEdit}><input type='text' value={currentUnit.name} name={'name'} onChange={(e) => handlerChanged(e)} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"unit_content"}
-                    displayType={'input'} value={currentUnit.content} onValueChange={(e) => contentChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+                    thousandSeparator={false}
+                    decimalScale={2}
+                    displayType={'input'} value={currentUnit.content * 1.0}
+                    onValueChange={(e) => contentChanged(e.floatValue || 0.0)}
+                    className={styles.tdInputNumber} /></td>
                   <td className={styles.tdOff2}><NumberFormat id={"unit_weight"}
-                    displayType={'text'} thousandSeparator={false} decimalScale={2} value={currentUnit.weight} renderText={value => <span>{+value * 1}</span>} /></td>
+                    displayType={'text'} thousandSeparator={false} decimalScale={2} value={currentUnit.weight} /></td>
                   <td className={styles.tdOff2}><NumberFormat id={"buy_price"}
-                    displayType={'text'} thousandSeparator={true} decimalScale={0} value={currentUnit.buy_price} renderText={value => <span>{value}</span>} /></td>
+                    displayType={'text'} thousandSeparator={true} decimalScale={2} value={currentUnit.buy_price * 1.0} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"margin"}
                     displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.margin * 100} onValueChange={(e) => marginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"member_margin"}
@@ -390,7 +400,7 @@ const Unit = ({ product: currentProduct }: UnitType) => {
       </tbody>
       <tfoot>
         <tr>
-          <td colSpan={13}>Total: {units.length-1}{' item'}{units.length-1 > 1 && 's'}</td>
+          <td colSpan={13}>Total: {props.units.length - 1}{' item'}{props.units.length - 1 > 1 && 's'}</td>
         </tr>
       </tfoot>
     </table>
@@ -441,66 +451,71 @@ const initUnit: iUnit = {
   product_id: 0
 }
 
-const useUnit = (product: iProduct) => {
-  const baseUrl: any = () => `/api/product/unit/${product.id}`;
-  const revalidationOptions = {
-    //revalidateOnMount: true, //!cache.has(baseUrl), //here we refer to the SWR cache
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    //revalidateOnMount: false,
-    refreshWhenOffline: false,
-    refreshWhenHidden: false,
-    refreshInterval: 0
-  };
 
-  const { data, error, mutate } = useSWR<iProduct, Error>(baseUrl, fetcher, revalidationOptions);
+type UseUnitReturnType = {
+  units: iUnit[];
+  isLoading: boolean;
+  isError?: Error | undefined;
+  removeUnit: (id: number) => void;
+  reload: (unit: iUnit) => void;
+  reloadAll: (loadedUnits: iUnit[]) => void
+}
+const revalidationOptions = {
+  //revalidateOnMount: true, //!cache.has(baseUrl), //here we refer to the SWR cache
+  revalidateOnFocus: false,
+  revalidateOnReconnect: false,
+  //revalidateOnMount: false,
+  refreshWhenOffline: false,
+  refreshWhenHidden: false,
+  refreshInterval: 0
+};
+
+export const useUnit = (product: iProduct): UseUnitReturnType => {
+  const baseUrl: any = () => `/api/product/unit/${product.id}`;
+
+  const { data, error, mutate } = useSWR<iUnit[], Error>(baseUrl, fetcher, revalidationOptions);
 
   return {
-    product: data && {...data, units: data.units && [...data.units, initUnit] || [initUnit]}, //newUnit(product)],
+    units: data && [...data, initUnit] || [initUnit],  //newUnit(product)],
     isLoading: !error && !data,
     isError: error,
     removeUnit: (id: number) => {
-      const newData: iUnit[] = [];
-      if (data && data.units) {
-        for (let i = 0; i < data.units.length; i++) {
-          if (data.units[i].id !== id) {
-            newData.push(data.units[i]);
-          }
-        }
-        mutate({...data, units: [...newData]}, false);
+      if (data) {
+        const newData: iUnit[] = data.filter(item => item.id !== id);
+        mutate([...newData], false);
       }
     },
 
-    reloadAll: (units: iUnit[]) => {
-      data && mutate({...data, units: [...units]}, false)
+    reloadAll: (loadedUnits: iUnit[]) => {
+      data && mutate([...loadedUnits], false)
     },
 
     reload: (p: iUnit) => {
       if (p.id === 0) return;
       const newData: iUnit[] = [];
       let start: number = -1;
-      const iLength = (data && data.units && data.units.length || 0);
-      if (data && data.units) {
+      if (data) {
+        const iLength = (data.length || 0);
         for (let i = 0; i < iLength; i++) {
-          if (data.units[i].id === p.id) {
+          if (data[i].id === p.id) {
             newData.push(p);
             start++;
           } else {
-            newData.push(data.units[i]);
+            newData.push(data[i]);
           }
         }
         if (start === -1) {
           newData.push(p)
         }
 
-        mutate({...data, units: newData}, false); //{ ...data, products: newData && [...newData] || [p] }, false)
+        mutate([...newData], false); //{ ...data, products: newData && [...newData] || [p] }, false)
       }
     }
   }
 }
 
 function useOutsideAlerter(ref: any, clearSelection: Function) {
-  useEffect(() => {
+  React.useEffect(() => {
     /**
      * Alert if clicked on outside of element
      */

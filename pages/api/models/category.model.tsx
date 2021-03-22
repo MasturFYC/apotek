@@ -32,14 +32,19 @@ const apiCategory: apiCategoryFunction = {
 */
     return await db.query(
       sql`SELECT t.id, t.name,
-        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
-      FROM products AS p
-      WHERE p.category_id = t.id`)} AS products
+        ${nestQuery
+        (sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit,
+          p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
+          FROM products AS p
+          WHERE p.category_id = t.id
+          ORDER BY p.name`
+        )} AS products
       FROM categories AS t
       WHERE t.id = ${id}`)
       .then((data) => ([data.rows[0], undefined]))
       .catch((error) => ([undefined, error]));
   }
+
   , getCategories: async () => {
     return await db.query(
       sql`SELECT id, name

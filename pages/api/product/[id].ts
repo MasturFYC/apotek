@@ -10,12 +10,14 @@ export default async function productHandler(req: NextApiRequest, res: NextApiRe
     case METHOD_PUT:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        result = await apiProduct.updateProduct(id, req.body);
+        const { data, includeUnit} = req.body
+        result = await apiProduct.updateProduct(id, data, includeUnit);
       }
       break;
     case METHOD_POST:
       {
-        result = await apiProduct.insertProduct(req.body);
+        const { data } = req.body
+        result = await apiProduct.insertProduct(data);
       }
       break;
     case METHOD_DELETE:

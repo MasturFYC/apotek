@@ -6,6 +6,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (data) {
     res.status(200).json(data);
   } else {
-    res.status(403).json({ message: error.message })
+    res.setHeader('Cross-Origin-Opener-Policy', 'require-corp')
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
+
+      res.status(403)
+      .json({ message: error.message })
   }
 }

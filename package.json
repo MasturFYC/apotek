@@ -21,6 +21,7 @@
     "react-number-format": "^4.4.4",
     "react-select": "^4.2.1",
     "slonik": "^23.6.2",
+    "styled-components": "^5.2.1",
     "swr": "^0.3.11",
     "tailwindcss": "^2.0.2"
   },
@@ -30,6 +31,7 @@
     "@types/react": "^17.0.2",
     "@types/react-select": "^4.0.13",
     "@types/slonik": "^22.1.4",
+    "@types/styled-components": "^5.1.9",
     "autoprefixer": "^10.1.0",
     "postcss": "^8.2.1",
     "typescript": "^4.2.2"

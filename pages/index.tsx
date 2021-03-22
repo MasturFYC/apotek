@@ -6,7 +6,14 @@ import utilStyles from '../styles/utils.module.css'
 import Layout, { siteTitle } from '../components/layout'
 
 const fetcher = async (url: string) => {
-  const res = await fetch(url)
+
+  const res = await fetch(url, {
+    method: 'GET',
+    headers: {
+      'Cross-Origin-Opener-Policy': 'same-origin',
+      'Cross-Origin-Embedder-Policy': 'require-corp'
+    }
+  })
   const data: any = await res.json()
 
   if (res.status !== 200) {

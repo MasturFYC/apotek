@@ -6,6 +6,7 @@ import Layout, { siteTitle } from '../../components/layout'
 //import utilStyles from '../../styles/utils.module.scss'
 import { iCustomer, iRayon } from '../../components/interfaces'
 //import { isOptionDisabled } from 'react-select/src/builtins'
+import { CustomerFormDiv, CustomerName, SelectedDiv } from '../../components/styles'
 
 interface iSelectOptions {
   value: number;
@@ -121,28 +122,27 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-     <section className={'border border-1 rounded-3'}>
+     <section className={'border border-1 rounded-3 m-0'}>
         {customers && customers.map((item: iCustomer, i: number) => {
           return <CustomerList
             key={`cust-key-${i}`}
             customer={item}
             index={i}
+            isSelected={isSelected && currentIndex === i}
             property={{
-              backColor: backColors[(isSelected && currentIndex === i) ? 2 : i % 2],
-              onClick: selectCustomer,
-              borderColor: '#c8e1ff'
+              onClick: selectCustomer
             }}
           >
             {(currentIndex === i) && isSelected &&
 
-              <div style={{ margin: '0px -11px -11px -11px', padding: '0px 13px 6px 13px' }}>
+              <CustomerFormDiv>
                 <CustomerForm
                   key={`cust-sel-${i}`}
                   options={selOptions}
                   customer={item}
                   reload={(e, opt) => refreshCustomer(e, opt)}
                 />
-              </div>
+              </CustomerFormDiv>
             }
           </CustomerList>
         })
@@ -153,8 +153,8 @@ export default function Home() {
 }
 
 type CustomerProperty = {
-  backColor: string;
-  borderColor: string;
+  backColor?: string;
+  borderColor?: string;
   onClick: (i: number) => void;
 }
 
@@ -163,6 +163,7 @@ type CustomerListType = {
   index: number;
   property?: CustomerProperty;
   children: any;
+  isSelected: boolean;
 }
 
 const CustomerStyle = (backColor: string, borderColor: string) => ({
@@ -172,25 +173,26 @@ const CustomerStyle = (backColor: string, borderColor: string) => ({
   borderColor: '#c8e1ff'
 })
 
-const CustomerList = ({ customer, index, property, children }: CustomerListType) => {
+const CustomerList: React.FunctionComponent<CustomerListType> = ({
+  customer, index, property, children, isSelected
+}) => {
   return (
-
-    <div key={`div-cust-sel-${index}`}
-      style={CustomerStyle(property?.backColor!, property?.borderColor!)}
-      className={`border-bottom ${index === 0 && " rounded-top"} ${customer.id === 0 && "border-bottom-0 rounded-bottom"}`}>
-      <span
-        className={'cust-name'}
+    <SelectedDiv key={`div-cust-sel-${index}`}
+      index={index}
+      isSelected={isSelected}
+      refId={customer.id}>
+      <CustomerName
         onMouseDown={(e) => {
           e.preventDefault()
           return false
         }} onClick={(e) => property?.onClick(index)}
       >
         {customer.id === 0 ? 'New Customer' : customer.name}
-      </span>
+      </CustomerName>
       <br /><span>{customer.street && `${customer.street} - `}{customer.city}</span>
       <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
       {children}
-    </div>
+    </SelectedDiv>
   )
 }
 
@@ -212,7 +214,9 @@ const customerInit: iCustomer = {
   credit_limit: 0
 }
 
-const CustomerForm = ({ customer: cust, options, reload }: CustomerFormType) => {
+const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
+  customer: cust, options, reload
+}) => {
   const [customer, setCustomer] = useState<iCustomer>(cust);
   // React.useEffect(() => {
   //   let isLoaded: boolean = false;

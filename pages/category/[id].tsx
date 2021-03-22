@@ -4,11 +4,12 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import { iProduct, iCategory, iSupplier, iWarehouse } from '../../components/interfaces'
-import Unit from '../../components/unit'
+import { iProduct, iCategory, iSupplier, iWarehouse, iUnit } from '../../components/interfaces'
+import Unit, { useUnit } from '../../components/unit'
 import apiCategory from '../api/models/category.model'
 import apiWarehouse from '../api/models/warehouse.model'
 import apiSupplier from '../api/models/supplier.model'
+import NumberFormat from 'react-number-format'
 
 type productType = {
   products: iProduct[] | undefined,
@@ -56,8 +57,13 @@ const initProduct = (categoryId: number): iProduct => ({
   warehouse_id: 0
 })
 
+type CategoryPageParam = {
+  categories: iCategory[];
+  suppliers: iSupplier[];
+  warehouses: iWarehouse[];
+}
 
-export default function categoryPage({ categories, suppliers, warehouses }: any) {
+const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, suppliers, warehouses }) => {
   const { query } = useRouter();
   const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
 
@@ -71,8 +77,7 @@ export default function categoryPage({ categories, suppliers, warehouses }: any)
       switch (e.method) {
         case 'insert':
           {
-            newData = category.products;
-            newData.push(e.data);
+            newData = [...category.products, e.data];
           }
           break;
         case 'update':
@@ -117,14 +122,24 @@ export default function categoryPage({ categories, suppliers, warehouses }: any)
 }
 
 
-const ShowProducts = ({ products, updateCommand, categories, suppliers, warehouses }: productType) => {
+const ShowProducts: React.FunctionComponent<productType> = ({ products, updateCommand, categories, suppliers, warehouses }) => {
   const [currentId, setCurrentId] = useState<number>(-1);
 
   const refreshData = (p: iProduct, method: string) => {
 
     const i = currentId;
     const timeout = setTimeout(() => {
-      setCurrentId(currentId)
+      switch (method) {
+        case 'update':
+          setCurrentId(currentId)
+          break;
+        case 'insert':
+          setCurrentId(0)
+          break;
+        case 'delete':
+          setCurrentId(-1)
+          break;
+      }
     }, 1000);
 
     updateCommand({ data: p, method: method });
@@ -137,7 +152,7 @@ const ShowProducts = ({ products, updateCommand, categories, suppliers, warehous
   const updateSelectedIndex = (i: number) => {
     //setSelectedIndex(i)
     //setIndex(i)
-    setCurrentId(i)
+    (currentId === i ? setCurrentId(-1) : setCurrentId(i))
   }
 
   return (
@@ -145,24 +160,27 @@ const ShowProducts = ({ products, updateCommand, categories, suppliers, warehous
       {products && products.map((item: iProduct, i: number) => (
         <div key={i}
           className={`${item.id !== 0 && 'border-bottom'} ${(i % 2 === 0 && 'bg-white rounded-top')}`}
-        >{currentId === (products && products[i].id || 0) ?
-          <EditProduct data={item} updateCommand={(e) => refreshData(e.data, e.method)}
-            suppliers={suppliers}
-            categories={categories}
-            warehouses={warehouses}
-            index={i} /> :
-          <ProductInfo product={item} onSelect={() => updateSelectedIndex(products[i].id)} />}
+        >
+          <ProductInfo product={item} onSelect={() => updateSelectedIndex(products[i].id)} />
+          {currentId === (products && products[i].id || 0) &&
+            <EditProduct data={item} updateCommand={(e) => refreshData(e.data, e.method)}
+              suppliers={suppliers}
+              categories={categories}
+              warehouses={warehouses}
+              index={i} />}
         </div>
       ))}
     </React.Fragment>
   )
 }
 
-const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, index }: updateProductParam) => {
+const EditProduct: React.FunctionComponent<updateProductParam> = ({
+  data, updateCommand, categories, suppliers, warehouses, index
+}) => {
   const [product, setProduct] = useState<iProduct>(initProduct(0));
-  const [defaultPriceChanged, setDefaultPriceChanged] = useState(0)
-  const [defaultWeightChanged, setDefaultWeightChanged] = useState(0)
-
+  const { units, isLoading, isError, reload, removeUnit } = useUnit(data);
+  const [includeUnit, setIncludeUnit] = useState<boolean>(false);
+  const [errorText, setErrorText] = useState<string>('');
   React.useEffect(() => {
     let isLoaded = false;
 
@@ -175,19 +193,31 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
     }
   }, [data])
 
+  if (isError) return <div>{isError.message}</div>
+  //footerDispatch({ type: FooterActionEnum.reload, init: units?.length || 0})
+  if (isLoading) return <div>Loading...</div>
+
   const formSubmit = async (e: React.FormEvent) => {
     const baseUrl = `/api/product/${product.id}`;
 
     e.preventDefault();
 
-    console.log(product.id)
+    const check = checkError(product);
+    if (check) {
+      setErrorText(check);
+      return false;
+    }
+    //console.log(product.id)
 
     const res = await fetch(baseUrl, {
       method: product.id === 0 ? 'POST' : 'PUT',
       headers: {
         'Content-type': 'application/json; charset=UTF-8'
       },
-      body: JSON.stringify(product)
+      body: JSON.stringify({
+        data: includeUnit ? { ...product, units: units } : product,
+        includeUnit: includeUnit
+      })
     })
 
     const data: any = await res.json()
@@ -197,9 +227,33 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
     } else {
       updateCommand({ data: data, method: product.id === 0 ? 'insert' : 'update' })
       setProduct(data)
+      setIncludeUnit(false)
     }
 
     return false;
+  }
+
+  const updateUnitPrices = (basePrice: number) => {
+    if (units) {
+      //console.log('Price Changed')
+      units.map((item: iUnit, index: number) => {
+        const price = item.content * basePrice;
+        item.buy_price = price;
+        item.sale_price = (item.margin * price) + price;
+        item.member_price = (item.member_margin * price) + price;
+        item.agent_price = (item.agent_margin * price) + price;
+        return item;
+      })
+    }
+  }
+
+  const updateUnitWeights = (baseWeight: number) => {
+    if (units) {
+      units.map((item: iUnit, index: number) => {
+        item.weight = item.content * baseWeight;
+        return item;
+      })
+    }
   }
 
   const deleteData = async (e: React.MouseEvent) => {
@@ -225,13 +279,8 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
     return false;
   }
 
-
   return (
     <form onSubmit={(e) => formSubmit(e)}>
-      <div className={`${index % 2 === 0 && 'rounded-top'} container ps-3 pt-2 border-bottom mb-3`}
-        style={{ backgroundColor: '#f1f8ff' }}>
-        <h3>{product.name}</h3>
-      </div>
       <div className={`form-floating container g-3 my-3`}>
         <div className={'row'}>
           <div className={'col-md-6 form-floating mb-3'}>
@@ -256,7 +305,7 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
             <input className={'form-control'} type="text"
               id={ids[2]}
               placeholder={labels[2]}
-              value={product.spec}
+              value={product.spec || ''}
               onChange={e => setProduct({ ...product, spec: e.target.value })} />
             <label htmlFor={ids[2]} className={'col-form-label mx-2'}>{labels[2]}</label>
           </div>
@@ -272,28 +321,38 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
-            <input className={'form-control'} type="text"
+            <NumberFormat
               id={ids[4]}
+              className={'form-control'}
+              thousandSeparator={true}
+              value={product.base_price * 1.0}
+              decimalScale={2}
+              fixedDecimalScale={false}
               placeholder={labels[4]}
-              value={product.base_price === 0 ? '' : product.base_price}
-              onChange={e => {
-                setDefaultPriceChanged(+e.target.value)
-                setProduct({ ...product, base_price: +e.target.value });
+              onValueChange={(e) => {
+                setIncludeUnit(true);
+                updateUnitPrices(e.floatValue ?? 0)
+                setProduct({ ...product, base_price: e.floatValue ?? 0 });
               }}
             />
             <label htmlFor={ids[4]} className={'col-form-label mx-2'}>{labels[4]}</label>
           </div>
 
           <div className={'col-md-6 form-floating mb-3'}>
-            <input className={'form-control'} type="text"
+            <NumberFormat
               id={ids[5]}
+              className={'form-control'}
+              value={product.base_weight * 1.0}
+              decimalScale={2}
+              fixedDecimalScale={false}
               placeholder={labels[5]}
-              value={product.base_weight === 0 ? '' : product.base_weight}
-              onChange={e => {
-                setDefaultWeightChanged(+e.target.value);
-                setProduct({ ...product, base_weight: +e.target.value });
+              onValueChange={(e) => {
+                setIncludeUnit(true);
+                updateUnitWeights(e.floatValue ?? 0);
+                setProduct({ ...product, base_weight: e.floatValue ?? 0 });
               }}
             />
+
             <label htmlFor={ids[5]} className={'col-form-label mx-2'}>{labels[5]}</label>
           </div>
 
@@ -308,7 +367,7 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
                 const i: number = parseInt(e.target.value)
                 setProduct({ ...product, category_id: i })
               }}>{
-                categories && categories.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+                categories && [{ id: 0, name: 'Pilih Kategori...' }, ...categories].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
               }</select>
             <label htmlFor={ids[7]} className={'col-form-label mx-2'}>{labels[7]}</label>
           </div>
@@ -323,7 +382,7 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
               onChange={e => {
                 setProduct({ ...product, supplier_id: +e.target.value })
               }}>{
-                suppliers && suppliers.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+                suppliers && [{ id: 0, name: 'Pilih Supplier...' }, ...suppliers].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
               }</select>
             <label htmlFor={ids[8]} className={'col-form-label mx-2'}>{labels[8]}</label>
           </div>
@@ -338,26 +397,40 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
               onChange={e => {
                 setProduct({ ...product, warehouse_id: +e.target.value })
               }}>{
-                warehouses && warehouses.map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
+                warehouses && [{ id: 0, name: 'Pilih Gudang...' }, ...warehouses].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)
               }</select>
             <label htmlFor={ids[9]} className={'col-form-label mx-2'}>{labels[9]}</label>
           </div>
 
-          <div className="col-md-6 form-check">
-            <input className="form-check-input"
-              type="checkbox"
+          <div className={'col-md-6 form-check g-3'}>
+            <input className={'form-check-input ms-0 me-3'}
+              type={'checkbox'}
               checked={product.is_active}
               onChange={e => {
                 setProduct({ ...product, is_active: !product.is_active })
               }}
               value={product.is_active ? 1 : 0} id={ids[6]} />
-            <label className="form-check-label" htmlFor={ids[6]}>{labels[6]}</label>
+            <label className={'form-check-label'} htmlFor={ids[6]}>{labels[6]}</label>
           </div>
 
-          <div className={'container'}>
-            <Unit product={product} />
-          </div>
-
+          {product.id !== 0 &&
+            <div className={'container'}>
+              <Unit
+                reload={(unit, option) => {
+                  if (option === 'delete') {
+                    removeUnit(unit.id)
+                  } else {
+                    reload(unit)
+                  }
+                }}
+                units={units}
+                product={product}
+              />
+            </div>
+          }
+          {errorText &&
+            <div className={'container text-white font-bold bg-danger p-3 m-0'}>{errorText}</div>
+          }
           <div className={'container mt-3'}>
             <button type={'submit'} className='btn w85 me-3 btn-primary'>
               Save Data
@@ -374,6 +447,40 @@ const EditProduct = ({ data, updateCommand, categories, suppliers, warehouses, i
     </form >
 
   )
+}
+
+const checkError = (p: iProduct) => {
+
+  if (!p.name || p.name.trim() === '') {
+    return 'Ketikkan nama barang!';
+  }
+
+  if (!p.code || p.code.trim() === '') {
+    return 'Ketikkan kode barang!';
+  }
+
+  if (!p.base_unit || p.base_unit.trim() === '') {
+    return 'Ketikkan satuan dasar!';
+  }
+
+  if (p.base_price === 0) {
+    return 'Harga dasar todak boleh (0) NOL!';
+  }
+
+  if (p.category_id === 0) {
+    return 'Pilih kategori...!';
+  }
+
+  if (p.supplier_id === 0) {
+    return 'Pilih supplier...!';
+    return false;
+  }
+
+  if (p.warehouse_id === 0) {
+    return 'Pilih gudang...!';
+  }
+
+  return false;
 }
 
 const useCategory = (id: number) => {
@@ -444,14 +551,22 @@ function findElements(arr: iProduct[], id: number) {
 
 type ProductInfoParam = {
   product: iProduct;
-  onSelect: Function
+  onSelect: Function;
 }
-const ProductInfo = ({ product, onSelect }: ProductInfoParam): JSX.Element => {
+
+const ProductInfo: React.FunctionComponent<ProductInfoParam> = ({
+  product, onSelect
+}): JSX.Element => {
   return (
-    <div className={'px-3 py-2'}>
-      <span className={'cust-name'} onClick={(e) => onSelect()} role={'button'}>{product.name || 'New Product'}</span><br />
-      Kode: {product.code}, Spec: {product.spec}
-    </div>
+    <>
+      <div className={'px-3 py-2'}>
+        <span className={'cust-name'} onClick={(e) => onSelect()} role={'button'}>{product.name || 'New Product'}</span>
+      </div>
+      <div className={'px-3 mb-2'}>
+        Kode: {product.code}, Spec: {product.spec}
+        {/*, Harga: {product.base_price} */}
+      </div>
+    </>
   )
 }
 
@@ -552,3 +667,5 @@ const fetchProduct = async (url: string): Promise<iProduct> => {
   return {...data};
 }
 */
+
+export default categoryPage;

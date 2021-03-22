@@ -82,3 +82,42 @@ const apiUnit: apiProductFunction = {
 }
 
 export default apiUnit;
+
+/**
+/* Update Multiple Rows
+
+const keys = [
+  'username',
+  'email',
+];
+
+const identifiers = keys.map((key) => {
+  return sql.identifier([key]);
+});
+
+const values = [
+  ['nilesh', 'nilesh@gmail.com'], // single full record
+  ['bailey', 'bailey@gmail.com'], // single full record
+]
+
+const values_types = [`varchar`,`varchar`];
+
+const main = async(connection = slonik) => {
+  let query = sql`
+    INSERT INTO users
+      (${sql.join(identifiers, sql`, `)})
+    SELECT * FROM
+      ${sql.unnest(values, values_types)}
+    RETURNING *
+  `
+  try {
+    const results = await connection.query(query)
+    console.log(results);
+    return results
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+main()
+ */
