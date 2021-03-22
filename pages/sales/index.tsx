@@ -26,8 +26,8 @@ const initSales: iSales = {
   city: '',
   phone: '',
   cell: '',
-  created_at: new Date,
-  updated_at: new Date,
+  createdAt: new Date,
+  updatedAt: new Date,
   zip: ''
 }
 
@@ -146,7 +146,7 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
           >
             {sales.id === 0 ? 'New Sales' : sales.name}
           </CustomerName>
-          <br /><span>{sales.street && `${sales.street} - `}{sales.city}</span>
+          <br /><span>{sales.street && `${sales.street} - `}{sales.city} {sales.zip && ` - (${sales.zip})`}</span>
           <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
         </div>
         <div className={'col-md-5'}>

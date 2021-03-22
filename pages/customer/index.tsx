@@ -28,10 +28,10 @@ const initCustomer: iCustomer = {
   city: '',
   phone: '',
   cell: '',
-  rayon_id: 0,
-  created_at: new Date,
-  updated_at: new Date,
-  credit_limit: 0,
+  rayonId: 0,
+  createdAt: new Date,
+  updatedAt: new Date,
+  creditLimit: 0,
   descriptions: '',
   zip: ''
 }
@@ -208,10 +208,10 @@ const customerInit: iCustomer = {
   street: '',
   city: '',
   phone: '',
-  rayon_id: 0,
-  created_at: new Date(),
-  updated_at: new Date(),
-  credit_limit: 0
+  rayonId: 0,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  creditLimit: 0
 }
 
 const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
@@ -254,8 +254,8 @@ const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
             <div className={'col-md-12 form-floating'}>
               <input id={'txt-credit'} type={'text'}
                 placeholder={'Batas kridit'}
-                className={'form-control'} value={customer.credit_limit}
-                onChange={(e) => setCustomer({ ...customer, credit_limit: +e.target.value })} />
+                className={'form-control'} value={customer.creditLimit}
+                onChange={(e) => setCustomer({ ...customer, creditLimit: +e.target.value })} />
               <label htmlFor={'txt-credit'} className={'mx-0 col-form-label'}>Limit Credit</label>
             </div>
 
@@ -263,8 +263,8 @@ const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
               <div className={'row p-0'}>
                 <label htmlFor={'txt-rayon'} className={'col-2 pt-2 col-form-label-md'}>Rayon</label>
                 <Select id={'txt-rayon'} className={'col mt-0 py-0'}
-                  value={options.filter(x => x.value === customer.rayon_id)}
-                  onChange={(e) => setCustomer({ ...customer, rayon_id: e?.value || 0 })}
+                  value={options.filter(x => x.value === customer.rayonId)}
+                  onChange={(e) => setCustomer({ ...customer, rayonId: e?.value || 0 })}
                   options={options}
                   placeholder={'Pilih Rayon'} />
               </div>

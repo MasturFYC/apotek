@@ -8,7 +8,7 @@ import { iProduct, iCategory, iSupplier, iWarehouse } from '../../components/int
 import apiCategory from '../api/models/category.model'
 import apiWarehouse from '../api/models/warehouse.model'
 import apiSupplier from '../api/models/supplier.model'
-import { initProduct, ShowProducts } from '../../components/forms/product'
+import { ShowProducts } from '../../components/forms/product'
 import { PropertyContextType, PropertyProvider } from '../../components/context/propery-context'
 
 type CategoryPageParam = {
@@ -21,16 +21,9 @@ type CategoryPageParam = {
 const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, suppliers, warehouses }) => {
   const { query } = useRouter();
   const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
-  const childParam: PropertyContextType =  { 
-    products: category && category.products || undefined, 
-    categories: categories, 
-    suppliers: suppliers, 
-    warehouses: warehouses
-  };
-  /*
+
   if (isError) return <div>{isError.message}</div>
   if (isLoading) return <div>Loading...</div>
-  */
 
   const refreshData = (data: iProduct, method: string) => {
     if (category && category.products) {
@@ -57,6 +50,13 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, s
       newData && mutate({ ...category, products: newData }, false);
     }
   }
+  const childParam: PropertyContextType =  {
+    products: category && category.products || undefined,
+    categories: categories,
+    suppliers: suppliers,
+    warehouses: warehouses,
+    updateValue: refreshData
+  };
 
   return (
     <Layout home menuActive={1} heading={category && category.name}>
@@ -66,7 +66,7 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, s
       <section className={'bg-white'}>
         <section className={'container bg-light border rounded-3 m-0 p-0'}>
           <PropertyProvider value={childParam}>
-            <ShowProducts updateCommand={(e) => refreshData(e.data, e.method)} />
+            <ShowProducts />
           </PropertyProvider>
         </section>
         <div className={'mt-3'}>
@@ -127,8 +127,8 @@ export async function getServerSideProps({ query }: any) {
   }
 */
 
-  const loadCategories = async () => {    
-    const [data, error] = await apiCategory.getCategories();
+  const loadCategories = async () => {
+    const [data, error] = await apiCategory.getListCategories();
     if (data) {
       return data;
     }
@@ -144,7 +144,7 @@ export async function getServerSideProps({ query }: any) {
   }
 
   const loadWarehouses = async () => {
-    const [data, error] = await apiWarehouse.getWarehouses();
+    const [data, error] = await apiWarehouse.getListWarehouses();
     if (data) {
       return data;
     }
@@ -152,10 +152,17 @@ export async function getServerSideProps({ query }: any) {
   }
 
  // const category = await loadCategory()
-  const suppliers = await loadSuppliers();
   const categories = await loadCategories();
+  const suppliers = await loadSuppliers();
   const warehouses = await loadWarehouses();
-  return { props: { suppliers: suppliers, categories: categories, warehouses: warehouses } }
+
+  return {
+    props: {
+      categories: categories,
+      suppliers: suppliers,
+      warehouses: warehouses
+    }
+  }
 }
 
 const fetcher = async (url: string): Promise<iCategory> => {

@@ -74,7 +74,7 @@ const apiCustomer: apiProductFunction = {
         sql`INSERT INTO customers (name, street, city, phone,
           cell, zip, rayon_id, credit_limit, descriptions)
         VALUES (${c.name}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell || null},
-          ${c.zip!}, ${c.rayon_id}, ${c.credit_limit}, ${c.descriptions || null})
+          ${c.zip!}, ${c.rayonId}, ${c.creditLimit}, ${c.descriptions || null})
         RETURNING id`
       )
       .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))
@@ -86,8 +86,8 @@ const apiCustomer: apiProductFunction = {
       (
         sql`UPDATE customers  SET
         name = ${c.name}, street = ${c.street}, city = ${c.city}, phone = ${c.phone},
-        cell = ${c.cell!}, zip = ${c.zip!}, rayon_id = ${c.rayon_id},
-        credit_limit = ${c.credit_limit}, descriptions = ${c.descriptions!}
+        cell = ${c.cell!}, zip = ${c.zip!}, rayon_id = ${c.rayonId},
+        credit_limit = ${c.creditLimit}, descriptions = ${c.descriptions!}
         WHERE id = ${id}
         RETURNING *`
       )

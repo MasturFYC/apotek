@@ -5,6 +5,7 @@ type apiCategoryReturnType = Promise<any[] | (readonly iCategory[] | undefined)[
 interface apiCategoryFunction {
   getCategory(id: number): apiCategoryReturnType;
   getCategories: () => apiCategoryReturnType; // same as above
+  getListCategories: () => apiCategoryReturnType;
   updateCategory(id: number, p: iCategory): apiCategoryReturnType;
   insertCategory(p: iCategory): apiCategoryReturnType;
   deleteCategory(id: number): apiCategoryReturnType;
@@ -31,12 +32,20 @@ const apiCategory: apiCategoryFunction = {
       .catch((error) => ([undefined, error]));
 */
     return await db.query(
-      sql`SELECT t.id, t.name,
+      sql`SELECT t.id, t.name, t.created_at, t.updated_at,
         ${nestQuery
-        (sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit,
-          p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
+        (sql`SELECT p.id, p.code, p.name, p.spec,
+          p.base_unit "baseUnit",
+          p.base_price "basePrice",
+          p.base_weight "baseWeight",
+          p.is_active "isActive",
+          p.first_stock "firstStock",
+          p.unit_in_stock "unitInStock",
+          p.category_id "categoryId",
+          p.supplier_id "supplierId",
+          p.warehouse_id "warehouseId"
           FROM products AS p
-          WHERE p.category_id = t.id
+          WHERE p.category_id = ${id}
           ORDER BY p.name`
         )} AS products
       FROM categories AS t
@@ -47,13 +56,22 @@ const apiCategory: apiCategoryFunction = {
 
   , getCategories: async () => {
     return await db.query(
-      sql`SELECT id, name
-      FROM categories
-      ORDER BY name`)
+      sql`SELECT t.id, t.name, t.created_at, t.updated_at
+      FROM categories AS t
+      ORDER BY t.name`)
       .then((data) => ([data.rows, undefined]))
       .catch((error) => ([undefined, error]))
   },
 
+  getListCategories: async () => {
+    return await db.query(
+      sql`SELECT t.id, t.name
+      FROM categories AS t
+      ORDER BY t.name`)
+      .then((data) => ([data.rows, undefined]))
+      .catch((error) => ([undefined, error]))
+  }
+  ,
   insertCategory: async (c: iCategory) => {
     return await db.query<iCategory>
       (

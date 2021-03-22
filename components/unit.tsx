@@ -117,11 +117,11 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
     if (document.activeElement?.id === "unit_content") {
       //    const content: number = parseFloat(val) || 1;
 
-      const price: number = (content * props.product.base_price)
-      const weight: number = (content * props.product.base_weight)
+      const price: number = (content * props.product.basePrice)
+      const weight: number = (content * props.product.baseWeight)
       const sale_price: number = price + (currentUnit.margin * price)
-      const member_price: number = price + (currentUnit.member_margin * price)
-      const agent_price: number = price + (currentUnit.agent_margin * price)
+      const member_price: number = price + (currentUnit.memberMargin * price)
+      const agent_price: number = price + (currentUnit.agentMargin * price)
 
       setCurrentUnit(prevState => {
         return {
@@ -189,14 +189,14 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
   const marginChanged = (margin: number) => {
 
     if (document.activeElement?.id === "margin") {
-      const buy_price: number = +currentUnit.buy_price;
+      const buy_price: number = +currentUnit.buyPrice;
       const price: number = ((buy_price * margin) + buy_price);
 
       setCurrentUnit(prevState => {
         return {
           ...prevState,
           margin: margin,
-          sale_price: price
+          salePrice: price
         }
 
       })
@@ -207,14 +207,14 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
 
   const memberMarginChanged = (margin: number) => {
     if (document.activeElement?.id === "member_margin") {
-      const buy_price: number = +currentUnit.buy_price;
+      const buy_price: number = +currentUnit.buyPrice;
       const price: number = ((buy_price * margin) + buy_price);
 
       setCurrentUnit(prevState => {
         return {
           ...prevState,
-          member_margin: margin,
-          member_price: price
+          memberMargin: margin,
+          memberPrice: price
         }
 
       })
@@ -225,14 +225,14 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
   const agentMarginChanged = (margin: number) => {
 
     if (document.activeElement?.id === "agent_margin") {
-      const buy_price: number = +currentUnit.buy_price;
+      const buy_price: number = +currentUnit.buyPrice;
       const price: number = ((buy_price * margin) + buy_price);
 
       setCurrentUnit(prevState => {
         return {
           ...prevState,
-          agent_margin: margin,
-          agent_price: price
+          agentMargin: margin,
+          agentPrice: price
         }
 
       })
@@ -244,14 +244,14 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
   const priceChanged = (price: number) => {
 
     if (document.activeElement?.id === "sale_price") {
-      const buy_price = +currentUnit.buy_price;
+      const buy_price = +currentUnit.buyPrice;
       const margin: number = (price - buy_price) / buy_price;
 
       setCurrentUnit(prevState => {
         return {
           ...prevState,
           margin: margin,
-          sale_price: price
+          salePrice: price
         }
       })
       setFormDirty(true)
@@ -260,14 +260,14 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
 
   const memberPriceChanged = (price: number) => {
     if (document.activeElement?.id === "member_price") {
-      const buy_price: number = +currentUnit.buy_price;
+      const buy_price: number = +currentUnit.buyPrice;
       const margin: number = (price - buy_price) / buy_price;
 
       setCurrentUnit(prevState => {
         return {
           ...prevState,
-          member_margin: margin,
-          member_price: price
+          memberMargin: margin,
+          memberPrice: price
         }
       })
       setFormDirty(true)
@@ -277,15 +277,15 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
   const agentPriceChanged = (price: number) => {
 
     if (document.activeElement?.id === "agent_price") {
-      const buy_price: number = +currentUnit.buy_price;
+      const buy_price: number = +currentUnit.buyPrice;
       const margin: number = (price - buy_price) / buy_price;
 
       setCurrentUnit(prevState => {
 
         return {
           ...prevState,
-          agent_margin: margin,
-          agent_price: price
+          agentMargin: margin,
+          agentPrice: price
         }
       })
 
@@ -309,7 +309,7 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
           <th rowSpan={2}>ID</th>
           <th rowSpan={2}>BARCODE</th>
           <th rowSpan={2}>NAMA</th>
-          <th rowSpan={2}>ISI ({props.product.base_unit})</th>
+          <th rowSpan={2}>ISI ({props.product.baseUnit})</th>
           <th rowSpan={2}>BERAT (kg)</th>
           <th rowSpan={2}>HARGA BELI</th>
           <th colSpan={3}>MARGIN</th>
@@ -339,13 +339,13 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                   <td className={styles.tdOff1}>{item.name}</td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.content} renderText={(e => <span>{+e * 1.0}</span>)} /></td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={false} decimalScale={2} value={item.weight} renderText={(e => <span>{+e * 1.0}</span>)} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.buy_price * 1.0} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.buyPrice * 1.0} /></td>
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.margin * 100} renderText={(e => <span>{+e * 1.0}%</span>)} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.member_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /> </td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.agent_margin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.sale_price} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.member_price} /></td>
-                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.agent_price} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.memberMargin * 100} renderText={(e => <span>{+e * 1}%</span>)} /> </td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={2} value={item.agentMargin * 100} renderText={(e => <span>{+e * 1}%</span>)} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.salePrice} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.memberPrice} /></td>
+                  <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.agentPrice} /></td>
                   <td>
                     {item.id > 0 &&
                       <img title="Hapus" className={`${styles.imgControl}`} height="16px" src={'/images/delete.svg'} onClick={(e) => deleteUnit(item.id)} />
@@ -365,22 +365,22 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                   <td className={styles.tdOff2}><NumberFormat id={"unit_weight"}
                     displayType={'text'} thousandSeparator={false} decimalScale={2} value={currentUnit.weight} /></td>
                   <td className={styles.tdOff2}><NumberFormat id={"buy_price"}
-                    displayType={'text'} thousandSeparator={true} decimalScale={2} value={currentUnit.buy_price * 1.0} /></td>
+                    displayType={'text'} thousandSeparator={true} decimalScale={2} value={currentUnit.buyPrice * 1.0} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"margin"}
                     displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.margin * 100} onValueChange={(e) => marginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"member_margin"}
-                    displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.member_margin * 100} onValueChange={(e) => memberMarginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
+                    displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.memberMargin * 100} onValueChange={(e) => memberMarginChanged(e.floatValue && (e.floatValue / 100) || 0)} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat id={"agent_margin"}
-                    displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.agent_margin * 100}
+                    displayType={'input'} thousandSeparator={false} decimalScale={4} value={currentUnit.agentMargin * 100}
                     onValueChange={(e) => {
                       agentMarginChanged(e.floatValue && (e.floatValue / 100) || 0)
                     }} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"sale_price"}
-                    thousandSeparator={false} decimalScale={0} value={currentUnit.sale_price} onValueChange={(e) => priceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+                    thousandSeparator={false} decimalScale={0} value={currentUnit.salePrice} onValueChange={(e) => priceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"member_price"}
-                    thousandSeparator={false} decimalScale={0} value={currentUnit.member_price} onValueChange={(e) => memberPriceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
+                    thousandSeparator={false} decimalScale={0} value={currentUnit.memberPrice} onValueChange={(e) => memberPriceChanged(e.floatValue || 0)} className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"agent_price"}
-                    thousandSeparator={false} decimalScale={0} value={currentUnit.agent_price}
+                    thousandSeparator={false} decimalScale={0} value={currentUnit.agentPrice}
                     onValueChange={(e) => {
                       agentPriceChanged(e.floatValue || 0)
                     }} className={styles.tdInputNumber
@@ -438,15 +438,15 @@ const initUnit: iUnit = {
   name: '',
   content: 0,
   weight: 0.0,
-  buy_price: 0.0,
+  buyPrice: 0.0,
   margin: 0.0,
-  agent_margin: 0.0,
-  member_margin: 0.0,
-  sale_price: 0.0,
-  agent_price: 0.0,
-  member_price: 0.0,
+  agentMargin: 0.0,
+  memberMargin: 0.0,
+  salePrice: 0.0,
+  agentPrice: 0.0,
+  memberPrice: 0.0,
   profit: 0.0,
-  product_id: 0
+  productId: 0
 }
 
 
@@ -567,18 +567,18 @@ const newUnit = (product: iProduct): iUnit => {
   return {
     id: 0,
     barcode: '',
-    name: product.base_unit,
+    name: product.baseUnit,
     content: 1,
-    weight: product.base_weight,
-    buy_price: product.base_price,
+    weight: product.baseWeight,
+    buyPrice: product.basePrice,
     margin: 0.10,
-    member_margin: 0.075,
-    agent_margin: 0.05,
-    sale_price: product.base_price + (product.base_price * 0.1),
-    agent_price: product.base_price + (product.base_price * 0.075),
-    member_price: product.base_price + (product.base_price * 0.05),
+    memberMargin: 0.075,
+    agentMargin: 0.05,
+    salePrice: product.basePrice + (product.basePrice * 0.1),
+    agentPrice: product.basePrice + (product.basePrice * 0.075),
+    memberPrice: product.basePrice + (product.basePrice * 0.05),
     profit: 0,
-    product_id: product.id
+    productId: product.id
   }
 }
 

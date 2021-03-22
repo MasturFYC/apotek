@@ -6,18 +6,18 @@ export const METHOD_GET: string = 'GET';
 export interface iCategory {
   id: number;
   name: string;
-  created_at?: Date;
-  updated_at?: Date;
-  products: iProduct[]
+  createdAt?: Date;
+  updatedAt?: Date;
+  products?: iProduct[];
 }
 
 export interface iWarehouse {
   id: number;
   name: string;
   location?: string;
-  created_at?: Date;
-  updated_at?: Date;
-  products: iProduct[]
+  createdAt?: Date;
+  updatedAt?: Date;
+  products?: iProduct[];
 }
 
 export interface iPeople {
@@ -28,22 +28,22 @@ export interface iPeople {
   phone: string;
   cell?: string;
   zip?: string;
-  created_at?: Date;
-  updated_at?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface iOrder {
   id: number;
-  customer_id: number;
-  sales_id: number;
-  due_date: Date;
+  customerId: number;
+  salesId: number;
+  dueDate: Date;
   total: number;
   cash: number;
   payments: number;
-  remain_payments: number;
-  created_at?: Date;
-  updated_at?: Date;
-  sales?: iSales
+  remainPayment: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  sales?: iSales;
 }
 
 export interface iSales extends iPeople {
@@ -51,8 +51,8 @@ export interface iSales extends iPeople {
 }
 
 export interface iSupplier extends iPeople {
-  contact_name: string,
-  products: iProduct[]
+  contactName: string;
+  products?: iProduct[];
 }
 
 export interface iProduct {
@@ -60,19 +60,21 @@ export interface iProduct {
   code: string;
   name: string;
   spec?: string;
-  base_unit: string;
-  base_price: number;
-  base_weight: number;
-  is_active: boolean;
-  first_stock: number;
-  unit_in_stock: number;
-  category_id: number;
-  supplier_id: number;
-  warehouse_id: number;
-  created_at?: Date;
-  updated_at?: Date;
+  baseUnit: string;
+  basePrice: number;
+  baseWeight: number;
+  isActive: boolean;
+  firstStock: number;
+  unitInStock: number;
+  categoryId: number;
+  supplierId: number;
+  warehouseId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
   category?: iCategory;
-  units?: iUnit[]
+  supplier?: iSupplier;
+  warehouse?: iWarehouse;
+  units?: iUnit[];
 }
 
 export interface iUnit {
@@ -81,17 +83,17 @@ export interface iUnit {
   name: string;
   content: number;
   weight: number;
-  buy_price: number;
+  buyPrice: number;
   margin: number;
-  agent_margin: number;
-  member_margin: number;
-  sale_price: number;
-  agent_price: number;
-  member_price: number;
+  agentMargin: number;
+  memberMargin: number;
+  salePrice: number;
+  agentPrice: number;
+  memberPrice: number;
   profit: number;
-  product_id: number;
-  created_at?: Date;
-  updated_at?: Date;
+  productId: number;
+  createdAt?: Date;
+  updatedAt?: Date;
   product?: iProduct
 }
 
@@ -99,14 +101,14 @@ export interface iRayon {
   id: number;
   name: string;
   descriptions?: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
   customers?: iCustomer[]
 }
 
 export interface iCustomer extends iPeople {
-  rayon_id: number;
-  credit_limit: number;
+  rayonId: number;
+  creditLimit: number;
   descriptions?: string;
   rayon?: iRayon
 }

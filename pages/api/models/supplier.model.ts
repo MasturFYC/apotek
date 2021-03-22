@@ -15,7 +15,16 @@ const apiSupplier: apiSupplierFunction = {
   getSupplier: async (id: number) => {
     return await db.query(
       sql`SELECT t.id, t.name, t.contact_name, t.street, t.city, t.phone, t.cell, t.zip,
-        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
+        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec,
+          p.base_unit "baseUnit",
+          p.base_price "basePrice",
+          p.base_weight "baseWeight",
+          p.is_active "isActive",
+          p.first_stock "firstStock",
+          p.unit_in_stock "unitInStock",
+          p.category_id "categoryId",
+          p.supplier_id "supplierId",
+          p.warehouse_id "warehouseId"
       FROM products AS p
       WHERE p.supplier_id = t.id`)} AS products
       FROM suppliers AS t
@@ -24,7 +33,7 @@ const apiSupplier: apiSupplierFunction = {
       .then((data) => ([data.rows[0], undefined]))
       .catch((error) => ([undefined, error]));
   },
-  
+
   getSuppliers: async () => {
     return await db.query(
       sql`SELECT id, name, contact_name, street, city, phone, cell, zip
@@ -47,7 +56,7 @@ const apiSupplier: apiSupplierFunction = {
     return await db.query<iSupplier>
       (
         sql`INSERT INTO suppliers (name, contact_name, street, city, phone, cell, zip)
-        VALUES (${c.name}, ${c.contact_name}, ${c.sreet}, ${c.city}, ${c.phone}, ${c.cell??null}, ${c.zip??null})
+        VALUES (${c.name}, ${c.contactName}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell??null}, ${c.zip??null})
         RETURNING id`
       )
       .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))
@@ -58,7 +67,7 @@ const apiSupplier: apiSupplierFunction = {
     return await db.query<iSupplier>
       (
         sql`UPDATE suppliers  SET
-        name = ${c.name}, contact_name = ${c.contact_name}, street = ${c.sreet},
+        name = ${c.name}, contact_name = ${c.contactName}, street = ${c.street},
         city = ${c.city}, phone = ${c.phone}, cell = ${c.cell??null}, zip = ${c.zip??null}
         WHERE id = ${id}
         RETURNING *`

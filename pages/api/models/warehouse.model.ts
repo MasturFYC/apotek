@@ -5,6 +5,7 @@ type apiWarehouseReturnType = Promise<any[] | (readonly iWarehouse[] | undefined
 interface apiWarehouseFunction {
   getWarehouse(id: number): apiWarehouseReturnType;
   getWarehouses: () => apiWarehouseReturnType; // same as above
+  getListWarehouses: () => apiWarehouseReturnType; // same as above
   updateWarehouse(id: number, p: iWarehouse): apiWarehouseReturnType;
   insertWarehouse(p: iWarehouse): apiWarehouseReturnType;
   deleteWarehouse(id: number): apiWarehouseReturnType;
@@ -14,19 +15,36 @@ const apiWarehouse: apiWarehouseFunction = {
   getWarehouse: async (id: number) => {
     return await db.query(
       sql`SELECT t.id, t.name,
-        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active, p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id
+        ${nestQuery(sql`SELECT p.id, p.code, p.name, p.spec,
+          p.base_unit "baseUnit",
+          p.base_price "basePrice",
+          p.base_weight "baseWeight",
+          p.is_active "isActive",
+          p.first_stock "firstStock",
+          p.unit_in_stock "unitInStock",
+          p.category_id "categoryId",
+          p.supplier_id "supplierId",
+          p.warehouse_id "warehouseId"
       FROM products AS p
       WHERE p.warehouse_id = t.id`)} AS products
       FROM warehouses AS t
       WHERE t.id = ${id}`)
       .then((data) => ([data.rows[0], undefined]))
       .catch((error) => ([undefined, error]));
+  },
+  getListWarehouses: async () => {
+    return await db.query(
+      sql`SELECT id, name
+      FROM warehouses
+      ORDER BY name`)
+      .then((data) => ([data.rows, undefined]))
+      .catch((error) => ([undefined, error]))
   }
   , getWarehouses: async () => {
     return await db.query(
-      sql`SELECT id, name, location
-      FROM warehouses
-      ORDER BY name`)
+      sql`SELECT id, t.name, t.location
+      FROM warehouses AS t
+      ORDER BY t.name`)
       .then((data) => ([data.rows, undefined]))
       .catch((error) => ([undefined, error]))
   },

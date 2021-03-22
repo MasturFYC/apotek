@@ -4,11 +4,13 @@ import NumberFormat from 'react-number-format';
 import { iProduct, iUnit, iCategory, iSupplier, iWarehouse } from '../interfaces';
 import Unit, { useUnit } from '../unit';
 import PropertyContext, { PropertyContextType } from '../context/propery-context'
+import { CustomerFormDiv, CustomerName, SelectedDiv } from 'components/styles';
 
-type ProductInfoParam  = {
+type ProductInfoParam = {
   product: iProduct;
   onSelect: Function;
   isSelected: boolean;
+  index: number;
 }
 
 type reloadParam = {
@@ -18,7 +20,7 @@ type reloadParam = {
 
 type updateProductParam = {
   data: iProduct,
-  updateCommand: (e: reloadParam) => void,
+  //  updateCommand: (e: reloadParam) => void,
   index: number,
 }
 
@@ -27,15 +29,15 @@ export const initProduct = (categoryId: number): iProduct => ({
   name: '',
   code: '',
   spec: '',
-  base_unit: '',
-  base_price: 0,
-  base_weight: 0,
-  is_active: true,
-  first_stock: 0,
-  unit_in_stock: 0,
-  supplier_id: 0,
-  category_id: 0,
-  warehouse_id: 0,
+  baseUnit: '',
+  basePrice: 0,
+  baseWeight: 0,
+  isActive: true,
+  firstStock: 0,
+  unitInStock: 0,
+  supplierId: 0,
+  categoryId: 0,
+  warehouseId: 0,
   units: []
 })
 
@@ -45,46 +47,40 @@ type productType = {
 }
 
 const ProductInfo: React.FunctionComponent<ProductInfoParam> = ({
-  product, onSelect, isSelected
+  product, onSelect, isSelected, index
 }): JSX.Element => {
   const params = useContext(PropertyContext);
 
   return (
     <>
-      <div className={'px-3 py-2'}>
-        <span className={'cust-name'} onClick={(e) => onSelect()}
-        role={'button'}>{product.name || 'New Product'}</span>
-      </div>
-
-      <p data-tip data-for={`tip-${product.id}`} className={'px-3 py-2'}>
+      <SelectedDiv refId={product.id} isSelected={isSelected} index={index}>
+        <CustomerName role={'button'} onClick={(e) => onSelect()}>{product.name || 'New Product'}</CustomerName>
+        <div data-tip data-for={`tip-${product.id}`}
+        className={'px-0 pt-0 pb-1'}>
         Kode: {product.code}, Spec: {product.spec}
-      </p>
-      {isSelected &&
-      <ReactTooltip
-        id={`tip-${product.id}`}
-        type={'light'}
-        delayHide={500}
-        border={true}
-        delayShow={500}
-        delayUpdate={500} place={'right'} >
-        <div>
-          <p><strong>{product.name}</strong></p>
-          <p>Kode: {product.code}</p>
-          <p>Spec: {product.spec}</p>
-          <p>Kategori: {params.categories.filter((x) => x.id === product.category_id)[0]?.name}</p>
-          <p>Supplier: {params.suppliers.filter((x) => x.id === product.supplier_id)[0]?.name}</p>
-          <p>Gudang: {params.warehouses.filter((x) => x.id === product.warehouse_id)[0]?.name}</p>
-        </div>
-      </ReactTooltip>
+      </div>
+      </SelectedDiv>
+      {isSelected && product.id !== 0 &&
+        <ReactTooltip
+          id={`tip-${product.id}`}
+          type={'light'}
+          delayHide={500}
+          border={true}
+          delayShow={500}
+          delayUpdate={500} place={'right'}>
+          <ShowTips product={product} params={params} />
+        </ReactTooltip>
       }
     </>
   )
 }
 
-export const ShowProducts: React.FunctionComponent<productType> = ({ updateCommand }) => {
+export const ShowProducts: React.FunctionComponent = () => {
   const [currentId, setCurrentId] = useState<number>(-1);
-  const params = useContext(PropertyContext);  
-  const refreshData = (p: iProduct, method: string) => {    
+  const params: PropertyContextType = useContext(PropertyContext);
+
+  /*
+  const refreshData = (p: iProduct, method: string) => {
 
     const i = currentId;
     const timeout = setTimeout(() => {
@@ -107,7 +103,7 @@ export const ShowProducts: React.FunctionComponent<productType> = ({ updateComma
       clearTimeout(timeout);
     };
   };
-
+*/
   const updateSelectedIndex = (i: number) => {
     //setSelectedIndex(i)
     //setIndex(i)
@@ -117,33 +113,42 @@ export const ShowProducts: React.FunctionComponent<productType> = ({ updateComma
   return (
     <React.Fragment>
       {params.products && [...params.products, initProduct(0)].map((item: iProduct, i: number) => (
-        <div key={i}
-          className={`${item.id !== 0 && 'border-bottom'} ${(i % 2 === 0 && 'bg-white rounded-top')}`}>
-          <ProductInfo isSelected={currentId !== (item.id)} product={item} onSelect={() => updateSelectedIndex(item.id)} />
+        // <div key={i}
+        //   className={`${item.id !== 0 && 'border-bottom'} ${(i % 2 === 0 && 'bg-white rounded-top')}`}>
+        <React.Fragment key={i}>
+          <ProductInfo key={`info-${i}`} isSelected={currentId === (item.id)}
+            product={item} index={i}
+            onSelect={() => updateSelectedIndex(item.id)} />
           {currentId === (item.id) &&
-            <EditProduct data={item} updateCommand={(e) => refreshData(e.data, e.method)}
+            <EditProduct key={`edit-${i}`} data={item}
               index={i} />}
-        </div>
+         {/* </div> */}
+         </React.Fragment>
       ))}
     </React.Fragment>
   );
 };
 
 const EditProduct: React.FunctionComponent<updateProductParam> = ({
-  data, updateCommand, index
+  data, index
 }) => {
-  const params = useContext(PropertyContext);
   const [product, setProduct] = useState<iProduct>(initProduct(0));
   const { units, isLoading, isError, reload, removeUnit } = useUnit(data);
   const [includeUnit, setIncludeUnit] = useState<boolean>(false);
   const [errorText, setErrorText] = useState<string>('');
+  const params = useContext(PropertyContext);
 
   React.useEffect(() => {
     let isLoaded = false;
 
-    if (!isLoaded) {
-      setProduct(data);
+    const attachProduct = () => {
+
+      if (!isLoaded) {
+        setProduct(data);
+      }
     }
+
+    attachProduct();
 
     return () => {
       isLoaded = true;
@@ -183,7 +188,8 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      updateCommand({ data: data, method: product.id === 0 ? 'insert' : 'update' });
+      params.updateValue && params.updateValue(data, product.id === 0 ? 'insert' : 'update')
+      //updateCommand({ data: data, method: product.id === 0 ? 'insert' : 'update' });
       setProduct(data);
       setIncludeUnit(false);
     }
@@ -196,10 +202,10 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
       //console.log('Price Changed')
       units.map((item: iUnit, index: number) => {
         const price = item.content * basePrice;
-        item.buy_price = price;
-        item.sale_price = (item.margin * price) + price;
-        item.member_price = (item.member_margin * price) + price;
-        item.agent_price = (item.agent_margin * price) + price;
+        item.buyPrice = price;
+        item.salePrice = (item.margin * price) + price;
+        item.memberPrice = (item.memberMargin * price) + price;
+        item.agentPrice = (item.agentMargin * price) + price;
         return item;
       });
     }
@@ -231,7 +237,8 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      updateCommand({ data: product, method: 'delete' });
+      params.updateValue && params.updateValue(data, 'delete')
+      //updateCommand({ data: product, method: 'delete' });
     }
 
     return false;
@@ -246,7 +253,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[0]}
               placeholder={labels[0]}
               value={product.name}
-              onChange={e => setProduct({ ...product, name: e.target.value })} />
+              onChange={e => setProduct(prevState => ({ ...prevState, name: e.target.value }))} />
             <label htmlFor={ids[0]} className={'col-form-label mx-2'}>{labels[0]}</label>
           </div>
 
@@ -255,7 +262,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[1]}
               placeholder={labels[1]}
               value={product.code}
-              onChange={e => setProduct({ ...product, code: e.target.value })} />
+              onChange={e => setProduct(prevState => ({ ...prevState, code: e.target.value }))} />
             <label htmlFor={ids[1]} className={'col-form-label mx-2'}>{labels[1]}</label>
           </div>
 
@@ -264,7 +271,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[2]}
               placeholder={labels[2]}
               value={product.spec || ''}
-              onChange={e => setProduct({ ...product, spec: e.target.value })} />
+              onChange={e => setProduct(prevState => ({ ...prevState, spec: e.target.value }))} />
             <label htmlFor={ids[2]} className={'col-form-label mx-2'}>{labels[2]}</label>
           </div>
 
@@ -272,8 +279,8 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <input className={'form-control'} type="text"
               id={ids[3]}
               placeholder={labels[3]}
-              value={product.base_unit}
-              onChange={e => setProduct({ ...product, base_unit: e.target.value })} />
+              value={product.baseUnit}
+              onChange={e => setProduct(prevState => ({ ...prevState, baseUnit: e.target.value }))} />
             <label htmlFor={ids[3]} className={'col-form-label mx-2'}>{labels[3]}</label>
           </div>
 
@@ -282,14 +289,14 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[4]}
               className={'form-control'}
               thousandSeparator={true}
-              value={product.base_price * 1.0}
+              value={product.basePrice * 1.0}
               decimalScale={2}
               fixedDecimalScale={false}
               placeholder={labels[4]}
               onValueChange={(e) => {
                 setIncludeUnit(true);
-                updateUnitPrices(e.floatValue ?? 0);
-                setProduct({ ...product, base_price: e.floatValue ?? 0 });
+                updateUnitPrices(e.floatValue || 0);
+                setProduct(prevState => ({ ...prevState, basePrice: e.floatValue || 0 }));
               }} />
             <label htmlFor={ids[4]} className={'col-form-label mx-2'}>{labels[4]}</label>
           </div>
@@ -298,14 +305,14 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <NumberFormat
               id={ids[5]}
               className={'form-control'}
-              value={product.base_weight * 1.0}
+              value={product.baseWeight * 1.0}
               decimalScale={2}
               fixedDecimalScale={false}
               placeholder={labels[5]}
               onValueChange={(e) => {
                 setIncludeUnit(true);
                 updateUnitWeights(e.floatValue ?? 0);
-                setProduct({ ...product, base_weight: e.floatValue ?? 0 });
+                setProduct(prevState => ({ ...prevState, baseWeight: e.floatValue ?? 0 }));
               }} />
 
             <label htmlFor={ids[5]} className={'col-form-label mx-2'}>{labels[5]}</label>
@@ -316,12 +323,12 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               aria-label="Floating label select example"
               id={ids[7]}
               placeholder={labels[7]}
-              value={product.category_id}
+              value={product.categoryId}
               style={{ marginBottom: 2 }}
               onChange={e => {
                 const i: number = parseInt(e.target.value);
-                setProduct({ ...product, category_id: i });
-              }}>{params.categories && [{ id: 0, name: 'Pilih Kategori...' }, ...params.categories].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
+                setProduct(prevState => ({ ...prevState, categoryId: i }));
+              }}>{[{ id: 0, name: 'Pilih Kategori...' }, ...params.categories].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
             <label htmlFor={ids[7]} className={'col-form-label mx-2'}>{labels[7]}</label>
           </div>
 
@@ -330,11 +337,11 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               aria-label="Floating label select example"
               id={ids[8]}
               placeholder={labels[8]}
-              value={product.supplier_id}
+              value={product.supplierId}
               style={{ marginBottom: 2 }}
               onChange={e => {
-                setProduct({ ...product, supplier_id: +e.target.value });
-              }}>{params.suppliers && [{ id: 0, name: 'Pilih Supplier...' }, ... params.suppliers].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
+                setProduct(prevState => ({ ...prevState, supplierId: +e.target.value }));
+              }}>{[{ id: 0, name: 'Pilih Supplier...' }, ...params.suppliers].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
             <label htmlFor={ids[8]} className={'col-form-label mx-2'}>{labels[8]}</label>
           </div>
 
@@ -343,22 +350,22 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               aria-label="Floating label select example"
               id={ids[9]}
               placeholder={labels[9]}
-              value={product.warehouse_id}
+              value={product.warehouseId}
               style={{ marginBottom: 2 }}
               onChange={e => {
-                setProduct({ ...product, warehouse_id: +e.target.value });
-              }}>{params.warehouses && [{ id: 0, name: 'Pilih Gudang...' }, ...params.warehouses].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
+                setProduct(prevState => ({ ...prevState, warehouseId: +e.target.value }));
+              }}>{[{ id: 0, name: 'Pilih Gudang...' }, ...params.warehouses].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
             <label htmlFor={ids[9]} className={'col-form-label mx-2'}>{labels[9]}</label>
           </div>
 
           <div className={'col-md-6 form-check g-3'}>
             <input className={'form-check-input ms-0 me-3'}
               type={'checkbox'}
-              checked={product.is_active}
+              checked={product.isActive}
               onChange={e => {
-                setProduct({ ...product, is_active: !product.is_active });
+                setProduct(prevState => ({ ...prevState, isActive: !product.isActive }));
               }}
-              value={product.is_active ? 1 : 0} id={ids[6]} />
+              value={product.isActive ? 1 : 0} id={ids[6]} />
             <label className={'form-check-label'} htmlFor={ids[6]}>{labels[6]}</label>
           </div>
 
@@ -405,24 +412,24 @@ const checkError = (p: iProduct) => {
     return 'Ketikkan kode barang!';
   }
 
-  if (!p.base_unit || p.base_unit.trim() === '') {
+  if (!p.baseUnit || p.baseUnit.trim() === '') {
     return 'Ketikkan satuan dasar!';
   }
 
-  if (p.base_price === 0) {
+  if (p.basePrice === 0) {
     return 'Harga dasar todak boleh (0) NOL!';
   }
 
-  if (p.category_id === 0) {
+  if (p.categoryId === 0) {
     return 'Pilih kategori...!';
   }
 
-  if (p.supplier_id === 0) {
+  if (p.supplierId === 0) {
     return 'Pilih supplier...!';
     return false;
   }
 
-  if (p.warehouse_id === 0) {
+  if (p.warehouseId === 0) {
     return 'Pilih gudang...!';
   }
 
@@ -453,6 +460,50 @@ const ids: string[] = [
 ]
 
 
+type TipParam = {
+  product: iProduct;
+  params: PropertyContextType
+}
+
+const ShowTips: React.FunctionComponent<TipParam> = ({ product, params }) => {
+  return (<>
+    <div className={'row'}>
+      <div className={'col-12'}>
+       <strong>{product.name}</strong>
+      </div>
+    </div>
+    <div className={'row'}>
+      <div className={'col-md-4'}>Kode:</div>
+      <div className={'col-md-8'}>
+        {product.code}
+      </div>
+    </div>
+    <div className={'row'}>
+      <div className={'col-md-4'}>Spec:</div>
+      <div className={'col-md-8'}>
+        {product.spec}
+      </div>
+    </div>
+    <div className={'row'}>
+      <div className={'col-md-4'}>Kategori:</div>
+      <div className={'col-md-8'}>
+        {params.categories.filter((x) => x.id === product.categoryId)[0]?.name}
+      </div>
+    </div>
+    <div className={'row'}>
+      <div className={'col-md-4'}>Supplier:</div>
+      <div className={'col-md-8'}>
+        {params.suppliers.filter((x) => x.id === product.supplierId)[0]?.name}
+      </div>
+    </div>
+    <div className={'row'}>
+      <div className={'col-md-4'}>Gudang:</div>
+      <div className={'col-md-8'}>
+        {params.warehouses.filter((x) => x.id === product.warehouseId)[0]?.name}
+      </div>
+    </div>
+  </>);
+}
 /* using tools tip
 <p data-tip data-for={`tip-${product.name}`} />
       <ReactTooltip id={`tip-${product.name}`}

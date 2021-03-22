@@ -44,11 +44,11 @@ const apiUnit: apiProductFunction = {
     return await db.query<iUnit | any>
       (
         sql`UPDATE units SET barcode = ${p.barcode}, name = ${p.name},
-          content = ${p.content}, weight = ${p.weight}, buy_price = ${p.buy_price},
-          margin = ${p.margin}, agent_margin = ${p.agent_margin},
-          member_margin = ${p.member_margin}, sale_price = ${p.sale_price},
-          agent_price = ${p.agent_price}, member_price = ${p.member_price},
-          profit = ${p.profit}, product_id = ${p.product_id}
+          content = ${p.content}, weight = ${p.weight}, buy_price = ${p.buyPrice},
+          margin = ${p.margin}, agent_margin = ${p.agentMargin},
+          member_margin = ${p.memberMargin}, sale_price = ${p.salePrice},
+          agent_price = ${p.agentPrice}, member_price = ${p.memberPrice},
+          profit = ${p.profit}, product_id = ${p.productId}
         WHERE id = ${id}
         RETURNING *`
       )
@@ -62,10 +62,10 @@ const apiUnit: apiProductFunction = {
           margin, agent_margin, member_margin,
           sale_price, agent_price, member_price,
           profit, product_id)
-        VALUES (${p.barcode}, ${p.name}, ${p.content}, ${p.weight}, ${p.buy_price},
-        ${p.margin}, ${p.agent_margin}, ${p.member_margin},
-        ${p.sale_price}, ${p.agent_price}, ${p.member_price},
-        ${p.profit}, ${p.product_id}) RETURNING id`
+        VALUES (${p.barcode}, ${p.name}, ${p.content}, ${p.weight}, ${p.buyPrice},
+        ${p.margin}, ${p.agentMargin}, ${p.memberMargin},
+        ${p.salePrice}, ${p.agentPrice}, ${p.memberPrice},
+        ${p.profit}, ${p.productId}) RETURNING id`
       )
       .then((data) => ([{ ...p, id: data.rows[0].id }, undefined]))
       .catch((error) => ([undefined, error]));

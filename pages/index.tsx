@@ -25,6 +25,8 @@ export default function Home() {
   if (error) return <div>{error.message}</div>
   if (!data) return <div>Loading...</div>
 
+//  console.log('Data: ', data)
+
   return (
     <Layout home>
       <Head>
@@ -52,9 +54,9 @@ var profilingStateSize = 4;
 // typeof SharedArrayBuffer === 'function' ? new SharedArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : // $FlowFixMe Flow doesn't know about ArrayBuffer
 // typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null // Don't crash the init path on IE9
 // ;
+
 var sharedProfilingBuffer = isEnabledSharedArrayBuffer ?
 new SharedArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT)
-    : // $FlowFixMe Flow doesn't know about ArrayBuffer
-    typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null
-    
+    : typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null
+
 */
