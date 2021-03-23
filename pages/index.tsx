@@ -60,3 +60,9 @@ new SharedArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT)
     : typeof ArrayBuffer === 'function' ? new ArrayBuffer(profilingStateSize * Int32Array.BYTES_PER_ELEMENT) : null
 
 */
+
+
+/**
+ * INERCEPTOR
+ * export {default as createFieldNameTransformationInterceptor} from './factories';
+ */

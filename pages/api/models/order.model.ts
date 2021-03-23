@@ -6,6 +6,7 @@ type apiOrderReturnType = Promise<any[] | (readonly iOrder[] | undefined)[]>;
 interface apiOrderFunction {
   getOrder(id: number): apiOrderReturnType;
   getAllOrder: () => apiOrderReturnType; // same as above
+ // getOrderBySales: (id: number) => apiOrderReturnType;
   updateOrder(id: number, p: iOrder): apiOrderReturnType;
   insertOrder(p: iOrder): apiOrderReturnType;
   deleteOrder(id: number): apiOrderReturnType;

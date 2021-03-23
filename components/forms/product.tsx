@@ -60,7 +60,7 @@ const ProductInfo: React.FunctionComponent<ProductInfoParam> = ({
         Kode: {product.code}, Spec: {product.spec}
       </div>
       </SelectedDiv>
-      {isSelected && product.id !== 0 &&
+      {!isSelected && !(product.id === 0) &&
         <ReactTooltip
           id={`tip-${product.id}`}
           type={'light'}

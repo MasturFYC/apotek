@@ -3,8 +3,8 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import { iSales } from '../../components/interfaces'
-import { CustomerFormDiv, CustomerName, SelectedDiv } from '../../components/styles'
+import { iSalesman } from '../../components/interfaces'
+import { CustomerFormDiv, CustomerName, DivRow, SelectedDiv } from '../../components/styles'
 
 interface iSelectOptions {
   value: number;
@@ -19,7 +19,7 @@ const revalidationOptions = {
   refreshInterval: 0
 };
 
-const initSales: iSales = {
+const initSales: iSalesman = {
   id: 0,
   name: '',
   street: '',
@@ -32,7 +32,7 @@ const initSales: iSales = {
 }
 
 export default function Home() {
-  const { data: sales, error, mutate } = useSWR(`/api/sales`, fetcher, revalidationOptions);
+  const { data: sales, error, mutate } = useSWR(`/api/salesman`, fetcher, revalidationOptions);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
   const [selOptions, setSelOptions] = useState<iSelectOptions[]>([])
@@ -46,8 +46,8 @@ export default function Home() {
     setCurrentIndex(i)
   }
 
-  const refreshSales = async (e: iSales, opt: number) => {
-    const url = `/api/sales/${e.id}`
+  const refreshSales = async (e: iSalesman, opt: number) => {
+    const url = `/api/salesman/${e.id}`
     const fetchOptions = {
       method: opt === -1 ? 'DELETE' : e.id === 0 ? 'POST' : 'PUT',
       headers: {
@@ -57,7 +57,7 @@ export default function Home() {
     }
 
     const res = await fetch(url, fetchOptions);
-    const data: iSales | any = await res.json();
+    const data: iSalesman | any = await res.json();
 
     if (res.status === 200) {
       if (opt === -1) {
@@ -84,8 +84,8 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={'border border-1 rounded-3 m-0'}>
-        {sales && sales.map((item: iSales, i: number) => {
+      <>
+        {sales && sales.map((item: iSalesman, i: number) => {
           return <SalesList
             key={`cust-key-${i}`}
             sales={item}
@@ -96,20 +96,19 @@ export default function Home() {
             }}
           >
             {(currentIndex === i) && isSelected &&
-
-              <CustomerFormDiv>
+              <DivRow key={`row-form-${item.id}`} className={'row'}>
                 <SalesForm
                   key={`cust-sel-${i}`}
                   options={selOptions}
                   sales={item}
                   reload={(e, opt) => refreshSales(e, opt)}
                 />
-              </CustomerFormDiv>
+              </DivRow>
             }
           </SalesList>
         })
         }
-      </section>
+      </>
     </Layout>
   )
 }
@@ -121,7 +120,7 @@ type SalesProperty = {
 }
 
 type SalesListType = {
-  sales: iSales;
+  sales: iSalesman;
   index: number;
   property?: SalesProperty;
   children: any;
@@ -132,12 +131,9 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
   sales, index, property, children, isSelected
 }) => {
   return (
-    <SelectedDiv key={`div-cust-sel-${index}`}
-      index={index}
-      isSelected={isSelected}
-      refId={sales.id}>
-      <div className={'row mb-2'}>
-        <div className={'col-md-7'}>
+    <>
+      <DivRow key={`row-${index}`} className={'row p-1'}>
+        <div className={'col-md-9'}>
           <CustomerName
             onMouseDown={(e) => {
               e.preventDefault()
@@ -145,33 +141,33 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
             }} onClick={(e) => property?.onClick(index)}
           >
             {sales.id === 0 ? 'New Sales' : sales.name}
-          </CustomerName>
-          <br /><span>{sales.street && `${sales.street} - `}{sales.city} {sales.zip && ` - (${sales.zip})`}</span>
+          </CustomerName><br />
+          <span>{sales.street && `${sales.street} - `}{sales.city} {sales.zip && ` - (${sales.zip})`}</span>
           <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
         </div>
-        <div className={'col-md-5'}>
+        <div className={'col-md-3'}>
           {sales.id !== 0 &&
-            <div className={'div-child d-flex flex-row-reverse'}>
-              <Link href={`/sales/orders/${sales.id}`}>
+            <div className={'d-flex flex-row-reverse'}>
+              <Link href={`/salesman/orders/${sales.id}`}>
                 <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Order</a>
               </Link>
             </div>
           }
-
         </div>
-      </div>
+      </DivRow>
       {children}
-    </SelectedDiv>
+    </>
+
   )
 }
 
 type SalesFormType = {
-  sales: iSales,
+  sales: iSalesman,
   options: iSelectOptions[],
-  reload?: (cust: iSales, opt: number) => void
+  reload?: (cust: iSalesman, opt: number) => void
 }
 
-const salesInit: iSales = {
+const salesInit: iSalesman = {
   id: 0,
   name: '',
   street: '',
@@ -182,7 +178,7 @@ const salesInit: iSales = {
 const SalesForm: React.FunctionComponent<SalesFormType> = ({
   sales: cust, reload
 }) => {
-  const [sales, setSales] = useState<iSales>(salesInit);
+  const [sales, setSales] = useState<iSalesman>(salesInit);
 
   React.useEffect(() => {
     let isLoaded: boolean = false;
@@ -209,9 +205,7 @@ const SalesForm: React.FunctionComponent<SalesFormType> = ({
     reload && reload(sales, -1);
   }
   return (
-    <form className={'form-floating ps-3 pb-3 pt-3 mt-2 row bg-light border-top'}
-      onSubmit={submitForm}
-    >
+    <form className={'form-floating'} onSubmit={submitForm}>
       <div className={'row gx-3'}>
         <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-name'} className={'form-control'}

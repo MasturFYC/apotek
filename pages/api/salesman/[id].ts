@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import apiSales from '../models/sales.model'
-import { iSales, METHOD_DELETE, METHOD_GET, METHOD_POST, METHOD_PUT } from '../../../components/interfaces'
+import apiSales from '../models/salesman.model'
+import { iSalesman, METHOD_DELETE, METHOD_GET, METHOD_POST, METHOD_PUT } from '../../../components/interfaces'
 
 
 export default async function salesIDHandler(req: NextApiRequest, res: NextApiResponse) {
@@ -9,14 +9,14 @@ export default async function salesIDHandler(req: NextApiRequest, res: NextApiRe
   switch (req.method) {
     case METHOD_POST:
       {
-        const sales: iSales = req.body as iSales;
+        const sales: iSalesman = req.body as iSalesman;
         result = await apiSales.insertSales(sales);
       }
       break;
     case METHOD_PUT:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        const sales: iSales = req.body as iSales;
+        const sales: iSalesman = req.body as iSalesman;
         result = await apiSales.updateSales(id, sales);
       }
       break;

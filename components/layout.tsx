@@ -56,14 +56,14 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
           <Link href="/category">
             <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} crossOrigin={'anonymous'}/>Kategori</a>
           </Link>
-          <Link href="/sales">
+          <Link href="/salesman">
             <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
           </Link>
         </div>
       </section>
       <main className={'bg-white pt-4 mb-5 pb-5'}>
         <div className={'my-3 container'}><h3>{heading && heading}</h3></div>
-        <div key="child-100" className={'container p-0 bg-light'}>{children}</div>
+        <div key="child-100" className={'container'}>{children}</div>
       </main>
       {!home && (
         <div className={styles.backToHome}>

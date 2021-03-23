@@ -43,10 +43,10 @@ export interface iOrder {
   remainPayment: number;
   createdAt?: Date;
   updatedAt?: Date;
-  sales?: iSales;
+  salesman?: iSalesman;
 }
 
-export interface iSales extends iPeople {
+export interface iSalesman extends iPeople {
   orders?: iOrder[];
 }
 
