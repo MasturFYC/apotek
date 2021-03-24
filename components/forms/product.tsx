@@ -4,7 +4,7 @@ import NumberFormat from 'react-number-format';
 import { iProduct, iUnit, iCategory, iSupplier, iWarehouse } from '../interfaces';
 import Unit, { useUnit } from '../unit';
 import PropertyContext, { PropertyContextType } from '../context/propery-context'
-import { CustomerFormDiv, CustomerName, SelectedDiv } from 'components/styles';
+import { CustomerFormDiv, CustomerName, DivRow, SelectedDiv } from 'components/styles';
 
 type ProductInfoParam = {
   product: iProduct;
@@ -53,13 +53,16 @@ const ProductInfo: React.FunctionComponent<ProductInfoParam> = ({
 
   return (
     <>
-      <SelectedDiv refId={product.id} isSelected={isSelected} index={index}>
-        <CustomerName role={'button'} onClick={(e) => onSelect()}>{product.name || 'New Product'}</CustomerName>
-        <div data-tip data-for={`tip-${product.id}`}
-        className={'px-0 pt-0 pb-1'}>
-        Kode: {product.code}, Spec: {product.spec}
-      </div>
-      </SelectedDiv>
+      <DivRow key={`pod-info-${index}`} isActive={isSelected}>
+        <div className={'col'}>
+          <CustomerName role={'button'} onClick={(e) => onSelect()}>{product.name || 'New Product'}</CustomerName>
+          <div data-tip data-for={`tip-${product.id}`}
+            className={'px-0 pt-0 pb-1'}>
+            Kode: {product.code}, Spec: {product.spec}
+          </div>
+        </div>
+      </DivRow>
+
       {!isSelected && !(product.id === 0) &&
         <ReactTooltip
           id={`tip-${product.id}`}
@@ -79,34 +82,7 @@ export const ShowProducts: React.FunctionComponent = () => {
   const [currentId, setCurrentId] = useState<number>(-1);
   const params: PropertyContextType = useContext(PropertyContext);
 
-  /*
-  const refreshData = (p: iProduct, method: string) => {
-
-    const i = currentId;
-    const timeout = setTimeout(() => {
-      switch (method) {
-        case 'update':
-          setCurrentId(currentId);
-          break;
-        case 'insert':
-          setCurrentId(0);
-          break;
-        case 'delete':
-          setCurrentId(-1);
-          break;
-      }
-    }, 1000);
-
-    updateCommand({ data: p, method: method });
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  };
-*/
   const updateSelectedIndex = (i: number) => {
-    //setSelectedIndex(i)
-    //setIndex(i)
     (currentId === i ? setCurrentId(-1) : setCurrentId(i));
   };
 
@@ -120,10 +96,10 @@ export const ShowProducts: React.FunctionComponent = () => {
             product={item} index={i}
             onSelect={() => updateSelectedIndex(item.id)} />
           {currentId === (item.id) &&
-            <EditProduct key={`edit-${i}`} data={item}
-              index={i} />}
-         {/* </div> */}
-         </React.Fragment>
+            <DivRow key={`prod-form-${i}`}>
+              <EditProduct key={`edit-${i}`} data={item} index={i} />
+            </DivRow>}
+        </React.Fragment>
       ))}
     </React.Fragment>
   );
@@ -246,7 +222,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
 
   return (
     <form onSubmit={(e) => formSubmit(e)}>
-      <div className={`form-floating container g-3 my-3`}>
+      <div className={`form-floating g-3`}>
         <div className={'row'}>
           <div className={'col-md-6 form-floating mb-3'}>
             <input autoFocus type="text" className={'form-control'}
@@ -469,7 +445,7 @@ const ShowTips: React.FunctionComponent<TipParam> = ({ product, params }) => {
   return (<>
     <div className={'row'}>
       <div className={'col-12'}>
-       <strong>{product.name}</strong>
+        <strong>{product.name}</strong>
       </div>
     </div>
     <div className={'row'}>

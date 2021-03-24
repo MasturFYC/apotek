@@ -187,7 +187,7 @@ const CustomerList: React.FunctionComponent<CustomerListType> = ({
           >
             {customer.id === 0 ? 'New Customer' : customer.name}
           </CustomerName>
-          <br /><span>{customer.street && `${customer.street} - `}{customer.city}</span>
+          <br /><span>{customer.street && `${customer.street} - `}{customer.city}{customer.zip && `, ${customer.zip}`}</span>
           <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
         </div>
       </DivRow>

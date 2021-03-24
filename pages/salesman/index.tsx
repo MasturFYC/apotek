@@ -78,7 +78,7 @@ export default function Home() {
     }
 
   }
-
+ 
   return (
     <Layout home menuActive={3} heading={'Data Sales'}>
       <Head>
@@ -132,7 +132,7 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
 }) => {
   return (
     <React.Fragment>
-      <DivRow key={`row-${index}`} className={'row'} isActive={isSelected}>
+      <DivRow key={`row-${index}`} isActive={isSelected}>
         <div className={'col-7 col-md-7'}>
           <CustomerName
             onMouseDown={(e) => {
@@ -142,7 +142,7 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
           >
             {sales.id === 0 ? 'New Sales' : sales.name}
           </CustomerName><br />
-          <span>{sales.street && `${sales.street} - `}{sales.city} {sales.zip && ` - (${sales.zip})`}</span>
+          <span>{sales.street && `${sales.street} - `}{sales.city}{sales.zip && `, ${sales.zip}`}</span>
           <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
         </div>
         <div className={'col-5 col-md-5'}>
@@ -261,23 +261,19 @@ const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
         </div>
       </div>
-      <div className={'row g-3 d-flex align-items-center'}>
-        <div className="col-md-4 col-lg-4">
-          <div className={'row'}>
-            <div className={'col-md-6'}>
-              <button type="submit" className={'btn align-middle no-border no-shadow w-100 btn-primary'}>
-                Save</button>
-            </div>
+      <div className={'row g-2 mt-3'}>
+          <div className={'col-md-6'}>
+            <button type="submit" className={'btn no-shadow btn-primary mb-2'}>
+              Save</button>
+          </div>
 
-            <div className={'col-md-6'}>
-              <button type="button" className={'btn no-shadow w-100 btn-danger'}
-                onClick={(e) => deleteSales(e)}
-                disabled={sales.id === 0}>
-                Delete</button>
-            </div>
+          <div className={'col-md-6'}>
+            <button type="button" className={'btn no-shadow btn-danger'}
+              onClick={(e) => deleteSales(e)}
+              disabled={sales.id === 0}>
+              Delete</button>
           </div>
         </div>
-      </div>
     </form >
   )
 }

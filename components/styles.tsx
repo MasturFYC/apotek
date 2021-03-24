@@ -60,9 +60,10 @@ interface iRowIndex {
 
 interface iDivRow {
   isActive?: boolean;
+  class?: string;
 }
 
-export const DivRow = styled.div<iDivRow>`
+const divRow = styled('div')<iDivRow>`
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   border: 1px solid #e1e4e8;
@@ -88,8 +89,12 @@ export const DivRow = styled.div<iDivRow>`
     background-color: #f1f7fc;
     border: 0;
   }
-  background-color: ${props => props.isActive && '#e9f1fa;'}
+  ${props => props.isActive && 'background-color: #e9f1fa;'}
 `
+export const DivRow = styled(divRow).attrs({
+  className: 'row'
+})``
+
 
 export const DivHead = styled.div`
   background-color: #f1f7fc;
@@ -139,8 +144,6 @@ export const AppMenu = styled.section.attrs({
 })` &&& {
 }
 `
-
-
 export const DivMenu = styled.div.attrs({
   className: 'text-dark container'
 })` &&& {

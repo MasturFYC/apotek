@@ -55,7 +55,7 @@ export default function Home() {
       </Head>
       {categories && [...categories, initCategory].map((item: iCategory, index: number) => (
         <React.Fragment key={`fragment-${index}`}>
-          <DivRow key={`cat-key-${index}`} className={'row'} isActive={(currentIndex === index) && isSelected }>
+          <DivRow key={`cat-key-${index}`} isActive={(currentIndex === index) && isSelected }>
             <div className={'col-4 pt-1'}>
               <span
                 role={'button'}
@@ -73,7 +73,7 @@ export default function Home() {
             }
           </DivRow>
           {(currentIndex === index) && isSelected &&
-            <DivRow key={`cat-form-${index}`} className={'row'}>
+            <DivRow key={`cat-form-${index}`}>
               <EditCategory
                 key={`edit-key-${index}`}
                 data={item}
@@ -105,17 +105,18 @@ const EditCategory: React.FunctionComponent<EditCategoryParam> = ({
   React.useEffect(() => {
     let isLoaded = false;
 
-    const setCurrentData = () => {
+    const attachData = () => {
       if (!isLoaded) {
         setCategory(data);
       }
     }
-    setCurrentData();
+
+    attachData();
 
     return () => {
       isLoaded = true;
     }
-  }, [data])
+  }, [])
 
 
   const submitForm = async (e: FormEvent) => {

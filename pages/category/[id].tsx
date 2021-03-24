@@ -18,7 +18,7 @@ type CategoryPageParam = {
   warehouses: iWarehouse[];
 }
 
-const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, suppliers, warehouses }) => {
+const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, suppliers, warehouses }) => {
   const { query } = useRouter();
   const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
 
@@ -50,7 +50,7 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, s
       newData && mutate({ ...category, products: newData }, false);
     }
   }
-  const childParam: PropertyContextType =  {
+  const childParam: PropertyContextType = {
     products: category && category.products || undefined,
     categories: categories,
     suppliers: suppliers,
@@ -61,20 +61,11 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({categories, s
   return (
     <Layout home menuActive={1} heading={category && category.name}>
       <Head>
-        <title>{siteTitle}</title>
+        <title>Poduct by category - {siteTitle}</title>
       </Head>
-      <section className={'bg-white'}>
-        <section className={'container bg-light border rounded-3 m-0 p-0'}>
-          <PropertyProvider value={childParam}>
-            <ShowProducts />
-          </PropertyProvider>
-        </section>
-        <div className={'mt-3'}>
-          <Link href="/">
-            Go Back
-        </Link>
-        </div>
-      </section>
+      <PropertyProvider value={childParam}>
+        <ShowProducts />
+      </PropertyProvider>
     </Layout>
   )
 }
@@ -117,15 +108,15 @@ function findElements(arr: iProduct[], id: number) {
 
 
 export async function getServerSideProps({ query }: any) {
-/*
-  const loadCategory = async () => {
-    const [data,error] = await apiCategory.getCategory(+query.id)
-    if(data) {
-      return data;
+  /*
+    const loadCategory = async () => {
+      const [data,error] = await apiCategory.getCategory(+query.id)
+      if(data) {
+        return data;
+      }
+      return null;
     }
-    return null;
-  }
-*/
+  */
 
   const loadCategories = async () => {
     const [data, error] = await apiCategory.getListCategories();
@@ -151,7 +142,7 @@ export async function getServerSideProps({ query }: any) {
     return [];
   }
 
- // const category = await loadCategory()
+  // const category = await loadCategory()
   const categories = await loadCategories();
   const suppliers = await loadSuppliers();
   const warehouses = await loadWarehouses();

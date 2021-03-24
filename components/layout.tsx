@@ -60,6 +60,9 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
           <Link href="/salesman">
             <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
           </Link>
+          <Link href="/supplier">
+            <a className={`${menuActive === 4 && 'an-active'}`}><img src={'/images/supplier.svg'} width={16} crossOrigin={'anonymous'}/>Supplier</a>
+          </Link>
         </DivMenu>
       </AppMenu>
       <AppMain>
