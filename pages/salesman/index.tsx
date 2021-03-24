@@ -131,9 +131,9 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
   sales, index, property, children, isSelected
 }) => {
   return (
-    <>
-      <DivRow key={`row-${index}`} className={'row p-1'}>
-        <div className={'col-md-9'}>
+    <React.Fragment>
+      <DivRow key={`row-${index}`} className={'row'} isActive={isSelected}>
+        <div className={'col-7 col-md-7'}>
           <CustomerName
             onMouseDown={(e) => {
               e.preventDefault()
@@ -145,7 +145,7 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
           <span>{sales.street && `${sales.street} - `}{sales.city} {sales.zip && ` - (${sales.zip})`}</span>
           <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
         </div>
-        <div className={'col-md-3'}>
+        <div className={'col-5 col-md-5'}>
           {sales.id !== 0 &&
             <div className={'d-flex flex-row-reverse'}>
               <Link href={`/salesman/orders/${sales.id}`}>
@@ -156,7 +156,7 @@ const SalesList: React.FunctionComponent<SalesListType> = ({
         </div>
       </DivRow>
       {children}
-    </>
+    </React.Fragment>
 
   )
 }
@@ -206,7 +206,7 @@ const SalesForm: React.FunctionComponent<SalesFormType> = ({
   }
   return (
     <form className={'form-floating'} onSubmit={submitForm}>
-      <div className={'row gx-3'}>
+      <div className={'row'}>
         <div className={'col-md-12 form-floating mb-2'}>
           <input id={'txt-name'} className={'form-control'}
             type={'text'} value={sales.name} autoFocus={true}
@@ -261,16 +261,16 @@ const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
         </div>
       </div>
-      <div className={'row g-3 mt-0 d-flex align-items-center'}>
+      <div className={'row g-3 d-flex align-items-center'}>
         <div className="col-md-4 col-lg-4">
           <div className={'row'}>
             <div className={'col-md-6'}>
-              <button type="submit" className={'btn align-middle no-border no-shadow w-100 btn-primary mb-2'}>
+              <button type="submit" className={'btn align-middle no-border no-shadow w-100 btn-primary'}>
                 Save</button>
             </div>
 
             <div className={'col-md-6'}>
-              <button type="button" className={'btn no-shadow w-100 btn-danger mb-2'}
+              <button type="button" className={'btn no-shadow w-100 btn-danger'}
                 onClick={(e) => deleteSales(e)}
                 disabled={sales.id === 0}>
                 Delete</button>

@@ -5,6 +5,7 @@ import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
 import { iCategory } from '../../components/interfaces'
 import { revalidationOptions, categoryFetcher } from '../../components/fetcher'
+import { DivRow } from 'components/styles'
 
 const initCategory: iCategory = {
   id: 0,
@@ -12,7 +13,7 @@ const initCategory: iCategory = {
   products: []
 }
 
-export default function categoriesPage() {
+export default function Home() {
   const { categories, isLoading, isError, reload } = useCategory();
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
@@ -52,45 +53,40 @@ export default function categoriesPage() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={'bg-white'}>
-        <section key={'cat-section-content'} className={'container bg-white border rounded-3 m-0 p-0'}>
-          {categories && [...categories, initCategory].map((item: iCategory, index: number) => (
-            <div key={`cat-key-${index}`}
-              className={`${item.id !== 0 && 'border-bottom'} ${index % 2 === 0 && 'bg-light'} ${index === 0 && 'rounded-top'} ${item.id === 0 && 'rounded-bottom'}`}
-            >
-              <div className={'row p-2 ps-3 pt-3 '}>
-                <div className={'col-4'}>
-                  <span
-                    role={'button'}
-                    onClick={() => { setSelectedCategory(item, index) }}
-                    className={'cust-name'}>
-                    {item.id === 0 ? 'New Category' : item.name}
-                  </span>
-                </div>
-                {item.id !== 0 &&
-                  <div className={'div-child col-md-4 d-flex flex-row-reverse'}>
-                    <Link href={`/category/${item.id}`}>
-                      <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
-                    </Link>
-                  </div>
-                }
-              </div>
-              {currentIndex === index && isSelected &&
-
-                <EditCategory
-                  key={`edit-key-${index}`}
-                  data={item}
-                  index={categories.length == index ? 0 : index}
-                  updateCommand={(e: { data: iCategory, options: string }) => {
-                    refreshData(e.data, e.options)
-                  }} />
-
-              }
+      {categories && [...categories, initCategory].map((item: iCategory, index: number) => (
+        <React.Fragment key={`fragment-${index}`}>
+          <DivRow key={`cat-key-${index}`} className={'row'} isActive={(currentIndex === index) && isSelected }>
+            <div className={'col-4 pt-1'}>
+              <span
+                role={'button'}
+                onClick={() => { setSelectedCategory(item, index) }}
+                className={'cust-name'}>
+                {item.id === 0 ? 'New Category' : item.name}
+              </span>
             </div>
-          ))}
-        </section>
-      </section>
-    </Layout>
+            {item.id !== 0 &&
+              <div className={'col-md-4 d-flex flex-row-reverse'}>
+                <Link href={`/category/${item.id}`}>
+                  <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
+                </Link>
+              </div>
+            }
+          </DivRow>
+          {(currentIndex === index) && isSelected &&
+            <DivRow key={`cat-form-${index}`} className={'row'}>
+              <EditCategory
+                key={`edit-key-${index}`}
+                data={item}
+                index={categories.length == index ? 0 : index}
+                updateCommand={(e: { data: iCategory, options: string }) => {
+                  refreshData(e.data, e.options)
+                }} />
+            </DivRow>
+          }
+
+        </React.Fragment>
+      ))}
+    </Layout >
   )
 }
 
@@ -164,8 +160,8 @@ const EditCategory: React.FunctionComponent<EditCategoryParam> = ({
     return false;
   }
   return (
-    <form onSubmit={submitForm} className={`col-md-6 p-0 m-0`}>
-      <div className="row p-3">
+    <form onSubmit={submitForm} className={'form-floating'}>
+      <div className="row">
         <div className={'col-md-12'}>
           <label htmlFor={'input-name'} className="form-label">
             Nama Kategori:
@@ -181,7 +177,7 @@ const EditCategory: React.FunctionComponent<EditCategoryParam> = ({
             onChange={e => setCategory({ ...category, name: e.target.value })} />
         </div>
       </div>
-      <div className="row p-3 pt-0">
+      <div className="row mt-3">
         <div className={'col-md-12'}>
           <button
             type={'submit'}

@@ -1,3 +1,4 @@
+import { classNames } from 'react-select/src/utils';
 import styled from 'styled-components';
 
 export const CustomerName = styled.span`
@@ -57,34 +58,120 @@ interface iRowIndex {
 
 //background-color: '#f7f9fb';
 
-export const DivRow = styled.div`
-border: 1px solid #e1e4e8;
-border-radius: 0;
-border-top: none;
-&:first-child {
-  border-top: 1px solid #e1e4e8;
-  border-top-left-radius:  06px;
-  border-top-right-radius:  6px;
-};
-&:last-child {
-  border-bottom-left-radius:  6px;
-  border-bottom-right-radius:  6px;
-};
-
-&:hover {
-  background-color: #f1f7fc;
-};
-> form {
-  padding: 12px 12px 6px 12px;
-  background-color: #f1f7fc;
+interface iDivRow {
+  isActive?: boolean;
 }
+
+export const DivRow = styled.div<iDivRow>`
+  padding-top: 0.25rem;
+  padding-bottom: 0.5rem;
+  border: 1px solid #e1e4e8;
+  border-radius: 0;
+  border-top: none;
+  &:first-child {
+    border-top: 1px solid #e1e4e8;
+    border-top-left-radius:  06px;
+    border-top-right-radius:  6px;
+  };
+  &:last-child {
+    border-bottom-left-radius:  6px;
+    border-bottom-right-radius:  6px;
+  }
+
+  &:hover {
+    background-color: #f1f7fc;
+  };
+  & > form {
+    margin-top: -0.25rem;
+    margin-bottom: -0.5rem;
+    padding: 1.5rem;
+    background-color: #f1f7fc;
+    border: 0;
+  }
+  background-color: ${props => props.isActive && '#e9f1fa;'}
 `
 
 export const DivHead = styled.div`
-background-color: #f1f7fc;
-margin: 0;
-padding: 6px 12px;
-border: 1px solid #cbe0f4;
-border-bottom: 0;
-border-radius: 6px;
+  background-color: #f1f7fc;
+  margin: 0px;
+  padding: 6px 12px;
+  border: 1px solid #cbe0f4;
+  border-bottom: 0px;
+  border-radius: 6px;
+`
+
+export const AppMain = styled.main.attrs({
+  className: 'section'
+})`
+  margin-top: 2.0rem;
+  margin-bottom: 1.0rem;
+  background-color: #ffffff;
+`
+export const AppTitle = styled.div.attrs({
+  className: 'container'
+})` &&& {
+  font-weight: 400;
+  text-align: left;
+  font-size: 1.5rem;
+  margin-bottom: 1.0rem;
+}
+`
+
+export const AppContent = styled.section.attrs({
+  className: 'container'
+})` &&& {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+`
+
+export const AppHeader = styled.header.attrs({
+  className: 'bg-light'
+})` &&& {
+  display: flex;
+  white-space: nowrap;
+  flex-direction: column;
+  align-items: center;
+}
+`
+export const AppMenu = styled.section.attrs({
+  className: 'border-bottom bg-light pb-2'
+})` &&& {
+}
+`
+
+
+export const DivMenu = styled.div.attrs({
+  className: 'text-dark container'
+})` &&& {
+  font-size: 10pt;
+  margin-bottom: 4px;
+  padding-top: 2.5rem;
+  white-space: nowrap;
+  & > a {
+    color: #212529;
+    text-decoration: none;
+    padding: 6px 12px 12px 12px;
+    &:hover {
+      border-bottom: 2px solid #adb5bd;
+      background-color: #edeffe;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+    &:active {
+      border-bottom: 2px solid #fd7e14;
+      background-color: #e1e8fe;
+      border-top-left-radius: 0.5rem;
+      border-top-right-radius: 0.5rem;
+    }
+    > img {
+      display: inline;
+      margin-right: 6px;
+      margin-top: -2px;
+    }
+  }
+  > .an-active {
+    border-bottom: 2px solid #fd7e14;
+  }
+}
 `

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 import styles from './layout.module.css'
 import utilStyles from '../styles/utils.module.css'
+import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu } from './styles'
 
 const name = 'Apotek SR-II'
 export const siteTitle = 'Apotek SR-II'
@@ -31,7 +32,7 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.6.0/dist/umd/popper.min.js" integrity="sha384-KsvD1yqQ1/1+IA7gi3P0tyJcT3vR+NdBTt13hSJ2lnve8agRGXTTyNaBYmCR/Nwi" crossOrigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js" integrity="sha384-nsg8ua9HAw1y0W1btsyWgBklPnCUAFLuTMS2G72MMONqmOymq585AcH49TLBQObG" crossOrigin="anonymous"></script>
       </Head>
-      <header className={`bg-light text-start ${styles.header}`}>
+      <AppHeader>
         {home ? (
           <div className={'bg-dark text-white container-fluid py-2 mb-3'}>
             <h3 className={'mt-3 text-start container'}>{name}</h3>
@@ -44,9 +45,9 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
           </h2>
 
         )}
-      </header>
-      <section className={'border-bottom bg-light pb-2'}>
-        <div className={`text-dark container p-2 my-menu`}>
+      </AppHeader>
+      <AppMenu>
+        <DivMenu>
           <Link href="/customer">
             <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16} crossOrigin={'anonymous'}/>Pelanggan</a>
           </Link>
@@ -59,12 +60,12 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
           <Link href="/salesman">
             <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
           </Link>
-        </div>
-      </section>
-      <main className={'bg-white pt-4 mb-5 pb-5'}>
-        <div className={'my-3 container'}><h3>{heading && heading}</h3></div>
-        <div key="child-100" className={'container'}>{children}</div>
-      </main>
+        </DivMenu>
+      </AppMenu>
+      <AppMain>
+        <AppTitle>{heading && heading}</AppTitle>
+        <AppContent>{children}</AppContent>
+      </AppMain>
       {!home && (
         <div className={styles.backToHome}>
           <Link href="/">

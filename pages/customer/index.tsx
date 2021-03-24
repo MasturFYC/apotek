@@ -6,7 +6,7 @@ import Layout, { siteTitle } from '../../components/layout'
 //import utilStyles from '../../styles/utils.module.scss'
 import { iCustomer, iRayon } from '../../components/interfaces'
 //import { isOptionDisabled } from 'react-select/src/builtins'
-import { CustomerFormDiv, CustomerName, SelectedDiv } from '../../components/styles'
+import { CustomerFormDiv, CustomerName, DivRow } from '../../components/styles'
 
 interface iSelectOptions {
   value: number;
@@ -122,32 +122,29 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-     <section className={'border border-1 rounded-3 m-0'}>
-        {customers && customers.map((item: iCustomer, i: number) => {
-          return <CustomerList
-            key={`cust-key-${i}`}
-            customer={item}
-            index={i}
-            isSelected={isSelected && currentIndex === i}
-            property={{
-              onClick: selectCustomer
-            }}
-          >
-            {(currentIndex === i) && isSelected &&
-
-              <CustomerFormDiv>
-                <CustomerForm
-                  key={`cust-sel-${i}`}
-                  options={selOptions}
-                  customer={item}
-                  reload={(e, opt) => refreshCustomer(e, opt)}
-                />
-              </CustomerFormDiv>
-            }
-          </CustomerList>
-        })
-        }
-      </section>
+      {customers && customers.map((item: iCustomer, i: number) => {
+        return <CustomerList
+          key={`cust-key-${i}`}
+          customer={item}
+          index={i}
+          isSelected={isSelected && currentIndex === i}
+          property={{
+            onClick: selectCustomer
+          }}
+        >
+          {(currentIndex === i) && isSelected &&
+            <DivRow className={'row'}>
+              <CustomerForm
+                key={`cust-sel-${i}`}
+                options={selOptions}
+                customer={item}
+                reload={(e, opt) => refreshCustomer(e, opt)}
+              />
+            </DivRow>
+          }
+        </CustomerList>
+      })
+      }
     </Layout>
   )
 }
@@ -177,22 +174,25 @@ const CustomerList: React.FunctionComponent<CustomerListType> = ({
   customer, index, property, children, isSelected
 }) => {
   return (
-    <SelectedDiv key={`div-cust-sel-${index}`}
-      index={index}
-      isSelected={isSelected}
-      refId={customer.id}>
-      <CustomerName
-        onMouseDown={(e) => {
-          e.preventDefault()
-          return false
-        }} onClick={(e) => property?.onClick(index)}
-      >
-        {customer.id === 0 ? 'New Customer' : customer.name}
-      </CustomerName>
-      <br /><span>{customer.street && `${customer.street} - `}{customer.city}</span>
-      <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
+    <>
+      <DivRow key={`div-cust-sel-${index}`}
+        className={'row'}
+        isActive={isSelected}>
+        <div className={'col'}>
+          <CustomerName
+            onMouseDown={(e) => {
+              e.preventDefault()
+              return false
+            }} onClick={(e) => property?.onClick(index)}
+          >
+            {customer.id === 0 ? 'New Customer' : customer.name}
+          </CustomerName>
+          <br /><span>{customer.street && `${customer.street} - `}{customer.city}</span>
+          <br /><span>{customer.phone} {customer.cell && ` - ${customer.cell}` || ''}</span>
+        </div>
+      </DivRow>
       {children}
-    </SelectedDiv>
+    </>
   )
 }
 
@@ -228,7 +228,7 @@ const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
   //   }
   // }, [cust])
 
-   const submitForm = (e: React.FormEvent) => {
+  const submitForm = (e: React.FormEvent) => {
     e.preventDefault();
     reload && reload(customer, 0);
   }
@@ -237,9 +237,7 @@ const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
     reload && reload(customer, -1);
   }
   return (
-    <form className={'form-floating ps-3 pb-3 pt-3 mt-2 row bg-light border-top'}
-      onSubmit={submitForm}
-    >
+    <form className={'form-floating'} onSubmit={submitForm}>
       <div className={'row gx-3'}>
         <div className={'col-md-6'}>
           <div className={'row g-2'}>
