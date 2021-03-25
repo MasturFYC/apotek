@@ -7,7 +7,7 @@ import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu } from './st
 
 const name = 'Apotek SR-II'
 export const siteTitle = name
-export default function Layout({ children, home, menuActive = 0, heading}: any) {
+const Layout = ({ children, home, menuActive = 0, heading}: any) => {
   return (
     <React.Fragment>
       <Head>
@@ -82,3 +82,5 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
     </React.Fragment>
   )
 }
+
+export default Layout;

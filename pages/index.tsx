@@ -1,9 +1,13 @@
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 // import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import Category from '../components/category'
 import utilStyles from '../styles/utils.module.css'
-import Layout, { siteTitle } from '../components/layout'
+import { siteTitle } from '../components/layout'
+//import Layout, { siteTitle } from '../components/layout'
+
+const Layout = dynamic(import('../components/layout'))
 
 const fetcher = async (url: string) => {
 

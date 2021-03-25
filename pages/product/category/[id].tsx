@@ -107,7 +107,12 @@ function findElements(arr: iProduct[], id: number) {
 }
 
 
-export async function getServerSideProps({ query }: any) {
+export async function getServerSideProps({ req, res }: any) {
+  res.setHeader(
+    'Cache-Control',
+    'public, s-maxage=1, stale-while-revalidate=59'
+  );
+
   /*
     const loadCategory = async () => {
       const [data,error] = await apiCategory.getCategory(+query.id)
