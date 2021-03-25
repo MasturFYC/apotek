@@ -42,7 +42,7 @@ const apiWarehouse: apiWarehouseFunction = {
   }
   , getWarehouses: async () => {
     return await db.query(
-      sql`SELECT id, t.name, t.location
+      sql`SELECT t.id, t.name, t.location
       FROM warehouses AS t
       ORDER BY t.name`)
       .then((data) => ([data.rows, undefined]))

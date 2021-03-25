@@ -3,11 +3,11 @@ import Link from 'next/link'
 import React from 'react'
 import styles from './layout.module.css'
 import utilStyles from '../styles/utils.module.css'
-import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu } from './styles'
+import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu, DivHead } from './styles'
 
 const name = 'Apotek SR-II'
 export const siteTitle = name
-const Layout = ({ children, home, menuActive = 0, heading}: any) => {
+const Layout = ({ children, home, menuActive = 0, heading, subtitle}: any) => {
   return (
     <React.Fragment>
       <Head>
@@ -50,22 +50,25 @@ const Layout = ({ children, home, menuActive = 0, heading}: any) => {
         <AppTitle>{heading && heading}</AppTitle>
         <DivMenu>
           <Link href="/customer">
-            <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16} crossOrigin={'anonymous'}/>Pelanggan</a>
+            <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16}/>Pelanggan</a>
           </Link>
           <Link href="/category">
-            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16} crossOrigin={'anonymous'}/>Product</a>
+            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16}/>Product</a>
           </Link>
           <Link href="/salesman">
-            <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
+            <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16}/>Sales</a>
           </Link>
           <Link href="/category">
-            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} crossOrigin={'anonymous'}/>Kategori</a>
+            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16}/>Kategori</a>
           </Link>
           <Link href="/supplier">
-            <a className={`${menuActive === 4 && 'an-active'}`}><img src={'/images/supplier.svg'} width={16} crossOrigin={'anonymous'}/>Supplier</a>
+            <a className={`${menuActive === 4 && 'an-active'}`}><img src={'/images/supplier.svg'} width={16}/>Supplier</a>
           </Link>
           <Link href="/warehouse">
-            <a className={`${menuActive === 5 && 'an-active'}`}><img src={'/images/warehouse.png'} width={16} crossOrigin={'anonymous'}/>Gudang</a>
+            <a className={`${menuActive === 5 && 'an-active'}`}><img src={'/images/warehouse.svg'} width={16}/>Gudang</a>
+          </Link>
+          <Link href="/rayon">
+            <a className={`${menuActive === 6 && 'an-active'}`}><img src={'/images/rayon.svg'} width={16}/>Rayon</a>
           </Link>
         </DivMenu>
       </AppMenu>

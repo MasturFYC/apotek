@@ -1,4 +1,4 @@
-import db, { sql, nestQuery } from '../../../config';
+import db, { sql, nestQuery, nestQuerySingle } from '../../../config';
 import { iSalesman } from 'components/interfaces';
 type apiSalesReturnType = Promise<any[] | (readonly iSalesman[] | undefined)[]>;
 
@@ -16,13 +16,22 @@ const apiSales: apiSalesFunction = {
     return await db.query(
       sql`SELECT t.id, t.name, t.street, t.city, t.phone, t.cell, t.zip, t.created_at, t.updated_at,
         ${nestQuery
-        (sql`SELECT p.id, 
-          customer_id "customerId",
-          sales_id "salesId",
-          due_date "dueDate", total, cash, payments,
-          remain_payment "remainPayment",
-          created_at "createdAt",
-          updated_at "updatedAt"
+        (sql`SELECT p.id,
+          p.total, p.cash, p.payments,
+          p.customer_id "customerId",
+          p.sales_id "salesId",
+          p.due_date "dueDate",
+          p.remain_payment "remainPayment",
+          p.created_at "createdAt",
+          p.updated_at "updatedAt",
+          ${nestQuerySingle(sql`
+            SELECT c.id, c.name, c.street, c.city, c.phone,
+            c.cell, c.zip, c.rayon_id "RayonId", c.created_at "createdAt",
+            c.updated_at "updatedAt", c.credit_limit "creditLimit",
+            c.customer_type "customerType", c.descriptions
+            FROM customers AS c
+            WHERE c.id = p.customer_id
+          `)} AS customer
           FROM orders AS p
           WHERE p.sales_id = t.id
           ORDER BY p.id`
@@ -36,7 +45,7 @@ const apiSales: apiSalesFunction = {
     return await db.query(
       sql`SELECT t.id, t.name, t.street, t.city, t.phone, t.cell, t.zip, t.created_at, t.updated_at,
         ${nestQuery
-        (sql`SELECT p.id, 
+        (sql`SELECT p.id,
         customer_id "customerId",
         sales_id "salesId",
         due_date "dueDate", total, cash, payments,

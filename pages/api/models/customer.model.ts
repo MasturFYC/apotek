@@ -33,7 +33,7 @@ const apiCustomer: apiProductFunction = {
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
-          t.credit_limit, t.descriptions
+          t.credit_limit, t.customer_type, t.descriptions
         FROM customers AS t
         ORDER BY t.name`
       )
@@ -45,7 +45,7 @@ const apiCustomer: apiProductFunction = {
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
-          t.credit_limit, t.descriptions
+          t.credit_limit, t.customer_type, t.descriptions
         FROM customers AS t
         ORDER BY t.name
         LIMIT ${limit} OFFSET ${offset}`
@@ -59,7 +59,7 @@ const apiCustomer: apiProductFunction = {
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
-          t.credit_limit, t.descriptions
+          t.credit_limit, t.customer_type, t.descriptions
         FROM customers AS t
         WHERE t.rayon_id = ${rayonId}
         ORDER BY t.name`
@@ -72,9 +72,9 @@ const apiCustomer: apiProductFunction = {
     return await db.query<iCustomer>
       (
         sql`INSERT INTO customers (name, street, city, phone,
-          cell, zip, rayon_id, credit_limit, descriptions)
+          cell, zip, rayon_id, credit_limit, customer_type, descriptions)
         VALUES (${c.name}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell || null},
-          ${c.zip!}, ${c.rayonId}, ${c.creditLimit}, ${c.descriptions || null})
+          ${c.zip!}, ${c.rayonId}, ${c.creditLimit}, ${c.customerType}, ${c.descriptions || null})
         RETURNING id`
       )
       .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))
@@ -87,7 +87,8 @@ const apiCustomer: apiProductFunction = {
         sql`UPDATE customers  SET
         name = ${c.name}, street = ${c.street}, city = ${c.city}, phone = ${c.phone},
         cell = ${c.cell!}, zip = ${c.zip!}, rayon_id = ${c.rayonId},
-        credit_limit = ${c.creditLimit}, descriptions = ${c.descriptions!}
+        credit_limit = ${c.creditLimit}, customer_type = ${c.customerType},
+        descriptions = ${c.descriptions!}
         WHERE id = ${id}
         RETURNING *`
       )

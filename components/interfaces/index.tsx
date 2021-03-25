@@ -44,6 +44,7 @@ export interface iOrder {
   createdAt?: Date;
   updatedAt?: Date;
   salesman?: iSalesman;
+  customer?: iCustomer;
 }
 
 export interface iSalesman extends iPeople {
@@ -101,14 +102,46 @@ export interface iRayon {
   id: number;
   name: string;
   descriptions?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   customers?: iCustomer[]
 }
 
 export interface iCustomer extends iPeople {
   rayonId: number;
   creditLimit: number;
+  customerType: number;
   descriptions?: string;
   rayon?: iRayon
 }
+
+
+export interface iOrderDetail {
+  id: number;
+  orderId: number;
+  productId: number;
+  unitId: number;
+  qty: number;
+  realQty: number;
+  barcode: string;
+  productName: string;
+  spec: string;
+  unitName: string;
+  price: number;
+  disc: number;
+  subtotal: number;
+  order?: iOrder;
+  product?: iProduct;
+  unit?: iUnit;
+}
+
+export type CustomerType = {
+  value: number;
+  label: string;
+}
+export const customerTypes: CustomerType[] = [
+  {value: 0, label: 'Pilih tipe...'},
+  {value: 3, label: 'Agent'},
+  {value: 2, label: 'Member'},
+  {value: 1, label: 'Umum'},
+]

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { iCustomer } from '../interfaces';
+import { customerTypes, iCustomer } from '../interfaces';
 
 export interface iSelectOptions {
   value: number;
@@ -18,6 +18,7 @@ export const initCustomer: iCustomer = {
   createdAt: new Date,
   updatedAt: new Date,
   creditLimit: 0,
+  customerType: 1,
   descriptions: '',
   zip: ''
 }
@@ -79,7 +80,7 @@ export const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
               <label htmlFor={'txt-credit'} className={'mx-0 col-form-label'}>Limit Credit</label>
             </div>
 
-            <div className={'col-md-12 mb-2'}>
+            <div className={'col-md-6 mb-2'}>
               <div className={'row p-0'}>
                 <label htmlFor={'txt-rayon'} className={'col-2 pt-2 col-form-label-md'}>Rayon</label>
                 <Select id={'txt-rayon'} className={'col mt-0 py-0'}
@@ -87,6 +88,16 @@ export const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
                   onChange={(e) => setCustomer({ ...customer, rayonId: e?.value || 0 })}
                   options={options}
                   placeholder={'Pilih Rayon'} />
+              </div>
+            </div>
+            <div className={'col-md-6 mb-2'}>
+              <div className={'row p-0'}>
+                <label htmlFor={'txt-type'} className={'col-2 pt-2 col-form-label-md'}>Tipe</label>
+                <Select id={'txt-type'} className={'col mt-0 py-0'}
+                  value={customerTypes.filter(x => x.value === customer.customerType)}
+                  onChange={(e) => setCustomer((state) => ({ ...state, customerType: e?.value || 1 }))}
+                  options={customerTypes}
+                  placeholder={'Pilih tipe pelanggan...'} />
               </div>
             </div>
 
