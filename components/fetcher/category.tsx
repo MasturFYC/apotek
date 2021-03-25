@@ -9,9 +9,16 @@ const fetcher = async (url: string): Promise<iCategory[]> => {
   });
   const data: iCategory[] | any = await res.json();
 
+  if (data.invalid) {
+    const pageRes = await fetch(location.href)
+    if (pageRes.status === 200) {
+      location.reload()
+    }
+  }
+
   if (res.status !== 200) {
-    console.log(data.message)
-    return [];
+    throw new Error(data.message)
+    //return [];
   }
 
   return data;

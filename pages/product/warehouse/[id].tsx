@@ -1,57 +1,57 @@
 import Head from 'next/head'
-import Link from 'next/link'
+//import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React from 'react'
 import useSWR, { mutate } from 'swr'
-import Layout, { siteTitle } from '../../components/layout'
-import { iProduct, iCategory, iSupplier, iWarehouse } from '../../components/interfaces'
-import apiCategory from '../api/models/category.model'
-import apiWarehouse from '../api/models/warehouse.model'
-import apiSupplier from '../api/models/supplier.model'
-import { ShowProducts } from '../../components/forms/product'
-import { PropertyContextType, PropertyProvider } from '../../components/context/propery-context'
+import Layout, { siteTitle } from '../../../components/layout'
+import { iProduct, iCategory, iSupplier, iWarehouse } from '../../../components/interfaces'
+import apiCategory from '../../api/models/category.model'
+import apiWarehouse from '../../api/models/warehouse.model'
+import apiSupplier from '../../api/models/supplier.model'
+import { ShowProducts } from '../../../components/forms/product'
+import { PropertyContextType, PropertyProvider } from '../../../components/context/propery-context'
 
-type CategoryPageParam = {
-  category: iCategory;
+type WarehousePageParam = {
+  warehouse: iWarehouse;
   categories: iCategory[];
   suppliers: iSupplier[];
   warehouses: iWarehouse[];
 }
 
-const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, suppliers, warehouses }) => {
+const WarehousePage: React.FunctionComponent<WarehousePageParam> = ({ categories, suppliers, warehouses }) => {
   const { query } = useRouter();
-  const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
+  const { warehouse, isLoading, isError, mutate } = useWarehouse(parseInt('' + query.id));
 
   if (isError) return <div>{isError.message}</div>
   if (isLoading) return <div>Loading...</div>
 
   const refreshData = (data: iProduct, method: string) => {
-    if (category && category.products) {
+    if (warehouse && warehouse.products) {
       let newData: iProduct[] | undefined;
       switch (method) {
         case 'insert':
           {
-            newData = [...category.products, data];
+            newData = [...warehouse.products, data];
           }
           break;
         case 'update':
           {
-            const index: number = findElements(category.products, data.id);
-            newData = category.products.filter(x => x.id !== data.id)
+            const index: number = findElements(warehouse.products, data.id);
+            newData = warehouse.products.filter(x => x.id !== data.id)
             newData.splice(index, 0, data)
           }
           break;
         case 'delete':
           {
-            newData = category.products.filter(x => x.id !== data.id)
+            newData = warehouse.products.filter(x => x.id !== data.id)
           }
           break;
       }
-      newData && mutate({ ...category, products: newData }, false);
+      newData && mutate({ ...warehouse, products: newData }, false);
     }
   }
   const childParam: PropertyContextType = {
-    products: category && category.products || undefined,
+    products: warehouse && warehouse.products || undefined,
     categories: categories,
     suppliers: suppliers,
     warehouses: warehouses,
@@ -59,9 +59,9 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, 
   };
 
   return (
-    <Layout home menuActive={1} heading={category && category.name}>
+    <Layout home menuActive={1} heading={warehouse && warehouse.name}>
       <Head>
-        <title>Poduct by category - {siteTitle}</title>
+        <title>Poduct by warehouse - {siteTitle}</title>
       </Head>
       <PropertyProvider value={childParam}>
         <ShowProducts />
@@ -71,8 +71,8 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, 
 }
 
 
-const useCategory = (id: number) => {
-  const baseUrl: any = () => id && `/api/category/${id}`;
+const useWarehouse = (id: number) => {
+  const baseUrl: any = () => id && `/api/warehouse/${id}`;
   const revalidationOptions = {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -80,10 +80,10 @@ const useCategory = (id: number) => {
     refreshWhenHidden: false,
     refreshInterval: 0
   };
-  const { data, error, mutate } = useSWR<iCategory, Error>(baseUrl, fetcher, revalidationOptions);
+  const { data, error, mutate } = useSWR<iWarehouse, Error>(baseUrl, fetcher, revalidationOptions);
 
   return {
-    category: data, //{id: data?.id as number, name: data?.name as string },
+    warehouse: data, //{id: data?.id as number, name: data?.name as string },
     isLoading: !error && !data,
     isError: error,
     mutate: mutate,
@@ -107,7 +107,7 @@ function findElements(arr: iProduct[], id: number) {
 }
 
 
-export async function getServerSideProps({ query }: any) {
+export  async function getServerSideProps({ query }: any) {
   /*
     const loadCategory = async () => {
       const [data,error] = await apiCategory.getCategory(+query.id)
@@ -156,9 +156,9 @@ export async function getServerSideProps({ query }: any) {
   }
 }
 
-const fetcher = async (url: string): Promise<iCategory> => {
+const fetcher = async (url: string): Promise<iWarehouse> => {
   const res = await fetch(url)
-  const data: iCategory | any = await res.json()
+  const data: iWarehouse | any = await res.json()
 
   if (res.status !== 200) {
     throw new Error(data.message)
@@ -168,4 +168,4 @@ const fetcher = async (url: string): Promise<iCategory> => {
   return data;
 }
 
-export default categoryPage;
+export default WarehousePage;

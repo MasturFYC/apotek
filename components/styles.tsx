@@ -58,12 +58,14 @@ interface iRowIndex {
 
 //background-color: '#f7f9fb';
 
-interface iDivRow {
-  isActive?: boolean;
-  class?: string;
-}
+// interface iDivRow {
+//   isActive?: boolean;
+//   class?: string;
+// }
 
-const divRow = styled('div')<iDivRow>`
+const divRow = styled('div')<{
+  isActive?: boolean
+}>`
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   border: 1px solid #e1e4e8;
@@ -113,12 +115,13 @@ export const AppMain = styled.main.attrs({
   background-color: #ffffff;
 `
 export const AppTitle = styled.div.attrs({
-  className: 'container'
+  className: 'container bg-light'
 })` &&& {
   font-weight: 400;
   text-align: left;
   font-size: 1.5rem;
-  margin-bottom: 1.0rem;
+  margin-bottom: 0rem;
+
 }
 `
 
@@ -137,6 +140,11 @@ export const AppHeader = styled.header.attrs({
   white-space: nowrap;
   flex-direction: column;
   align-items: center;
+  > img {
+    display: inline;
+    width: 24px;
+    margin-right: 0.5rem
+  }
 }
 `
 export const AppMenu = styled.section.attrs({

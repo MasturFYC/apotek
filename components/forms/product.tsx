@@ -402,7 +402,6 @@ const checkError = (p: iProduct) => {
 
   if (p.supplierId === 0) {
     return 'Pilih supplier...!';
-    return false;
   }
 
   if (p.warehouseId === 0) {

@@ -6,7 +6,7 @@ import utilStyles from '../styles/utils.module.css'
 import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu } from './styles'
 
 const name = 'Apotek SR-II'
-export const siteTitle = 'Apotek SR-II'
+export const siteTitle = name
 export default function Layout({ children, home, menuActive = 0, heading}: any) {
   return (
     <React.Fragment>
@@ -35,38 +35,41 @@ export default function Layout({ children, home, menuActive = 0, heading}: any) 
       <AppHeader>
         {home ? (
           <div className={'bg-dark text-white container-fluid py-2 mb-3'}>
-            <h3 className={'mt-3 text-start container'}>{name}</h3>
+            <h3 className={'mt-3 text-start container'}><img src={'/favicon-32x32.png'} style={{display: 'inline', marginRight: '.5rem'}} /> {name}</h3>
           </div>
         ) : (
           <h2 className={utilStyles.headingLg}>
             <Link href="/">
-              <a className={utilStyles.colorInherit}>{name}</a>
+              <a className={utilStyles.colorInherit}><img src={'/favicon-32x32.png'}  style={{display: 'inline', marginRight: '.5rem'}}/>{name}</a>
             </Link>
           </h2>
 
         )}
       </AppHeader>
       <AppMenu>
+        <AppTitle>{heading && heading}</AppTitle>
         <DivMenu>
           <Link href="/customer">
             <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} width={16} crossOrigin={'anonymous'}/>Pelanggan</a>
           </Link>
-          <Link href="/category/24">
-            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16} crossOrigin={'anonymous'}/>Product</a>
-          </Link>
           <Link href="/category">
-            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} crossOrigin={'anonymous'}/>Kategori</a>
+            <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} width={16} crossOrigin={'anonymous'}/>Product</a>
           </Link>
           <Link href="/salesman">
             <a className={`${menuActive === 3 && 'an-active'}`}><img src={'/images/sales.svg'} width={16} crossOrigin={'anonymous'}/>Sales</a>
           </Link>
+          <Link href="/category">
+            <a className={`${menuActive === 2 && 'an-active'}`}><img src={'/images/category.svg'} width={16} crossOrigin={'anonymous'}/>Kategori</a>
+          </Link>
           <Link href="/supplier">
             <a className={`${menuActive === 4 && 'an-active'}`}><img src={'/images/supplier.svg'} width={16} crossOrigin={'anonymous'}/>Supplier</a>
+          </Link>
+          <Link href="/warehouse">
+            <a className={`${menuActive === 5 && 'an-active'}`}><img src={'/images/warehouse.png'} width={16} crossOrigin={'anonymous'}/>Gudang</a>
           </Link>
         </DivMenu>
       </AppMenu>
       <AppMain>
-        <AppTitle>{heading && heading}</AppTitle>
         <AppContent>{children}</AppContent>
       </AppMain>
       {!home && (

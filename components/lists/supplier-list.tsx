@@ -47,10 +47,9 @@ export const SupplierList: React.FunctionComponent<SupplierListType> = ({
 
   const reloadData = (method: string, s: iSupplier) => {
     refreshData(method, s, (ret: iSupplier) => {
-      if (ret)
-        [
-          setSupplier(s)
-        ];
+      if (ret) {
+        setSupplier(s)
+      };
     });
   };
 

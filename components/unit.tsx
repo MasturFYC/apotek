@@ -384,7 +384,7 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                     className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"sale_price"}
                     thousandSeparator={false} decimalScale={0} value={currentUnit.salePrice}
-                     onValueChange={(e) => priceChanged(e.floatValue || 0)} 
+                     onValueChange={(e) => priceChanged(e.floatValue || 0)}
                      className={styles.tdInputNumber} /></td>
                   <td className={styles.tdEdit2}><NumberFormat displayType={'input'} id={"member_price"}
                     thousandSeparator={false} decimalScale={0} value={currentUnit.memberPrice}
@@ -419,6 +419,15 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
 const fetcher = async (url: string): Promise<iProduct | any> => {
   const res = await fetch(url);
   const data: iProduct | any = await res.json();
+
+
+  if (data.invalid) {
+    const pageRes = await fetch(location.href)
+    alert(location.href)
+    if (pageRes.status === 200) {
+      location.reload()
+    }
+  }
 
   if (res.status !== 200) {
     return null;

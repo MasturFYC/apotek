@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "prod": "next build && next export -o _static"
+    "prod": "next build && next export -o _static",
+    "custom": "node server.js",
+    "go": "NODE_ENV=production node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",

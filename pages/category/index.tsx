@@ -66,7 +66,7 @@ export default function Home() {
             </div>
             {item.id !== 0 &&
               <div className={'col-md-4 d-flex flex-row-reverse'}>
-                <Link href={`/category/${item.id}`}>
+                <Link href={`/product/category/${item.id}`}>
                   <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
                 </Link>
               </div>

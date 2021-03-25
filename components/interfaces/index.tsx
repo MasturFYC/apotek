@@ -14,7 +14,7 @@ export interface iCategory {
 export interface iWarehouse {
   id: number;
   name: string;
-  location?: string;
+  location: string;
   createdAt?: Date;
   updatedAt?: Date;
   products?: iProduct[];
