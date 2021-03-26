@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../../components/layout'
 import { iSalesman, iOrder, iCustomer, iOrderDetail } from '../../../components/interfaces'
-import { DivHead, DivRow } from 'components/styles'
+import { CustomerName, DivHead, DivRow } from 'components/styles'
 
 const salesOrder: React.FunctionComponent = () => {
   const { query } = useRouter();
@@ -79,9 +79,9 @@ const salesOrder: React.FunctionComponent = () => {
 
   const ShowCustomer = (customer: iCustomer) => (
     <div>
-      <strong>{customer.name}</strong><br />
-      {customer.street} - {customer.city}{customer.zip && `,${customer.zip}`}<br />
-      {customer.phone}{customer.cell && ` / ${customer.cell}`}
+      <CustomerName><Link href={`/customer/${customer.id}`}><a>{customer.name}</a></Link></CustomerName><br />
+      <span>{customer.street} - {customer.city}{customer.zip && `, ${customer.zip}`}</span><br />
+      <span>Telp. {customer.phone}{customer.cell && ` / ${customer.cell}`}</span>
     </div>
   )
 
@@ -99,7 +99,7 @@ const salesOrder: React.FunctionComponent = () => {
             <label style={{ width: '100px' }}>Piutang:</label>{item.remainPayment}<br />
           </div>
           {item.customer &&
-            <div className={'col-md-auto'}>
+            <div className={'col-md-auto mb-3'}>
               <ShowCustomer {...item.customer} />
             </div>}
           <div className={'col-md-12'}>
@@ -107,11 +107,14 @@ const salesOrder: React.FunctionComponent = () => {
               setShowPayment(false)
               setShowOrderDetail(true)
             }}>Details</button>
-            <button className={'btn btn-sm btn-secondary'} onClick={() => {
+            <button className={'btn btn-sm btn-secondary me-2'} onClick={() => {
               setShowPayment(true)
               setShowOrderDetail(false)
             }}>Payments</button>
-          </div>
+            <Link href={`/orders/${item.id}`}>
+              <a className={'btn btn-success bn-sm py-1 px-3'}>Open</a>
+            </Link>
+          </div>          
           {showOrderDetail && <ShowOrderDetail orderId={item.id} />}
           {showPayment && <ShowPayments />}
         </DivRow >
@@ -206,7 +209,7 @@ const ShowOrderDetail: React.FunctionComponent<{ orderId: number }> = ({ orderId
 
     const loadDetails = async () => {
       const res = await fetch(`/order/details/${orderId}`)
-      const data: iSalesman | any = await res.json()
+      const data: iOrderDetail[] | any = await res.json()
 
       if (res.status !== 200) {
         throw new Error(data.message)

@@ -5,6 +5,7 @@ type apiSalesReturnType = Promise<any[] | (readonly iSalesman[] | undefined)[]>;
 interface apiSalesFunction {
   getSales(id: number): apiSalesReturnType;
   getAllSales: () => apiSalesReturnType; // same as above
+  getListSales: () => apiSalesReturnType; // same as above
   getOrders: (salesId: number) => apiSalesReturnType;
   updateSales(id: number, p: iSalesman): apiSalesReturnType;
   insertSales(p: iSalesman): apiSalesReturnType;
@@ -65,6 +66,15 @@ const apiSales: apiSalesFunction = {
   , getAllSales: async () => {
     return await db.query(
       sql`SELECT id, name, street, city, phone, cell, zip, created_at, updated_at
+      FROM salesmans
+      ORDER BY name`)
+      .then((data) => ([data.rows, undefined]))
+      .catch((error) => ([undefined, error]))
+  },
+
+  getListSales: async () => {
+    return await db.query(
+      sql`SELECT id, name
       FROM salesmans
       ORDER BY name`)
       .then((data) => ([data.rows, undefined]))

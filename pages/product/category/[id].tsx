@@ -8,8 +8,9 @@ import { iProduct, iCategory, iSupplier, iWarehouse } from '../../../components/
 import apiCategory from '../../api/models/category.model'
 import apiWarehouse from '../../api/models/warehouse.model'
 import apiSupplier from '../../api/models/supplier.model'
-import { ShowProducts } from '../../../components/forms/product'
+import { ShowProducts } from '../../../components/forms/product-fom'
 import { PropertyContextType, PropertyProvider } from '../../../components/context/propery-context'
+import { revalidationOptions } from 'components/fetcher'
 
 type CategoryPageParam = {
   category: iCategory;
@@ -73,13 +74,6 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, 
 
 const useCategory = (id: number) => {
   const baseUrl: any = () => id && `/api/category/${id}`;
-  const revalidationOptions = {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    refreshWhenOffline: false,
-    refreshWhenHidden: false,
-    refreshInterval: 0
-  };
   const { data, error, mutate } = useSWR<iCategory, Error>(baseUrl, fetcher, revalidationOptions);
 
   return {

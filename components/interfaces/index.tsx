@@ -45,6 +45,7 @@ export interface iOrder {
   updatedAt?: Date;
   salesman?: iSalesman;
   customer?: iCustomer;
+  details?: iOrderDetail[];
 }
 
 export interface iSalesman extends iPeople {

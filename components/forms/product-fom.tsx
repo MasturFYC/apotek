@@ -364,7 +364,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <button type={'submit'} className='btn w85 me-3 btn-primary'>
               Save Data
               </button>
-            <button type={'submit'}
+            <button type={'button'}
               disabled={product.id === 0}
               style={{ width: '85px' }}
               onClick={(e) => deleteData(e)} className='btn w85 btn-danger'>

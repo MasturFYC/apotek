@@ -8,7 +8,7 @@ import { iProduct, iCategory, iSupplier, iWarehouse } from '../../../components/
 import apiCategory from '../../api/models/category.model'
 import apiWarehouse from '../../api/models/warehouse.model'
 import apiSupplier from '../../api/models/supplier.model'
-import { ShowProducts } from '../../../components/forms/product'
+import { ShowProducts } from '../../../components/forms/product-fom'
 import { PropertyContextType, PropertyProvider } from '../../../components/context/propery-context'
 
 type WarehousePageParam = {

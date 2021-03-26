@@ -10,6 +10,7 @@ interface apiProductFunction {
   updateCustomer(custId: number, p: iCustomer): apiCustomerReturnType;
   insertCustomer(p: iCustomer): apiCustomerReturnType;
   getCustomers: () => apiCustomerReturnType;
+  getListCustomers: () => apiCustomerReturnType;
   searchCustomers(name: string, limit: number, offset: number): apiCustomerReturnType;
   getCustomersByRayon(rayonId: number): apiCustomerReturnType;
 }
@@ -28,7 +29,17 @@ const apiCustomer: apiProductFunction = {
       .catch(error => ([undefined, error]));
   },
 
-  getCustomers: async () => {
+  getListCustomers: async () => {
+    return await db.query<iCustomer>
+      (
+        sql`SELECT t.id, t.name
+        FROM customers AS t
+        ORDER BY t.name`
+      )
+      .then(data => ([data.rows, undefined]))
+      .catch(error => ([undefined, error]));
+  }
+  ,  getCustomers: async () => {
     return await db.query<iCustomer>
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,

@@ -11,13 +11,17 @@ export const CustomerName = styled.span`
   border-radius: 0.25rem;
   &:hover {
     background-color: #0d6efd;
-    color: #fff;
+    color: #ffffff;
 
   };
   &:active {
-    color: #fff;
+    color: #ffffff;
     background-color: #0856ca;
   };
+  > a:hover {
+    color: #ffffff;
+    text-decoration: none;
+  }
 `;
 
 interface iDivActive {
