@@ -1,4 +1,4 @@
-import db, { nestQuery, nestQuerySingle, sql } from '../../../config';
+import db, { dateParam, nestQuery, nestQuerySingle, sql } from '../../../config';
 import { iOrder } from 'components/interfaces';
 
 type apiOrderReturnType = Promise<any[] | (readonly iOrder[] | undefined)[]>;
@@ -6,21 +6,22 @@ type apiOrderReturnType = Promise<any[] | (readonly iOrder[] | undefined)[]>;
 interface apiOrderFunction {
   getOrder(id: number): apiOrderReturnType;
   getAllOrder: () => apiOrderReturnType; // same as above
- // getOrderBySales: (id: number) => apiOrderReturnType;
+  // getOrderBySales: (id: number) => apiOrderReturnType;
   updateOrder(id: number, p: iOrder): apiOrderReturnType;
   insertOrder(p: iOrder): apiOrderReturnType;
   deleteOrder(id: number): apiOrderReturnType;
 }
 // : SqlSqlTokenType<QueryResultRowType<string>>
+/*
 const dateParam = (dateObj: Date) => {
   return sql`TO_TIMESTAMP(${dateObj.getTime()} / 1000.0)`;
 };
-
+*/
 const apiOrder: apiOrderFunction = {
   getOrder: async (id: number) => {
     return await db.query(
-      sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date,
-        t.total, t.cash, t.payments, t.remain_payment,
+      sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date, t.total, t.cash,
+        t.payments, t.remain_payment, t.user_id, t.descriptions, t.status,
         t.created_at, t.updated_at,
         ${nestQuerySingle(sql`SELECT c.id, c.name, c.street, c.city, c.phone, c.cell, c.zip, c.credit_limit "creditLimit", c.descriptions, c.rayon_id "rayonId", c.created_at "createdAt", c.updated_at "updatedAt" FROM customers AS c WHERE c.id = t.customer_id`)} AS customer,
         ${nestQuerySingle(sql`SELECT s.id, s.name, s.street, s.city, s.phone, s.cell, s.zip, s.created_at "createdAt", s.updated_at "updatedAt" FROM salesmans AS s WHERE s.id = t.sales_id`)} AS salesman,
@@ -38,12 +39,12 @@ const apiOrder: apiOrderFunction = {
           ${nestQuerySingle(sql`
             SELECT u.id,  u.name, u.barcode, u.content, u.weight, u.margin, u.profit,
               u.product_id "productId",
-              u.buy_price "buyPrice",              
+              u.buy_price "buyPrice",
               u.agent_margin "agentMargin",
               u.member_margin "memberMargin",
               u.sale_price "salePrice",
               u.agent_price "agentPrice",
-              u.member_price "memberPrice",              
+              u.member_price "memberPrice",
               u.created_at "createdAt",
               u.updated_at "updatedAt",
               ${nestQuerySingle(sql`
@@ -73,8 +74,8 @@ const apiOrder: apiOrderFunction = {
   , getAllOrder: async () => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date,
-      t.total, t.cash, t.payments, t.remain_payment,
-      t.created_at, t.updated_at
+      t.total, t.cash, t.payments, t.remain_payment, t.status,
+      t.user_id, t.descriptions, t.created_at, t.updated_at
       FROM orders AS t
       ORDER BY t.id`)
       .then((data) => ([data.rows, undefined]))
@@ -86,25 +87,30 @@ const apiOrder: apiOrderFunction = {
       (
         sql`INSERT INTO orders (
           customer_id, sales_id, due_date,
-          total, cash, payments, remain_payment
+          total, cash, status, user_id,
+          descriptions,
         )
         VALUES (
-          ${c.customerId}, ${c.salesId},  ${dateParam(c.dueDate)},
-          ${c.total}, ${c.cash}
+          ${c.customerId}, ${c.salesId},  ${c.dueDate},
+          ${c.total}, ${c.cash}, ${c.status}, ${c.userId || null},
+          ${c.descriptions || null}
         )
-        RETURNING id`
+        RETURNING *`
       )
-      .then(data => ([{ ...c, id: data.rows[0].id }, undefined]))
+      .then(data => ([data.rows[0], undefined]))
       .catch(error => ([undefined, error]));
   },
 
   updateOrder: async (id: number, c: iOrder) => {
-    console.log(c)
+    //           due_date = ${sql`to_timestamp(${c.dueDate.replace('T', ' ')} / 1000.0)`}, total = ${c.total},
+    console.log(c.dueDate)
     return await db.query<iOrder>
       (
         sql`UPDATE orders SET
           customer_id = ${c.customerId}, sales_id = ${c.salesId},
-          due_date = ${c.dueDate.toString()}, total = ${c.total}, cash = ${c.cash}
+          due_date = ${dateParam(c.dueDate)}, total = ${c.total},
+          cash = ${c.cash}, status = ${c.status},
+          user_id = ${c.userId || null}, descriptions = ${c.descriptions || null}
         WHERE id = ${id}
         RETURNING *`
       )

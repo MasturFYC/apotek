@@ -5,12 +5,13 @@ const initOrder: iOrder = {
   id: 0,
   cash: 0,
   customerId: 0,
-  dueDate: new Date(),
+  dueDate: new Date().toLocaleDateString(),
   payments: 0,
   remainPayment: 0,
   salesId: 0,
   total: 0,
-  createdAt: new Date(),
+  createdAt: new Date().toLocaleDateString(),
+  status: 0,
   details: []
 }
 

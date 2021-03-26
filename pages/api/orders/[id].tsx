@@ -36,6 +36,7 @@ export default async function orderHandler(req: NextApiRequest, res: NextApiResp
   }
 
   const [data, error] = result;
+  console.log(data)
 
   if (data) {
     res.status(200).json(data);

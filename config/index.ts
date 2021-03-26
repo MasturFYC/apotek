@@ -13,8 +13,9 @@
 
 import {
   sql,
-//  SqlSqlTokenType,
-//  QueryResultRowType,
+  //  SqlSqlTokenType,
+  //  QueryResultRowType,
+  createTypeParserPreset,
   createPool,
   TaggedTemplateLiteralInvocationType,
   createTimestampTypeParser,
@@ -27,22 +28,24 @@ import {
 } from 'slonik-interceptor-field-name-transformation';
 //import { PrimitiveValueExpressionType } from 'slonik/dist/types';
 
-createTimestampTypeParser();
-createDateTypeParser();
 
 //console.log(preset);
 
 export { sql };
 
-const db = createPool(
-  process.env.DATABASE_URL || '',
+const db = createPool(process.env.DATABASE_URL || '',
   {
+    typeParsers: [ //...createTypeParserPreset()
+      {
+        name: 'timestamp',
+        parse: (value) => value === null ? value : value.replace(' ', 'T')
+      }
+    ],
     interceptors: [
       createFieldNameTransformationInterceptor({
         format: "CAMEL_CASE"
       })
-    ],
-    typeParsers: []
+    ]
     //     {
     //         name: 'timestamp',
     //         parse: (value) => {
@@ -85,10 +88,11 @@ export function nestQuery(query: TaggedTemplateLiteralInvocationType<Record<stri
   `;
 }
 
-/*
-export const dateParam = (dateObj: s = Date.now()): TaggedTemplateLiteralInvocationType<Record<string, Date | PrimitiveValueExpressionType>> => {
-  return sql`TO_TIMESTAMP(${dateObj.getTime()} / 1000.0)`;
-};
-*/
+export const dateParam = (value: string) => value.replace('T', ' ');
+
+// export const dateParam = (dateObj: s = Date.now()): TaggedTemplateLiteralInvocationType<Record<string, Date | PrimitiveValueExpressionType>> => {
+//   return sql`TO_TIMESTAMP(${dateObj.getTime()} / 1000.0)`;
+// };
+
 
 export default db;

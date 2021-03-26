@@ -52,7 +52,9 @@ const apiSales: apiSalesFunction = {
         due_date "dueDate", total, cash, payments,
         remain_payment "remainPayment",
         created_at "createdAt",
-        updated_at "updatedAt"
+        updated_at "updatedAt",
+        user_id "userId",
+        status, descriptions
         FROM orders AS p
         WHERE p.sales_id = t.id
         ORDER BY p.id`
