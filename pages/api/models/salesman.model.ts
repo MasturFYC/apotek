@@ -1,5 +1,5 @@
 import db, { sql, nestQuery, nestQuerySingle } from '../../../config';
-import { iSalesman } from 'components/interfaces';
+import { iDataList, iSalesman } from 'components/interfaces';
 type apiSalesReturnType = Promise<any[] | (readonly iSalesman[] | undefined)[]>;
 
 interface apiSalesFunction {
@@ -18,7 +18,7 @@ const apiSales: apiSalesFunction = {
       sql`SELECT t.id, t.name, t.street, t.city, t.phone, t.cell, t.zip, t.created_at, t.updated_at,
         ${nestQuery
         (sql`SELECT p.id,
-          p.total, p.cash, p.payments,
+          p.total, p.cash, p.payment,
           p.customer_id "customerId",
           p.sales_id "salesId",
           p.due_date "dueDate",

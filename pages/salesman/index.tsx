@@ -22,8 +22,6 @@ const initSales: iSalesman = {
   city: '',
   phone: '',
   cell: '',
-  createdAt: new Date,
-  updatedAt: new Date,
   zip: ''
 }
 

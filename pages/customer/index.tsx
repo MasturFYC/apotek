@@ -1,27 +1,19 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
-import Layout, { siteTitle } from '../../components/layout'
-import { iCustomer, iRayon } from '../../components/interfaces'
-import { initCustomer, iSelectOptions } from '../../components/forms/customer-form'
-import { CustomerList } from '../../components/lists/customer-list'
+import Layout, { siteTitle } from 'components/layout'
+import { iCustomer, iRayon } from 'components/interfaces'
+import { initCustomer } from 'components/forms/customer-form'
+import { CustomerList } from 'components/lists/customer-list'
+import { revalidationOptions } from 'components/fetcher'
 
-
-const revalidationOptions = {
-  revalidateOnFocus: false,
-  revalidateOnReconnect: false,
-  refreshWhenOffline: false,
-  refreshWhenHidden: false,
-  refreshInterval: 0
-};
 
 export default function Home() {
   const { data: customers, error, mutate } = useSWR<iCustomer[]>(`/api/customer`, fetcher, revalidationOptions);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
-  //const [rayons, setRayons] = useState<iRayon[]>([])
-  const [selOptions, setSelOptions] = useState<iSelectOptions[]>([])
-  //  const [selectedColor, dispatchSelectedColor] = React.useReducer(colorReducer, initSelected)
+  const [rayons, setRayons] = useState<iRayon[]>([])
+
   React.useEffect(() => {
     let isLoaded = false;
 
@@ -32,14 +24,9 @@ export default function Home() {
       if (res.status !== 200) {
         alert(data.message)
       } else {
-        setSelOptions(data.map((item: iRayon, i: number) => ({
-          value: item.id,
-          label: item.name
-        }
-        )))
+        setRayons(data)
       }
     }
-
     if (!isLoaded) {
       loadRayon()
     }
@@ -117,27 +104,12 @@ export default function Home() {
           data={item}
           index={i}
           refreshData={refreshCustomer}
-          selOptions={selOptions}
+          rayons={rayons}
           isSelected={isSelected && currentIndex === i}
           property={{ onClick: selectCustomer }} />
       })}
     </Layout>
   )
-}
-
-type CustomerProperty = {
-  backColor?: string;
-  borderColor?: string;
-  onClick: (i: number) => void;
-}
-
-export type CustomerListType = {
-  data: iCustomer;
-  index: number;
-  property?: CustomerProperty;
-  isSelected: boolean;
-  selOptions: iSelectOptions[];
-  refreshData: (e: { method: string, data: iCustomer }, callback: Function) => void
 }
 
 const fetcher = async (url: string) => {
@@ -152,23 +124,23 @@ const fetcher = async (url: string) => {
 }
 
 
-type colorReducerType = {
-  color: string;
-  index: number;
-  currentIndex: number;
-  isSelected: boolean;
-}
+// type colorReducerType = {
+//   color: string;
+//   index: number;
+//   currentIndex: number;
+//   isSelected: boolean;
+// }
 
-const backColors: string[] = ['#f8f9fa', '#e9ecef', '#f1f8ff']
-const initSelected: colorReducerType = {
-  color: backColors[0],
-  index: 0,
-  currentIndex: -1,
-  isSelected: false
-}
+// const backColors: string[] = ['#f8f9fa', '#e9ecef', '#f1f8ff']
+// const initSelected: colorReducerType = {
+//   color: backColors[0],
+//   index: 0,
+//   currentIndex: -1,
+//   isSelected: false
+// }
 
-type colorReducerAction = {
-  index: number;
-  currentIndex: number;
-  isSelected: boolean;
-}
+// type colorReducerAction = {
+//   index: number;
+//   currentIndex: number;
+//   isSelected: boolean;
+// }

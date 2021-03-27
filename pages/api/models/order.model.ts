@@ -21,10 +21,11 @@ const apiOrder: apiOrderFunction = {
   getOrder: async (id: number) => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date, t.total, t.cash,
-        t.payments, t.remain_payment, t.user_id, t.descriptions, t.status,
+        t.payment, t.remain_payment, t.user_id, t.descriptions, t.status,
         t.created_at, t.updated_at,
         ${nestQuerySingle(sql`SELECT c.id, c.name, c.street, c.city, c.phone, c.cell, c.zip, c.credit_limit "creditLimit", c.descriptions, c.rayon_id "rayonId", c.created_at "createdAt", c.updated_at "updatedAt" FROM customers AS c WHERE c.id = t.customer_id`)} AS customer,
         ${nestQuerySingle(sql`SELECT s.id, s.name, s.street, s.city, s.phone, s.cell, s.zip, s.created_at "createdAt", s.updated_at "updatedAt" FROM salesmans AS s WHERE s.id = t.sales_id`)} AS salesman,
+        ${nestQuery(sql`SELECT m.id, pm.name as "methodName", m.order_id "orderId", m.method_id "methodId", m.amount, m.descriptions, m.created_at "createdAt", m.updated_at "updatedAt" FROM payments AS m INNER JOIN payment_methods AS pm ON pm.id = m.method_id WHERE m.order_id = t.id ORDER BY id`)} AS payments,
         ${nestQuery(sql`
           SELECT d.id,
           d.qty,
@@ -74,7 +75,7 @@ const apiOrder: apiOrderFunction = {
   , getAllOrder: async () => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date,
-      t.total, t.cash, t.payments, t.remain_payment, t.status,
+      t.total, t.cash, t.payment, t.remain_payment, t.status,
       t.user_id, t.descriptions, t.created_at, t.updated_at
       FROM orders AS t
       ORDER BY t.id`)

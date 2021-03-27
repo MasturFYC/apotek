@@ -1,5 +1,5 @@
 import db, { sql, nestQuery } from '../../../config';
-import { iCustomer } from '../../../components/interfaces'
+import { iCustomer, iDataList } from '../../../components/interfaces'
 
 
 type apiCustomerReturnType = Promise<any[] | (readonly iCustomer[] | undefined)[]>;
@@ -30,7 +30,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   getListCustomers: async () => {
-    return await db.query<iCustomer>
+    return await db.query<iDataList>
       (
         sql`SELECT t.id, t.name
         FROM customers AS t

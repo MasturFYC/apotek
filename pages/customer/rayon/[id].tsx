@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../../components/layout'
 import { iCustomer, iRayon } from '../../../components/interfaces'
-import { initCustomer, iSelectOptions } from '../../../components/forms/customer-form'
+import { initCustomer } from '../../../components/forms/customer-form'
 import { CustomerList } from '../../../components/lists/customer-list'
 import { initRayon } from 'components/forms/rayon-form'
 
@@ -23,7 +23,7 @@ export default function CustomerByRayon() {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
 
-  const [selOptions, setSelOptions] = useState<iSelectOptions[]>([])
+  const [rayons, setRayons] = useState<iRayon[]>([])
   React.useEffect(() => {
     let isLoaded = false;
 
@@ -34,11 +34,7 @@ export default function CustomerByRayon() {
       if (res.status !== 200) {
         alert(data.message)
       } else {
-        setSelOptions(data.map((item: iRayon, i: number) => ({
-          value: item.id,
-          label: item.name
-        }
-        )))
+        setRayons(data)
       }
     }
 
@@ -115,7 +111,7 @@ export default function CustomerByRayon() {
           data={item}
           index={i}
           refreshData={refreshCustomer}
-          selOptions={selOptions}
+          rayons={rayons}
           isSelected={isSelected && currentIndex === i}
           property={{ onClick: selectCustomer }} />
       })}

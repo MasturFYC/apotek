@@ -5,7 +5,7 @@ import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../../components/layout'
 import { iSalesman, iOrder, iCustomer, iOrderDetail } from '../../../components/interfaces'
-import { CustomerName, DivHead, DivRow } from 'components/styles'
+import { CustomerName, DivRow } from 'components/styles'
 
 const salesOrder: React.FunctionComponent = () => {
   const { query } = useRouter();
@@ -168,20 +168,19 @@ const fetcher = async (url: string): Promise<iSalesman> => {
   return data;
 }
 
-const initOrder = (defaultSalesId: number): iOrder => {
-  return {
-    id: 0,
-    customerId: 0,
-    salesId: defaultSalesId,
-    dueDate: new Date(),
-    total: 0,
-    cash: 0,
-    payments: 0,
-    remainPayment: 0,
-    createdAt: new Date(),
-    updatedAt: new Date()
-  }
-}
+// const initOrder = (defaultSalesId: number): iOrder => {
+//   return {
+//     id: 0,
+//     customerId: 0,
+//     salesId: defaultSalesId,
+//     dueDate: new Date().toLocaleDateString(),
+//     total: 0,
+//     cash: 0,
+//     payment: 0,
+//     remainPayment: 0,
+//     status: 0,
+//   }
+// }
 
 export default salesOrder;
 

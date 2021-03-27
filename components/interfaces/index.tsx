@@ -3,11 +3,16 @@ export const METHOD_PUT: string = 'PUT';
 export const METHOD_DELETE: string = 'DELETE';
 export const METHOD_GET: string = 'GET';
 
+export interface iDataList {
+  id: number;
+  name: string;
+}
+
 export interface iCategory {
   id: number;
   name: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   products?: iProduct[];
 }
 
@@ -15,8 +20,8 @@ export interface iWarehouse {
   id: number;
   name: string;
   location: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   products?: iProduct[];
 }
 
@@ -28,8 +33,30 @@ export interface iPeople {
   phone: string;
   cell?: string;
   zip?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface iPaymentMethod {
+  id: number;
+  name: string;
+  createdAt?: string;
+  updatedAt?: string;
+  descriptions?: string;
+  payments?: iPayment[]
+}
+
+export interface iPayment {
+  id: number;
+  orderId: number;
+  methodId: number;
+  amount: number;
+  createdAt?: string;
+  updatedAt?: string;
+  descriptions?: string;
+  methodName?: string;
+  order?: iOrder;
+  paymentMethod?: iPaymentMethod;
 }
 
 export interface iOrder {
@@ -39,16 +66,17 @@ export interface iOrder {
   dueDate: string;
   total: number;
   cash: number;
-  payments: number;
+  payment: number;
   remainPayment: number;
-  createdAt?: string;
-  updatedAt?: string;
   status: number;
   userId?: string;
   descriptions?: string;
   salesman?: iSalesman;
   customer?: iCustomer;
   details?: iOrderDetail[];
+  payments?: iPayment[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface iSalesman extends iPeople {
@@ -74,8 +102,8 @@ export interface iProduct {
   categoryId: number;
   supplierId: number;
   warehouseId: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   category?: iCategory;
   supplier?: iSupplier;
   warehouse?: iWarehouse;
@@ -97,8 +125,8 @@ export interface iUnit {
   memberPrice: number;
   profit: number;
   productId: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   product?: iProduct
 }
 
@@ -106,8 +134,8 @@ export interface iRayon {
   id: number;
   name: string;
   descriptions?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   customers?: iCustomer[]
 }
 
@@ -140,12 +168,12 @@ export interface iOrderDetail {
 }
 
 export type CustomerType = {
-  value: number;
-  label: string;
+  id: number;
+  name: string;
 }
 export const customerTypes: CustomerType[] = [
-  {value: 0, label: 'Pilih tipe...'},
-  {value: 3, label: 'Agent'},
-  {value: 2, label: 'Member'},
-  {value: 1, label: 'Umum'},
+  { id: 0, name: 'Pilih tipe...' },
+  { id: 3, name: 'Agent' },
+  { id: 2, name: 'Member' },
+  { id: 1, name: 'Umum' },
 ]

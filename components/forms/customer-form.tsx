@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import Select from 'react-select';
-import { customerTypes, iCustomer } from '../interfaces';
-
-export interface iSelectOptions {
-  value: number;
-  label: string
-}
+import { customerTypes, iCustomer, iRayon } from '../interfaces';
 
 export const initCustomer: iCustomer = {
   id: 0,
@@ -15,8 +10,6 @@ export const initCustomer: iCustomer = {
   phone: '',
   cell: '',
   rayonId: 0,
-  createdAt: new Date,
-  updatedAt: new Date,
   creditLimit: 0,
   customerType: 1,
   descriptions: '',
@@ -25,12 +18,12 @@ export const initCustomer: iCustomer = {
 
 type CustomerFormType = {
   data: iCustomer;
-  options: iSelectOptions[];
+  rayons: iRayon[];
   reload: (e: { method: string; data: iCustomer; }) => void;
 };
 
 export const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
-  data, options, reload
+  data, rayons, reload
 }) => {
   const [customer, setCustomer] = useState<iCustomer>(initCustomer);
 
@@ -84,9 +77,11 @@ export const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
               <div className={'row p-0'}>
                 <label htmlFor={'txt-rayon'} className={'col-2 pt-2 col-form-label-md'}>Rayon</label>
                 <Select id={'txt-rayon'} className={'col mt-0 py-0'}
-                  value={options.filter(x => x.value === customer.rayonId)}
-                  onChange={(e) => setCustomer({ ...customer, rayonId: e?.value || 0 })}
-                  options={options}
+                  value={rayons.filter(x => x.id === customer.rayonId)}
+                  onChange={(e) => setCustomer({ ...customer, rayonId: e?.id || 0 })}
+                  options={rayons}
+                  getOptionValue={x=>`${x.id}`}
+                  getOptionLabel={x=>x.name}
                   placeholder={'Pilih Rayon'} />
               </div>
             </div>
@@ -94,9 +89,11 @@ export const CustomerForm: React.FunctionComponent<CustomerFormType> = ({
               <div className={'row p-0'}>
                 <label htmlFor={'txt-type'} className={'col-2 pt-2 col-form-label-md'}>Tipe</label>
                 <Select id={'txt-type'} className={'col mt-0 py-0'}
-                  value={customerTypes.filter(x => x.value === customer.customerType)}
-                  onChange={(e) => setCustomer((state) => ({ ...state, customerType: e?.value || 1 }))}
+                  value={customerTypes.filter(x => x.id === customer.customerType)}
+                  onChange={(e) => setCustomer((state) => ({ ...state, customerType: e?.id || 1 }))}
                   options={customerTypes}
+                  getOptionValue={x=>`${x.id}`}
+                  getOptionLabel={x=>x.name}
                   placeholder={'Pilih tipe pelanggan...'} />
               </div>
             </div>

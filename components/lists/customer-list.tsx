@@ -1,11 +1,26 @@
 import React, { useState } from 'react';
-import { iCustomer } from '../interfaces';
+import { iCustomer, iRayon } from '../interfaces';
 import { CustomerName, DivRow } from '../styles';
 import { initCustomer, CustomerForm } from '../forms/customer-form';
-import { CustomerListType } from '../../pages/customer/index';
+
+
+type CustomerProperty = {
+  backColor?: string;
+  borderColor?: string;
+  onClick: (i: number) => void;
+}
+export type CustomerListType = {
+  data: iCustomer;
+  index: number;
+  property?: CustomerProperty;
+  isSelected: boolean;
+  rayons: iRayon[];
+  refreshData: (e: { method: string, data: iCustomer }, callback: Function) => void
+}
+
 
 export const CustomerList: React.FunctionComponent<CustomerListType> = ({
-  data, index, property, isSelected, selOptions, refreshData
+  data, index, property, isSelected, rayons, refreshData
 }) => {
 
   const [customer, setCustomer] = useState<iCustomer>(initCustomer);
@@ -58,7 +73,7 @@ export const CustomerList: React.FunctionComponent<CustomerListType> = ({
         <DivRow className={'row'}>
           <CustomerForm
             key={`cust-sel-${index}`}
-            options={selOptions}
+            rayons={rayons}
             data={customer}
             reload={e => reloadData(e)} />
         </DivRow>}

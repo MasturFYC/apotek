@@ -1,4 +1,4 @@
-import { iSalesman, iProduct, iCustomer, iOrderDetail, iOrder } from 'components/interfaces';
+import { iSalesman, iProduct, iCustomer, iOrderDetail, iOrder, iDataList } from 'components/interfaces';
 import React from 'react'
 
 const initOrder: iOrder = {
@@ -6,7 +6,7 @@ const initOrder: iOrder = {
   cash: 0,
   customerId: 0,
   dueDate: new Date().toLocaleDateString(),
-  payments: 0,
+  payment: 0,
   remainPayment: 0,
   salesId: 0,
   total: 0,
@@ -16,8 +16,8 @@ const initOrder: iOrder = {
 }
 
 export type OrderContextType = {
-  salesmans: iSalesman[];
-  customers: iCustomer[];
+  salesmans: iDataList[];
+  customers: iDataList[];
   order?: iOrder;
   updateValue?: (data: iOrderDetail, method: string) => void
 }
@@ -25,6 +25,8 @@ export type OrderContextType = {
 const OrderContext = React.createContext<OrderContextType>({
   salesmans: [], customers: []
 })
+
+OrderContext.displayName = 'order-context';
 
 export { initOrder };
 export const OrderProvider = OrderContext.Provider;
