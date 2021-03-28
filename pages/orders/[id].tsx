@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import { iOrder, iCustomer, iSalesman, iOrderDetail, iDataList } from '../../components/interfaces'
+import { iOrder, iCustomer, iSalesman, iOrderDetail, iDataList, iPayment } from '../../components/interfaces'
 import { OrderContextType, OrderProvider } from '../../components/context/order-context'
 import { revalidationOptions } from 'components/fetcher'
 import apiSales from '../api/models/salesman.model'
@@ -12,6 +12,8 @@ import apiSupplier from 'pages/api/models/supplier.model'
 import apiCustomer from '../api/models/customer.model'
 import { OrderForm } from '../../components/forms/order-form'
 import { OrderDetailList } from 'components/lists/order-details'
+import { DivRow, TabStyle } from 'components/styles'
+import NumberFormat from 'react-number-format'
 
 type OrderPageParam = {
   customers: iDataList[];
@@ -27,40 +29,63 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
   if (isError) return <div>{isError.message}</div>
   if (isLoading) return <div>Loading...</div>
 
-  const refreshData = (data: iOrderDetail, method: string) => {
-    if (order && order.details) {
-      let newData: iOrderDetail[] | undefined;
-      switch (method) {
-        case 'insert':
-          {
-            newData = [...order.details, data];
-          }
-          break;
-        case 'update':
-          {
-            let index: number = -1;
-            for (var j = 0; j < order.details.length; j++) {
-              if (order.details[j].id === data.id) {
-                index = j;
-                break;
-              }
+
+  const refreshData = async (data: iOrderDetail, method: string, callback: (data: iOrderDetail | null) => void) => {
+
+    const res = await fetch(`/api/order-detail/${data.id}`, {
+      method: method,
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: JSON.stringify({
+        data: method === 'DELETE' ? data.id : data
+      })
+    })
+
+    const ret: any | iOrderDetail = await res.json();
+
+    //console.log(ret)
+    if (res.status !== 200) {
+
+      alert(ret.message)
+      callback(null)
+
+    } else {
+
+      ret.product = data.product;
+
+      if (order && order.details) {
+        switch (method) {
+          case 'POST':
+            {
+              data.id = ret.id;
+              mutate({ ...order, details: [...order.details, data] }, false)
             }
+            break;
 
-            newData = order.details.filter(x => x.id !== data.id)
-            newData.splice(index, 0, data)
-          }
-          break;
-        case 'delete':
-          {
-            newData = order.details.filter(x => x.id !== data.id)
-          }
-          break;
+          case 'PUT':
+            {
+              let index: number = -1;
+              for (var j = 0; j < order.details.length; j++) {
+                if (order.details[j].id === data.id) {
+                  index = j;
+                  break;
+                }
+              }
+
+              order.details.splice(index, 1, data);
+              mutate(order, false)
+            }
+            break;
+
+          case 'DELETE':
+            {
+              mutate({ ...order, details: order.details.filter(x => x.id !== data.id) }, false)
+            }
+            break;
+        }
       }
-
-      newData && mutate({
-        ...order,
-        details: newData
-      }, false);
+      callback(ret);
     }
   }
 
@@ -80,49 +105,40 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
         <OrderForm />
         <div className={'container'}>
           <div className={'row ms-2'}>
-            <div onClick={()=>{setShowDetails(true);setShowPayments(false)}} style={tabStyle2} className={'col-auto bg-light rounded-top'}>Details</div>
-            <div onClick={()=>{setShowDetails(false);setShowPayments(true)}} style={tabStyle} className={'col-auto bg-light rounded-top'}>Angsuran</div>
+            <TabStyle isSelected={showDetails} onClick={() => { setShowDetails(true); setShowPayments(false) }} className={'col-auto rounded-top'}>Details</TabStyle>
+            <TabStyle isSelected={showPayments} onClick={() => { setShowDetails(false); setShowPayments(true) }} className={'col-auto rounded-top'}>Angsuran</TabStyle>
           </div>
-          <div className={'row border rounded bg-light rounded-3'}>
-            {showDetails && <OrderDetailList />}
-            {showPayments && <React.Fragment>
-              {order && order.payments && order.payments.map((item, i) => {
-                  return <p key={`p-key-${i}`}>{item.amount}</p>
-              })}
-              </React.Fragment>}
-          </div>
+        </div>
+        <div className={'container border-top bg-white pt-3'}>
+          {showDetails && <OrderDetailList />}
+          {showPayments &&
+            <React.Fragment>
+              <DivRow>
+                <div className={'col-1'}>#ID</div>
+                <div className={'col-4'}>Tanggal Bayar</div>
+                <div className={'col'}>Metode Pembayaran</div>
+                <div className={'col'}>Jumlah</div>
+              </DivRow>
+              {order && order.payments && order.payments.map((item: iPayment, i: number) => (
+                <DivRow key={`pay-key-${i}`}>
+                  <div className={'col-1'}>#{item.id}</div>
+                  <div className={'col-4'}>{item.createdAt && new Date(item.createdAt).toLocaleDateString()}</div>
+                  <div className={'col'}>{item.methodName}</div>
+                  <div className={'col'}><NumberFormat thousandSeparator={true} decimalScale={0} value={item.amount} displayType={'text'} /></div>
+                </DivRow>
+              ))}
+            </React.Fragment>}
         </div>
       </OrderProvider>
     </Layout >
   )
 }
 
-const tabStyle = {
-  cursor: 'pointer',
-  marginBottom: -1,
-  marginLeft: 0,
-  paddingTop: 5,
-  paddingBottom: 5,
-  //backgroundColor: '#cecece',
-  borderBottom: '1px solid #dedede',
-  //border: '1px solid #ff0000',
-}
-
-
-const tabStyle2 = {
-  cursor: 'pointer',
-  marginBottom: -1,
-  marginLeft: 0,
-  paddingTop: 5,
-  paddingBottom: 5,
-  //backgroundColor: '#cecece',
-  border: '1px solid #dedede',
-  borderBottom: 'none',
-}
 const useOrder = (id: number) => {
   const baseUrl: any = () => id && `/api/orders/${id}`;
   const { data, error, mutate } = useSWR<iOrder, Error>(baseUrl, fetcher, revalidationOptions);
 
+  //console.log()
   return {
     order: data, //{id: data?.id as number, name: data?.name as string },
     isLoading: !error && !data,

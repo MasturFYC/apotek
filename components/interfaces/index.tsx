@@ -160,8 +160,10 @@ export interface iOrderDetail {
   spec: string;
   unitName: string;
   price: number;
-  disc: number;
+  discount: number;
+  profit: number;
   subtotal: number;
+  weight: number;
   order?: iOrder;
   product?: iProduct;
   unit?: iUnit;

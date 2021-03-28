@@ -32,9 +32,9 @@ interface iDivActive {
 
 export const SelectedDiv = styled.div<iDivActive>`
   background-color: ${props => {
-  if (props.isSelected) {
-    return '#f1f8ff';
-  }
+    if (props.isSelected) {
+      return '#f1f8ff';
+    }
     return props.index % 2 === 0 ? '#f8f9fa' : '#e9ecef'
   }};
   border-bottom-left-radius: ${props => props.refId === 0 && '3px'};
@@ -67,9 +67,7 @@ interface iRowIndex {
 //   class?: string;
 // }
 
-const divRow = styled('div')<{
-  isActive?: boolean
-}>`
+const divRow = styled.div<{isActive?: boolean}>`
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   border: 1px solid #e1e4e8;
@@ -118,9 +116,7 @@ export const AppMain = styled.main.attrs({
   margin-bottom: 1.0rem;
   background-color: #ffffff;
 `
-export const AppTitle = styled.div.attrs({
-  className: 'container bg-light'
-})` &&& {
+export const AppTitle = styled.div.attrs({ className: 'container bg-light' })` &&& {
   font-weight: 400;
   text-align: left;
   font-size: 1.5rem;
@@ -190,3 +186,25 @@ export const DivMenu = styled.div.attrs({
   }
 }
 `
+
+const formLabel = styled.label.attrs({
+  className: 'col-form-label'
+})``
+
+export const FLabel = styled(formLabel)`
+`
+
+interface iTabStyle {
+  isSelected?: boolean
+}
+
+export const TabStyle = styled.div<iTabStyle>`
+  cursor: pointer;
+  margin-bottom: -1px;
+  margin-left: -1px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid #dedede;
+  border-bottom: ${props => props.isSelected ? 'none' : '1px solid #dedede' };
+  background-color: ${props => props.isSelected ? '#ffffff' : '#f8f9fa' };
+`;

@@ -1,4 +1,4 @@
-import db, { sql } from '../../../config';
+import db, { nestQuerySingle, sql } from '../../../config';
 import { iUnit } from '../../../components/interfaces'
 //import { nestQuery } from './nest'
 //import { UniqueIntegrityConstraintViolationError } from 'slonik'
@@ -12,9 +12,32 @@ interface apiProductFunction {
   updateUnit(id: number, p: iUnit): apiUnitReturnType;
   insertUnit(p: iUnit): apiUnitReturnType;
   getUnits: () => apiUnitReturnType;
+  getProductByBarcode: (barcode: string | string[]) => apiUnitReturnType;
 }
 
 const apiUnit: apiProductFunction = {
+  getProductByBarcode: async (barcode: string | string[]) => {
+    return await db.query<iUnit>
+      (
+        sql`SELECT u.id, u.barcode, u.name, u.content, u.weight, u.buy_price,
+        u.margin, u.agent_margin, u.member_margin,
+        u.sale_price, u.agent_price, u.member_price,
+        u.profit, u.product_id,
+        ${nestQuerySingle(sql`
+          SELECT p.id, p.code, p.name, p.spec, p.base_unit "baseUnit", p.base_price "basePrice",
+          p.base_weight "baseWeight", p.is_active "isActive",
+          p.first_stock "firstStock", p.unit_in_stock "unitInStock",
+          p.category_id "categoryId", p.supplier_id "supplierId",
+          p.warehouse_id "warehouseId"
+          FROM products AS p
+          WHERE p.id = u.product_id`)} AS "product"
+        FROM units AS u
+        WHERE u.barcode = ${barcode}`
+      )
+      .then((data) => ([data.rows[0], undefined]))
+      .catch((error) => ([undefined, error]));
+  },
+
   getUnit: async (id: number) => {
     return await db.query<iUnit>
       (

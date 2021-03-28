@@ -1,5 +1,7 @@
 import { iSalesman, iProduct, iCustomer, iOrderDetail, iOrder, iDataList } from 'components/interfaces';
 import React from 'react'
+import { responseInterface } from 'swr';
+import { mutateCallback } from 'swr/dist/types';
 
 const initOrder: iOrder = {
   id: 0,
@@ -19,7 +21,7 @@ export type OrderContextType = {
   salesmans: iDataList[];
   customers: iDataList[];
   order?: iOrder;
-  updateValue?: (data: iOrderDetail, method: string) => void
+  updateValue?: (data: iOrderDetail, method: string, callback: (data: iOrderDetail | null) => void) => void
 }
 
 const OrderContext = React.createContext<OrderContextType>({

@@ -3,6 +3,7 @@ import Select from 'react-select';
 import NumberFormat from 'react-number-format';
 import { iCustomer, iDataList, iOrder, iSalesman } from '../interfaces';
 import OrderContext, { initOrder, OrderContextType } from '../context/order-context';
+import { FLabel } from 'components/styles';
 
 export const OrderForm = () => {
   const ctx: OrderContextType = useContext(OrderContext);
@@ -114,12 +115,12 @@ export const OrderForm = () => {
 
             <div className={'col-md-6 form-floating'}>
               <input type={'text'} className={'form-control'} id={'order-date'} defaultValue={order.createdAt && new Date(order.createdAt).toLocaleDateString()} readOnly />
-              <label htmlFor={'order-date'} className={'col-form-label'}>Tanggal Order</label>
+              <FLabel htmlFor={'order-date'}>Tanggal Order</FLabel>
             </div>
 
             <div className={'col-md-6 form-floating'}>
               <input value={new Date(order.dueDate).toLocaleDateString()} type={'text'} defaultChecked date-date-format={'dd/mm/yyyy'} className={'form-control'} id={'due-date'} onChange={(e) => setOrder((state) => ({ ...state, dueDate: e.target.value }))} />
-              <label htmlFor={'due-date'} className={'col-form-label'}>Jatuh Tempo</label>
+              <FLabel htmlFor={'due-date'}>Jatuh Tempo</FLabel>
             </div>
 
             <div className={'col-md-12 form-floating'}>
@@ -134,7 +135,7 @@ export const OrderForm = () => {
 
             <div className={'col-md-12 form-floating'}>
               <input type={'text'} className={'form-control'} id={'user-id'} value={order.userId || ''} readOnly />
-              <label htmlFor={'user-id'} className={'col-form-label'}>Last update by user</label>
+              <FLabel htmlFor={'user-id'}>Last update by user</FLabel>
             </div>
 
           </div>
@@ -145,7 +146,7 @@ export const OrderForm = () => {
 
             <div className={'col-md-6 form-floating'}>
               <NumberFormat displayType={'text'} id={'total-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.total} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <label htmlFor={'total-order'} className={'col-form-label'}>Total Order</label>
+              <FLabel htmlFor={'total-order'}>Total Order</FLabel>
             </div>
 
             <div className={'col-md-6 form-floating'}>
@@ -155,22 +156,22 @@ export const OrderForm = () => {
                   const remain = +(order.total - (+order.payment + cash));
                   setOrder((state) => ({ ...state, cash: cash, remainPayment: remain }));
                 }} />
-              <label htmlFor={'cash-order'} className={'col-form-label'}>Cash</label>
+              <FLabel htmlFor={'cash-order'}>Cash</FLabel>
             </div>
 
             <div className={'col-md-6 form-floating'}>
               <NumberFormat displayType={'text'} id={'payment-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.payment} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <label htmlFor={'payment-order'} className={'col-form-label'}>Angsuran</label>
+              <FLabel htmlFor={'payment-order'}>Angsuran</FLabel>
             </div>
 
             <div className={'col-md-6 form-floating'}>
               <NumberFormat displayType={'text'} id={'remain-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.remainPayment} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <label htmlFor={'remain-order'} className={'col-form-label'}>Sisa Bayar</label>
+              <FLabel htmlFor={'remain-order'}>Sisa Bayar</FLabel>
             </div>
 
             <div className={'col-md-12 form-floating'}>
               <textarea style={{ height: '70px' }} className={'form-control'} id={'order-desc'} value={order.descriptions || ''} placeholder={'Keterangan'} onChange={(e) => setOrder((state) => ({ ...state, descriptions: e.target.value }))} />
-              <label htmlFor={'order-desc'} className={'col-form-label'}>Keterangan</label>
+              <FLabel htmlFor={'order-desc'}>Keterangan</FLabel>
             </div>
 
             <div className={'col-md-7 form-floating'}>
@@ -182,7 +183,7 @@ export const OrderForm = () => {
               <button type={'submit'} className='btn me-2 btn-primary mb-2'>Save Order</button>
               <button type={'button'} disabled={order.id === 0} onClick={(e) => deleteData(e)} className='btn btn-danger mb-2'>Delete</button>
             </div>
-            
+
           </div>
         </div>
       </div>
