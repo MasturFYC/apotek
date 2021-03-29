@@ -30,7 +30,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
   if (isLoading) return <div>Loading...</div>
 
 
-  const refreshData = async (data: iOrderDetail, method: string, callback: (data: iOrderDetail | null) => void) => {
+  const refreshData = async (data: iOrderDetail, method: string, callback?: (data: iOrderDetail | null) => void) => {
 
     const res = await fetch(`/api/order-detail/${data.id}`, {
       method: method,
@@ -48,11 +48,11 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
     if (res.status !== 200) {
 
       alert(ret.message)
-      callback(null)
+      callback && callback(null)
 
     } else {
 
-      ret.product = data.product;
+      //ret.product = data.product;
 
       if (order && order.details) {
         switch (method) {
@@ -85,7 +85,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
             break;
         }
       }
-      callback(ret);
+      callback && callback(ret);
     }
   }
 

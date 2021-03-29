@@ -38,7 +38,7 @@ export const OrderForm = () => {
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      ctx.updateValue && ctx.updateValue(data, 'delete')
+      ctx.updateValue && ctx.updateValue(data, 'DELETE')
       //updateCommand({ data: order, method: 'delete' });
     }
 
@@ -174,14 +174,14 @@ export const OrderForm = () => {
               <FLabel htmlFor={'order-desc'}>Keterangan</FLabel>
             </div>
 
-            <div className={'col-md-7 form-floating'}>
+            <div className={'col-sm-7 form-floating'}>
               <Select id={'order-status'} className={'form-control border-0 p-0'} value={statusOptions.filter(x => x.id === order.status)} onChange={(e) => setOrder((state) => ({ ...state, status: e?.id || 0 }))} options={statusOptions} getOptionLabel={option => option.name} getOptionValue={option => `${option.id}`} styles={customStyles} placeholder={'Order Status'} />
               <label htmlFor={'order-status'} className={'col-form-label mb-3 pt-3'}>Status</label>
             </div>
 
-            <div className={'col-md-5 form-floating pt-2'}>
-              <button type={'submit'} className='btn me-2 btn-primary mb-2'>Save Order</button>
-              <button type={'button'} disabled={order.id === 0} onClick={(e) => deleteData(e)} className='btn btn-danger mb-2'>Delete</button>
+            <div className={'col-auto pt-2'}>
+              <button type={'submit'} className='btn me-2 btn-primary mb-3'>Save Order</button>
+              <button type={'button'} disabled={order.id === 0} onClick={(e) => deleteData(e)} className='btn btn-danger mb-3'>Delete</button>
             </div>
 
           </div>

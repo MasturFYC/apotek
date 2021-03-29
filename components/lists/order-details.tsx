@@ -40,10 +40,10 @@ export const OrderDetailList = () => {
     if (ctx.order && ctx.order.details && ctx.updateValue) {
       const currentIndex = selectedRow;
       const isNew = detail.id === 0;
-      ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data: iOrderDetail) => {
-        detail.id = data.id;
-        if (isNew) {
-          setDetail(initDetail(data.orderId));
+      ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
+        if (isNew && data) {
+          //setDetail(initDetail(data.orderId)) //(state) => ({...state, id: data.id}));
+          setDetail(initDetail(data.orderId))
           setSelectedRow(currentIndex + 1);
         } else {
           console.log({ 'local': detail, 'updated': data })
@@ -126,7 +126,7 @@ export const OrderDetailList = () => {
                 <strong>{d.qty}</strong> {d.unitName} x
               (<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
                 {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)
-              {'='} <NumberFormat value={d.subtotal - d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
+              {' = '} <NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
               </div>
             }
           </DivRow>
@@ -257,8 +257,7 @@ export const OrderDetailList = () => {
                     <button className='btn me-2 btn-primary mb-2' type={'button'}
                       onClick={e => {
                         e.preventDefault();
-                        formSubmit();
-                        return false;
+                        formSubmit();                        
                       }}>Save</button>
                     <button type={'button'} disabled={detail.id === 0} className='btn btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
                   </div>

@@ -21,7 +21,7 @@ export type OrderContextType = {
   salesmans: iDataList[];
   customers: iDataList[];
   order?: iOrder;
-  updateValue?: (data: iOrderDetail, method: string, callback: (data: iOrderDetail | null) => void) => void
+  updateValue?: (data: iOrderDetail, method: string, callback?: (data: iOrderDetail | null) => void) => void
 }
 
 const OrderContext = React.createContext<OrderContextType>({

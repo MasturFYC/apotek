@@ -57,8 +57,7 @@ const apiOrder: apiOrderFunction = {
         ${nestQuery(sql`SELECT m.id, pm.name as "methodName", m.order_id "orderId", m.method_id "methodId", m.amount, m.descriptions, m.created_at "createdAt", m.updated_at "updatedAt" FROM payments AS m INNER JOIN payment_methods AS pm ON pm.id = m.method_id WHERE m.order_id = t.id ORDER BY id`)} AS payments,
         ${nestQuery(sql`
           SELECT d.id,
-          d.qty,
-          d.weight,
+          d.qty, d.weight,
           d.order_id "orderId",
           d.product_id "productId",
           d.unit_id "unitId",
