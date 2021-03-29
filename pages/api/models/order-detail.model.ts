@@ -82,11 +82,11 @@ const apiOrderDetail: apiOrderDetailFunction = {
       .catch((error) => ([undefined, error]))
   },
   insertDetail: async (d: iOrderDetail) => {
-    console.log(d)
+    //console.log(d)
     return await db.query<iOrderDetail>
       (sql`INSERT INTO order_details
  (order_id, product_id, unit_id, qty, unit_name, real_qty, weight, discount, profit, price, subtotal)
- VALUES (${d.orderId}, ${d.productId}, ${d.unitId}, ${d.qty}, ${d.unitName}, ${d.realQty}, ${d.weight}, ${d.discount}, ${d.weight}, ${d.profit}, ${d.subtotal})
+ VALUES (${d.orderId}, ${d.productId}, ${d.unitId}, ${d.qty}, ${d.unitName}, ${d.realQty}, ${d.weight}, ${d.discount}, ${d.profit}, ${d.price}, ${d.subtotal})
  RETURNING *`)
       .then(data => ([data.rows[0], undefined]))
       .catch(error => ([undefined, error]));
@@ -95,7 +95,7 @@ const apiOrderDetail: apiOrderDetailFunction = {
   updateDetail: async (id: number, d: iOrderDetail) => {
     //           due_date = ${sql`to_timestamp(${c.dueDate.replace('T', ' ')} / 1000.0)`}, total = ${c.total},
 
-    console.log(d)
+    //console.log(d)
 
     return await db.query<iOrderDetail>
       (sql`UPDATE order_details SET

@@ -102,7 +102,7 @@ const apiOrder: apiOrderFunction = {
         )
         VALUES (
           ${c.customerId}, ${c.salesId},  ${c.dueDate},
-          ${c.total}, ${c.cash}, ${c.status}, ${c.userId || null},
+          ${c.cash}, ${c.status}, ${c.userId || null},
           ${c.descriptions || null}
         )
         RETURNING *`
@@ -118,7 +118,7 @@ const apiOrder: apiOrderFunction = {
       (
         sql`UPDATE orders SET
           customer_id = ${c.customerId}, sales_id = ${c.salesId},
-          due_date = ${dateParam(c.dueDate)}, total = ${c.total},
+          due_date = ${dateParam(c.dueDate)},
           cash = ${c.cash}, status = ${c.status},
           user_id = ${c.userId || null}, descriptions = ${c.descriptions || null}
         WHERE id = ${id}

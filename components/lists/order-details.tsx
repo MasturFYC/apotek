@@ -40,16 +40,19 @@ export const OrderDetailList = () => {
     if (ctx.order && ctx.order.details && ctx.updateValue) {
       const currentIndex = selectedRow;
       const isNew = detail.id === 0;
+      //console.log(detail)
+
       ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
         if (isNew && data) {
           //setDetail(initDetail(data.orderId)) //(state) => ({...state, id: data.id}));
-          setDetail(initDetail(data.orderId))
           setSelectedRow(currentIndex + 1);
-        } else {
-          console.log({ 'local': detail, 'updated': data })
-          //setDetail(data);
-          //setSelectedRow(currentIndex);
+          setDetail(initDetail(data.orderId))
         }
+        // else {
+        //   console.log({ 'local': detail, 'updated': data })
+        //   //setDetail(data);
+        //   //setSelectedRow(currentIndex);
+        // }
       });
     }
   }
@@ -70,7 +73,6 @@ export const OrderDetailList = () => {
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      //console.log('id', data.productId, 'list', data)
       //const row = selectedRow;
       //setSelectedRow(-1)
       setDetail((state) => ({
@@ -98,7 +100,16 @@ export const OrderDetailList = () => {
   const deleteDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
+    if (ctx.order && ctx.order.details && ctx.updateValue) {
+      ctx.updateValue(detail, 'DELETE', (data) => {
+        if (data) {
+          setSelectedRow(-1);
+        }
+      });
+    }
   }
+
+  //console.log(ctx.order)
 
   return (
     <React.Fragment>
@@ -257,7 +268,7 @@ export const OrderDetailList = () => {
                     <button className='btn me-2 btn-primary mb-2' type={'button'}
                       onClick={e => {
                         e.preventDefault();
-                        formSubmit();                        
+                        formSubmit();
                       }}>Save</button>
                     <button type={'button'} disabled={detail.id === 0} className='btn btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
                   </div>

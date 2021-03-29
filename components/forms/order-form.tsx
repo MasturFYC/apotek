@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import Select from 'react-select';
 import NumberFormat from 'react-number-format';
-import { iCustomer, iDataList, iOrder, iSalesman } from '../interfaces';
+import { iDataList, iOrder } from '../interfaces';
 import OrderContext, { initOrder, OrderContextType } from '../context/order-context';
 import { FLabel } from 'components/styles';
 
@@ -12,6 +12,7 @@ export const OrderForm = () => {
   React.useEffect(() => {
     let isLoaded = false;
     const loadOrder = () => {
+      console.log('test')
       if (!isLoaded) {
         setOrder(ctx.order && ctx.order || initOrder);
         //console.log(ctx.order?.dueDate)
@@ -19,7 +20,7 @@ export const OrderForm = () => {
     };
     loadOrder();
     return () => { isLoaded = true; };
-  }, []);
+  }, [ctx.order]);
 
   const deleteData = async (e: React.MouseEvent) => {
     const baseUrl = `/api/orders/${order.id}`;
@@ -38,7 +39,7 @@ export const OrderForm = () => {
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      ctx.updateValue && ctx.updateValue(data, 'DELETE')
+      //ctx.updateValue && ctx.updateValue(data, 'DELETE')
       //updateCommand({ data: order, method: 'delete' });
     }
 
@@ -72,7 +73,7 @@ export const OrderForm = () => {
           customerId: order.customerId,
           dueDate: order.dueDate,
           salesId: order.salesId,
-          total: order.total,
+          //total: order.total,
           status: order.status,
           userId: order.userId,
           descriptions: order.descriptions
@@ -87,21 +88,22 @@ export const OrderForm = () => {
     } else {
       //ctx.updateValue && ctx.updateValue(data, order.id === 0 ? 'insert' : 'update')
       //updateCommand({ data: data, method: order.id === 0 ? 'insert' : 'update' });
-      setOrder((state) => (
-        {
-          ...state,
-          id: data.id,cash: data.cash,
-          customerId: data.customerId,
-          dueDate: data.dueDate,
-          salesId: data.salesId,
-          total: data.total,
-          payment: data.payment,
-          remainPayment: data.remainPayment,
-          status: data.status,
-          userId: data.userId,
-          descriptions: data.descriptions
-        })
-      )
+      // setOrder((state) => (
+      //   {
+      //     ...state,
+      ctx.mutate && ctx.mutate({
+        ...ctx.order,
+        id: data.id, cash: data.cash,
+        customerId: data.customerId,
+        dueDate: data.dueDate,
+        salesId: data.salesId,
+        total: data.total,
+        payment: data.payment,
+        remainPayment: data.remainPayment,
+        status: data.status,
+        userId: data.userId,
+        descriptions: data.descriptions
+      }, false);
     }
 
     return false;

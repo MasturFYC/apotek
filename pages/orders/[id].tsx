@@ -26,10 +26,6 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
   const [showDetails, setShowDetails] = useState(true)
   const [showPayments, setShowPayments] = useState(false)
 
-  if (isError) return <div>{isError.message}</div>
-  if (isLoading) return <div>Loading...</div>
-
-
   const refreshData = async (data: iOrderDetail, method: string, callback?: (data: iOrderDetail | null) => void) => {
 
     const res = await fetch(`/api/order-detail/${data.id}`, {
@@ -58,29 +54,56 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
         switch (method) {
           case 'POST':
             {
+
               data.id = ret.id;
-              mutate({ ...order, details: [...order.details, data] }, false)
+
+              mutate({
+                ...order,
+                total: (+order.total) + (+ret.subtotal),
+                remainPayment: (+order.remainPayment) + (+ret.subtotal),
+                details: [...order.details, data]
+              }, false)
+
+              //console.log(order)
+
             }
             break;
 
           case 'PUT':
             {
               let index: number = -1;
+              let delDetail: iOrderDetail | undefined;
               for (var j = 0; j < order.details.length; j++) {
                 if (order.details[j].id === data.id) {
                   index = j;
+                  delDetail = order.details[j];
                   break;
                 }
               }
 
-              order.details.splice(index, 1, data);
-              mutate(order, false)
+              if (delDetail) {
+                order.details.splice(index, 1, data);
+                mutate({
+                  ...order,
+                  total: (+order.total) + (+data.subtotal) - (+delDetail.subtotal),
+                  remainPayment: (+order.remainPayment) + (+data.subtotal) - (+delDetail.subtotal)
+                }, false)
+              }
             }
             break;
 
           case 'DELETE':
             {
-              mutate({ ...order, details: order.details.filter(x => x.id !== data.id) }, false)
+              const delDetail = order.details.filter(x => x.id === data.id)[0];
+              order.total = (+order.total) - (+delDetail.subtotal);
+              order.remainPayment = (+order.remainPayment) - (+delDetail.subtotal);
+              //console.log(order)
+              mutate({
+                ...order,
+                //total: order.total - delDetail.subtotal,
+                //remainPayment: order.remainPayment - delDetail.subtotal,
+                details: order.details.filter(x => x.id !== delDetail.id)
+              }, false)
             }
             break;
         }
@@ -89,11 +112,16 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
     }
   }
 
+
+  if (isError) return <div>{isError.message}</div>
+  if (isLoading) return <div>Loading...</div>
+
   const ctx: OrderContextType = {
     order: order,
     salesmans: salesmans,
     customers: customers,
-    updateValue: refreshData
+    updateValue: refreshData,
+    mutate: mutate
   }
 
   return (

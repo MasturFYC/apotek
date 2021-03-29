@@ -114,7 +114,7 @@ const salesOrder: React.FunctionComponent = () => {
             <Link href={`/orders/${item.id}`}>
               <a className={'btn btn-success bn-sm py-1 px-3'}>Open</a>
             </Link>
-          </div>          
+          </div>
           {showOrderDetail && <ShowOrderDetail orderId={item.id} />}
           {showPayment && <ShowPayments />}
         </DivRow >
@@ -196,8 +196,10 @@ const initOrderDetail: iOrderDetail = {
   spec: '',
   unitName: '',
   price: 0,
-  disc: 0,
-  subtotal: 0
+  discount: 0,
+  subtotal: 0,
+  profit: 0,
+  weight: 0
 }
 
 const ShowOrderDetail: React.FunctionComponent<{ orderId: number }> = ({ orderId }) => {
