@@ -46,11 +46,11 @@ export const OrderForm = () => {
     return false;
   };
 
-
   const formSubmit = async (e: React.FormEvent) => {
     const baseUrl = `/api/orders/${order.id}`;
 
     e.preventDefault();
+
     /*
     const check = checkError(order);
     if (check) {
