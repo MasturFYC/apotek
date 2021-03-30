@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import api from '../models/order-detail.model'
-import { iOrder, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_GET } from '../../../components/interfaces'
+import api from '../models/payment.model'
+import { iPayment, METHOD_POST, METHOD_PUT, METHOD_DELETE, METHOD_GET } from '../../../components/interfaces'
 
 
-export default async function orderDetailHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function paymentHandler(req: NextApiRequest, res: NextApiResponse) {
   let result;
 
   switch (req.method) {
@@ -11,28 +11,29 @@ export default async function orderDetailHandler(req: NextApiRequest, res: NextA
       {
         const id: number = req.query.id ? +req.query.id : 0;
         const { data } = req.body
-        result = await api.updateDetail(id, data);
+        result = await api.updatePayment(id, data);
       }
       break;
+
     case METHOD_POST:
       {
         const { data } = req.body
-
-        result = await api.insertDetail(data);
-        console.log(result)
+        result = await api.insertPayment(data);
       }
       break;
+
     case METHOD_DELETE:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        result = await api.deleteDetail(id);
+        result = await api.deletePayment(id);
       }
       break
+
     case METHOD_GET:
     default:
       {
         const id: number = req.query.id ? +req.query.id : 0;
-        result = await api.getDetail(id);
+        result = await api.getPayment(id);
       }
       break;
   }

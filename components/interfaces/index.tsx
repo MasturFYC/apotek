@@ -54,6 +54,7 @@ export interface iPayment {
   createdAt?: string;
   updatedAt?: string;
   descriptions?: string;
+  userId: string,
   methodName?: string;
   order?: iOrder;
   paymentMethod?: iPaymentMethod;

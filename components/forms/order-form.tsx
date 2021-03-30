@@ -12,7 +12,7 @@ export const OrderForm = () => {
   React.useEffect(() => {
     let isLoaded = false;
     const loadOrder = () => {
-      console.log('test')
+      //console.log('test')
       if (!isLoaded) {
         setOrder(ctx.order && ctx.order || initOrder);
         //console.log(ctx.order?.dueDate)

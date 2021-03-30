@@ -1,5 +1,5 @@
 import React, { FormEvent, useContext, useRef, useState } from 'react';
-import { iOrder, iOrderDetail, iUnit } from 'components/interfaces';
+import { iOrderDetail, iUnit } from 'components/interfaces';
 import OrderContext, { OrderContextType } from 'components/context/order-context';
 import { DivRow, FLabel } from 'components/styles';
 import NumberFormat from 'react-number-format';
@@ -28,6 +28,7 @@ export const OrderDetailList = () => {
   const qtyRef = useRef<HTMLInputElement>(null);
   const discountRef = useRef<HTMLInputElement>(null);
   const barcodeRef = useRef<HTMLInputElement>(null);
+  const submitRef = useRef<HTMLButtonElement>(null);
   const ctx: OrderContextType = useContext(OrderContext);
   const [selectedRow, setSelectedRow] = useState(-1);
   const [detail, setDetail] = useState<iOrderDetail>(initDetail(ctx.order && ctx.order.id || 0))
@@ -43,9 +44,9 @@ export const OrderDetailList = () => {
       //console.log(detail)
 
       ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
+        setSelectedRow(currentIndex + 1);
         if (isNew && data) {
           //setDetail(initDetail(data.orderId)) //(state) => ({...state, id: data.id}));
-          setSelectedRow(currentIndex + 1);
           setDetail(initDetail(data.orderId))
         }
         // else {
@@ -103,7 +104,7 @@ export const OrderDetailList = () => {
     if (ctx.order && ctx.order.details && ctx.updateValue) {
       ctx.updateValue(detail, 'DELETE', (data) => {
         if (data) {
-          setSelectedRow(-1);
+          setSelectedRow(selectedRow-1);
         }
       });
     }
@@ -116,37 +117,9 @@ export const OrderDetailList = () => {
       {ctx.order && ctx.order.details && [...ctx.order.details,
       initDetail(ctx.order.id)].map((d: iOrderDetail, i: number) => (
         <React.Fragment key={`fr-key-${i}`}>
-          <DivRow key={`d-key-${i}`}
-            isActive={i === selectedRow}
-            onClick={() => {
-              if (selectedRow !== i) {
-                setSelectedRow(i);
-                setDetail(d)
-              } else {
-                setSelectedRow(-1);
-              }
-            }}>
-            <div className={'col-md-12'}>
-              {d.id === 0 ? 'Add new details' :
-                `${d.barcode} -
-                 ${d.productName},
-                 ${d.spec}`}
-            </div>
-            {d.id > 0 &&
-              <div className={'col-md-12'}>
-                <strong>{d.qty}</strong> {d.unitName} x
-              (<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
-                {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)
-              {' = '} <NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
-              </div>
-            }
-          </DivRow>
-          {selectedRow === i &&
+          {selectedRow === i ?
             <DivRow key={`form-key-${i}`} isActive={true}>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-              }
-              } className={'container py-0'}>
+              <form onSubmit={(e) => {e.preventDefault();}} className={'container py-0'}>
                 <div className={'row'}>
                   <div className={'col-sm-5 form-inline g-2'}>
                     <div className="input-group">
@@ -190,10 +163,10 @@ export const OrderDetailList = () => {
                         onKeyUp={(e) => {
                           // Cancel the default action, if needed
                           if (e.key === 'Enter') {
-                            //e.preventDefault();
-                            if (discountRef && discountRef.current) {
-                              discountRef.current.focus();
-                              discountRef.current.setSelectionRange(0, discountRef.current.value.length)
+                            const inputElement = discountRef.current;
+                            if (inputElement) {
+                              inputElement.focus();
+                              inputElement.setSelectionRange(0, inputElement.value.length)
                             }
                             return false;
                           }
@@ -241,13 +214,11 @@ export const OrderDetailList = () => {
                         onKeyUp={(e) => {
                           // Cancel the default action, if needed
                           if (e.key === 'Enter') {
-                            const inputElement = barcodeRef.current;
-                            if (inputElement) {
-                              inputElement.focus();
-                              inputElement.setSelectionRange(0, inputElement.value.length)
+                            const btnElem = submitRef.current;
+                            if (btnElem) {
+                              btnElem.click();
+                              //inputElement.setSelectionRange(0, inputElement.value.length)
                             }
-                            e.preventDefault();
-                            return false;
                           }
                         }}
                         className={'form-control'} thousandSeparator={true} decimalScale={2} fixedDecimalScale={false} />
@@ -265,7 +236,7 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
                   <div className={'col-auto form-inline g-2'}>
-                    <button className='btn me-2 btn-primary mb-2' type={'button'}
+                    <button ref={submitRef} className='btn me-2 btn-primary mb-2' type={'button'}
                       onClick={e => {
                         e.preventDefault();
                         formSubmit();
@@ -274,7 +245,33 @@ export const OrderDetailList = () => {
                   </div>
                 </div>
               </form>
-            </DivRow>
+            </DivRow> :
+                      <DivRow key={`d-key-${i}`}
+                      isActive={i === selectedRow}
+                      onClick={() => {
+                        if (selectedRow !== i) {
+                          setSelectedRow(i);
+                          setDetail(d)
+                        } else {
+                          setSelectedRow(-1);
+                        }
+                      }}>
+                      <div className={'col-md-12'}>
+                        {d.id === 0 ? 'Add new details' :
+                          `${d.barcode} -
+                           ${d.productName},
+                           ${d.spec}`}
+                      </div>
+                      {d.id > 0 &&
+                        <div className={'col-md-12'}>
+                          <strong>{d.qty}</strong> {d.unitName} x
+                        (<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
+                          {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)
+                        {' = '} <NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
+                        </div>
+                      }
+                    </DivRow>
+
           }
         </React.Fragment>
       ))}

@@ -4,23 +4,26 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import useSWR, { mutate } from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
-import { iOrder, iCustomer, iSalesman, iOrderDetail, iDataList, iPayment } from '../../components/interfaces'
+import { iOrder, iCustomer, iSalesman, iOrderDetail, iDataList, iPayment, iPaymentMethod } from '../../components/interfaces'
 import { OrderContextType, OrderProvider } from '../../components/context/order-context'
 import { revalidationOptions } from 'components/fetcher'
 import apiSales from '../api/models/salesman.model'
 import apiSupplier from 'pages/api/models/supplier.model'
 import apiCustomer from '../api/models/customer.model'
 import { OrderForm } from '../../components/forms/order-form'
+import PaymentList from '../../components/lists/payment-list'
 import { OrderDetailList } from 'components/lists/order-details'
 import { DivRow, TabStyle } from 'components/styles'
 import NumberFormat from 'react-number-format'
+import apiPayment from 'pages/api/models/payment.model'
 
 type OrderPageParam = {
+  methods: iPaymentMethod[];
   customers: iDataList[];
   salesmans: iDataList[];
 }
 
-const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, customers }) => {
+const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, customers, methods }) => {
   const { query } = useRouter();
   const { order, isLoading, isError, mutate } = useOrder(parseInt('' + query.id));
   const [showDetails, setShowDetails] = useState(true)
@@ -120,6 +123,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
     order: order,
     salesmans: salesmans,
     customers: customers,
+    methods: methods,
     updateValue: refreshData,
     mutate: mutate
   }
@@ -131,7 +135,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
       </Head>
       <OrderProvider value={ctx}>
         <OrderForm />
-        <div className={'container'}>
+        <div className={'container mt-5'}>
           <div className={'row ms-2'}>
             <TabStyle isSelected={showDetails} onClick={() => { setShowDetails(true); setShowPayments(false) }} className={'col-auto rounded-top'}>Details</TabStyle>
             <TabStyle isSelected={showPayments} onClick={() => { setShowDetails(false); setShowPayments(true) }} className={'col-auto rounded-top'}>Angsuran</TabStyle>
@@ -139,23 +143,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
         </div>
         <div className={'container border-top bg-white pt-3'}>
           {showDetails && <OrderDetailList />}
-          {showPayments &&
-            <React.Fragment>
-              <DivRow>
-                <div className={'col-1'}>#ID</div>
-                <div className={'col-4'}>Tanggal Bayar</div>
-                <div className={'col'}>Metode Pembayaran</div>
-                <div className={'col'}>Jumlah</div>
-              </DivRow>
-              {order && order.payments && order.payments.map((item: iPayment, i: number) => (
-                <DivRow key={`pay-key-${i}`}>
-                  <div className={'col-1'}>#{item.id}</div>
-                  <div className={'col-4'}>{item.createdAt && new Date(item.createdAt).toLocaleDateString()}</div>
-                  <div className={'col'}>{item.methodName}</div>
-                  <div className={'col'}><NumberFormat thousandSeparator={true} decimalScale={0} value={item.amount} displayType={'text'} /></div>
-                </DivRow>
-              ))}
-            </React.Fragment>}
+          {showPayments && <PaymentList />}
         </div>
       </OrderProvider>
     </Layout >
@@ -199,6 +187,15 @@ export async function getServerSideProps({ req, res }: any) {
     return [];
   }
 
+  const loadMethods = async () => {
+    const [data, error] = await apiPayment.getMethods();
+    if (data) {
+      return data;
+    }
+    return [];
+  }
+
+  const methods = await loadMethods();
   const salesmans = await loadSalesmans();
   const customers = await loadCustomers();
 
@@ -206,6 +203,7 @@ export async function getServerSideProps({ req, res }: any) {
 
   return {
     props: {
+      methods: methods,
       salesmans: salesmans,
       customers: customers
     }

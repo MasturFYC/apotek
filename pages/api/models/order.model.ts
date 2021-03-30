@@ -43,8 +43,6 @@ const dateParam = (dateObj: Date) => {
               FROM units as u
               WHERE u.id = d.unit_id
           `)} as unit
-
-
 */
 const apiOrder: apiOrderFunction = {
   getOrder: async (id: number) => {
