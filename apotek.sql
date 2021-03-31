@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 13.1
--- Dumped by pg_dump version 13.1
+-- Dumped from database version 12.1
+-- Dumped by pg_dump version 12.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -17,6 +17,73 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
+-- Name: od_on_create(); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.od_on_create() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+   NEW.subtotal = (NEW.price - NEW.discount) * NEW.qty;
+
+   UPDATE orders SET
+      total = total + NEW.subtotal 
+   WHERE id = NEW.order_id;
+
+   NEW.created_at = now();
+   NEW.updated_at = now();
+   RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.od_on_create() OWNER TO root;
+
+--
+-- Name: od_on_delete(); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.od_on_delete() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+
+   UPDATE orders SET
+      total = total - OLD.subtotal
+   WHERE id = OLD.order_id;
+
+   RETURN OLD;
+
+END;
+$$;
+
+
+ALTER FUNCTION public.od_on_delete() OWNER TO root;
+
+--
+-- Name: od_on_update(); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.od_on_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+
+   NEW.subtotal = (NEW.price - NEW.discount) * NEW.qty;
+
+   UPDATE orders SET
+      total = total + NEW.subtotal - OLD.subtotal
+   WHERE id = NEW.order_id;
+
+   NEW.updated_at = now();
+   RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.od_on_update() OWNER TO root;
+
+--
 -- Name: orders_on_create(); Type: FUNCTION; Schema: public; Owner: root
 --
 
@@ -24,14 +91,32 @@ CREATE FUNCTION public.orders_on_create() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-   NEW.remain_payment = NEW.total - (NEW.cash + NEW.payments);
+   NEW.remain_payment = NEW.total - (NEW.cash + NEW.payment);
    NEW.updated_at = now();
+   NEW.created_at = now();
    RETURN NEW;
 END;
 $$;
 
 
 ALTER FUNCTION public.orders_on_create() OWNER TO root;
+
+--
+-- Name: orders_on_update(); Type: FUNCTION; Schema: public; Owner: root
+--
+
+CREATE FUNCTION public.orders_on_update() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+   NEW.remain_payment = NEW.total - (NEW.cash + NEW.payment);
+   NEW.updated_at = now();
+   RETURN NEW;
+END;
+$$;
+
+
+ALTER FUNCTION public.orders_on_update() OWNER TO root;
 
 --
 -- Name: payments_on_create(); Type: FUNCTION; Schema: public; Owner: root
@@ -42,8 +127,9 @@ CREATE FUNCTION public.payments_on_create() RETURNS trigger
     AS $$
 BEGIN
    UPDATE orders SET
-        payments = payments + NEW.amount
+        payment = payment + NEW.amount
 	WHERE id = NEW.order_id;
+
    NEW.created_at = now();
    NEW.updated_at = now();
    RETURN NEW;
@@ -61,10 +147,13 @@ CREATE FUNCTION public.payments_on_delete() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
+
    UPDATE orders SET
-        payments = payments - OLD.amount
+        payment = payment - OLD.amount
 	WHERE id = OLD.order_id;
+
    RETURN OLD;
+
 END;
 $$;
 
@@ -80,7 +169,7 @@ CREATE FUNCTION public.payments_on_update() RETURNS trigger
     AS $$
 BEGIN
    UPDATE orders SET
-        payments = payments + NEW.amount - OLD.amount
+        payment = payment + NEW.amount - OLD.amount
 	WHERE id = NEW.order_id;
    NEW.updated_at = now();
    RETURN NEW;
@@ -234,11 +323,15 @@ CREATE TABLE public.order_details (
     product_id integer NOT NULL,
     unit_id smallint NOT NULL,
     qty numeric(5,2) NOT NULL,
-    unit_name character varying(6),
+    unit_name character varying(6) NOT NULL,
     real_qty numeric(8,2) NOT NULL,
-    weight numeric(4,2) NOT NULL,
+    weight numeric(6,2) NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    price numeric(11,2) DEFAULT 0 NOT NULL,
+    discount numeric(10,2) DEFAULT 0 NOT NULL,
+    subtotal numeric(11,2) DEFAULT 0 NOT NULL,
+    profit numeric(10,2) DEFAULT 0 NOT NULL
 );
 
 
@@ -268,12 +361,15 @@ CREATE TABLE public.orders (
     customer_id smallint NOT NULL,
     sales_id smallint NOT NULL,
     due_date timestamp without time zone NOT NULL,
-    total numeric(11,2) NOT NULL,
-    cash numeric(11,2) NOT NULL,
-    payments numeric(11,2) NOT NULL,
-    remain_payment numeric(11,2) NOT NULL,
+    total numeric(11,2) DEFAULT 0 NOT NULL,
+    cash numeric(11,2) DEFAULT 0 NOT NULL,
+    payment numeric(11,2) DEFAULT 0 NOT NULL,
+    remain_payment numeric(11,2) DEFAULT 0 NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL,
+    descriptions character varying(256),
+    user_id character varying(50)
 );
 
 
@@ -320,7 +416,8 @@ CREATE TABLE public.payments (
     amount numeric(11,2) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    descriptions character varying(128)
+    descriptions character varying(128),
+    user_id character varying(50) NOT NULL
 );
 
 
@@ -603,7 +700,11 @@ COPY public.customers (id, name, street, city, phone, cell, zip, rayon_id, creat
 -- Data for Name: order_details; Type: TABLE DATA; Schema: public; Owner: root
 --
 
-COPY public.order_details (id, order_id, product_id, unit_id, qty, unit_name, real_qty, weight, created_at, updated_at) FROM stdin;
+COPY public.order_details (id, order_id, product_id, unit_id, qty, unit_name, real_qty, weight, created_at, updated_at, price, discount, subtotal, profit) FROM stdin;
+49	3	42	117	1.00	dus	200.00	50.00	2021-03-31 16:16:46.266457	2021-03-31 16:16:46.266457	4180000.00	0.00	4180000.00	0.00
+50	3	12	149	2.00	box	240.00	120.00	2021-03-31 16:26:47.908332	2021-03-31 16:26:47.908332	620000.00	0.00	1240000.00	0.00
+51	3	12	147	25.00	bks	1.00	0.50	2021-03-31 16:26:57.539384	2021-03-31 16:26:57.539384	2750.00	0.00	68750.00	0.00
+47	3	41	112	1.00	bos	20.00	10.00	2021-03-31 16:12:05.891431	2021-03-31 16:40:53.278946	342400.00	400.00	342000.00	0.00
 \.
 
 
@@ -611,8 +712,8 @@ COPY public.order_details (id, order_id, product_id, unit_id, qty, unit_name, re
 -- Data for Name: orders; Type: TABLE DATA; Schema: public; Owner: root
 --
 
-COPY public.orders (id, customer_id, sales_id, due_date, total, cash, payments, remain_payment, created_at, updated_at) FROM stdin;
-3	1	1	2020-12-30 00:00:00	10000.00	0.00	7500.00	2500.00	2020-12-30 00:00:00	2021-01-10 04:08:13.328961
+COPY public.orders (id, customer_id, sales_id, due_date, total, cash, payment, remain_payment, created_at, updated_at, status, descriptions, user_id) FROM stdin;
+3	5	2	2021-03-05 00:00:00	5830750.00	0.00	5330750.00	500000.00	2020-12-30 00:00:00	2021-03-31 16:40:53.278946	1	rerwerwer	\N
 \.
 
 
@@ -622,6 +723,8 @@ COPY public.orders (id, customer_id, sales_id, due_date, total, cash, payments, 
 
 COPY public.payment_methods (id, name, descriptions, created_at, updated_at) FROM stdin;
 1	cash	Pembayaran langsung tunai	2021-01-10 03:09:36.014986	2021-01-10 03:09:36.014986
+2	Bank	Pembayaran lewat bank	2021-03-31 14:01:56.180071	2021-03-31 14:01:56.180071
+3	Credit Card	Pembayaran langsung dari kartu kredit	2021-03-31 14:02:32.836085	2021-03-31 14:02:32.836085
 \.
 
 
@@ -629,8 +732,9 @@ COPY public.payment_methods (id, name, descriptions, created_at, updated_at) FRO
 -- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: root
 --
 
-COPY public.payments (id, order_id, method_id, amount, created_at, updated_at, descriptions) FROM stdin;
-6	3	1	7500.00	2021-01-10 04:07:15.938118	2021-01-10 04:08:13.328961	\N
+COPY public.payments (id, order_id, method_id, amount, created_at, updated_at, descriptions, user_id) FROM stdin;
+19	3	1	830750.00	2021-03-31 16:25:25.238244	2021-03-31 16:27:37.468954	\N	-
+20	3	2	4500000.00	2021-03-31 16:27:59.23344	2021-03-31 16:27:59.23344	Bank BCA 0236558458	-
 \.
 
 
@@ -764,14 +868,14 @@ SELECT pg_catalog.setval('public.customers_seq', 52, true);
 -- Name: methods_sequence; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.methods_sequence', 1, true);
+SELECT pg_catalog.setval('public.methods_sequence', 3, true);
 
 
 --
 -- Name: order_details_sequence; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.order_details_sequence', 1, false);
+SELECT pg_catalog.setval('public.order_details_sequence', 51, true);
 
 
 --
@@ -785,7 +889,7 @@ SELECT pg_catalog.setval('public.orders_sequence', 3, true);
 -- Name: payments_sequence; Type: SEQUENCE SET; Schema: public; Owner: root
 --
 
-SELECT pg_catalog.setval('public.payments_sequence', 6, true);
+SELECT pg_catalog.setval('public.payments_sequence', 20, true);
 
 
 --
@@ -1209,24 +1313,38 @@ CREATE TRIGGER methods_trig_update BEFORE UPDATE ON public.payment_methods FOR E
 
 
 --
--- Name: order_details od_trig_create; Type: TRIGGER; Schema: public; Owner: root
+-- Name: order_details od_create; Type: TRIGGER; Schema: public; Owner: root
 --
 
-CREATE TRIGGER od_trig_create BEFORE INSERT ON public.order_details FOR EACH ROW EXECUTE FUNCTION public.timestamp_on_create();
-
-
---
--- Name: order_details od_trig_update; Type: TRIGGER; Schema: public; Owner: root
---
-
-CREATE TRIGGER od_trig_update BEFORE UPDATE ON public.order_details FOR EACH ROW EXECUTE FUNCTION public.timestamp_on_update();
+CREATE TRIGGER od_create BEFORE INSERT ON public.order_details FOR EACH ROW EXECUTE FUNCTION public.od_on_create();
 
 
 --
--- Name: orders orders_trig_update; Type: TRIGGER; Schema: public; Owner: root
+-- Name: order_details od_delete; Type: TRIGGER; Schema: public; Owner: root
 --
 
-CREATE TRIGGER orders_trig_update BEFORE INSERT OR UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION public.orders_on_create();
+CREATE TRIGGER od_delete AFTER DELETE ON public.order_details FOR EACH ROW EXECUTE FUNCTION public.od_on_delete();
+
+
+--
+-- Name: order_details od_update; Type: TRIGGER; Schema: public; Owner: root
+--
+
+CREATE TRIGGER od_update BEFORE UPDATE ON public.order_details FOR EACH ROW EXECUTE FUNCTION public.od_on_update();
+
+
+--
+-- Name: orders orders_create; Type: TRIGGER; Schema: public; Owner: root
+--
+
+CREATE TRIGGER orders_create BEFORE INSERT ON public.orders FOR EACH ROW EXECUTE FUNCTION public.orders_on_create();
+
+
+--
+-- Name: orders orders_update; Type: TRIGGER; Schema: public; Owner: root
+--
+
+CREATE TRIGGER orders_update BEFORE UPDATE ON public.orders FOR EACH ROW EXECUTE FUNCTION public.orders_on_update();
 
 
 --
@@ -1371,7 +1489,7 @@ ALTER TABLE ONLY public.order_details
 --
 
 ALTER TABLE ONLY public.order_details
-    ADD CONSTRAINT order_details_fk_products FOREIGN KEY (product_id) REFERENCES public.units(id) ON DELETE CASCADE;
+    ADD CONSTRAINT order_details_fk_products FOREIGN KEY (product_id) REFERENCES public.products(id);
 
 
 --
@@ -1439,13 +1557,11 @@ ALTER TABLE ONLY public.test_products
 
 
 --
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: root
+-- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
 
 REVOKE ALL ON SCHEMA public FROM postgres;
-REVOKE ALL ON SCHEMA public FROM PUBLIC;
 GRANT ALL ON SCHEMA public TO root;
-GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
 --

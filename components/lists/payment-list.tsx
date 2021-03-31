@@ -86,16 +86,16 @@ const PaymentList: React.FunctionComponent = () => {
               const d = payments[curIndex];
               payments.splice(curIndex, 1, item);
 
-//              if (d) {
-                ctx.mutate((state: iOrder) => ({
-                  ...state,
-                  payment: (+state.payment) + (+item.amount) - (d.amount),
-                  remainPayment: (+state.remainPayment) - (+item.amount) + (d.amount),
-                  payments: payments
-                }), false)
-                //console.log(payments)
-                //setPayments(ctx.order.payments)
-//              }
+              //              if (d) {
+              ctx.mutate((state: iOrder) => ({
+                ...state,
+                payment: (+state.payment) + (+item.amount) - (d.amount),
+                remainPayment: (+state.remainPayment) - (+item.amount) + (d.amount),
+                payments: payments
+              }), false)
+              //console.log(payments)
+              //setPayments(ctx.order.payments)
+              //              }
             }
             break;
           case 'DELETE':
@@ -160,92 +160,92 @@ const ShowPaymentForm: React.FunctionComponent<{
   methods: iPaymentMethod[],
   onCancel: Function,
   onSave: (item: iPayment, method: string) => void
-}> =
-  ({ pay, methods, onCancel, onSave }) => {
-    const [item, setItem] = React.useState<iPayment>(initPayment);
+}> = ({ pay, methods, onCancel, onSave }) => {
+  const [item, setItem] = React.useState<iPayment>(initPayment);
 
-    React.useEffect(() => {
-      let isLoaded = false;
-      const loadPayment = () => {
-        if (!isLoaded) {
-          setItem(pay);
-        }
+  React.useEffect(() => {
+    let isLoaded = false;
+    const loadPayment = () => {
+      if (!isLoaded) {
+        setItem(pay);
       }
-
-      loadPayment();
-
-      return () => { isLoaded = true; }
-
-    }, [pay]);
-
-    const formSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      onSave(item, item.id === 0 ? 'POST' : 'PUT');
     }
 
-    return (
-      <DivRow>
-        <form onSubmit={(e) => formSubmit(e)} className={'container'}>
-          <div className={'row g-2'}>
-            <div className={'col-sm-3 col-md-3 form-floating'}>
-              <span className={'form-control bg-light'} id={'pay-date'}>{item.createdAt && new Date(item.createdAt).toLocaleDateString()}</span>
-              <label htmlFor={'pay-date'}>Tanggal</label>
-            </div>
-            <div className={'col-sm-3 col-md-2 form-floating'}>
-              <span className={'form-control bg-light'} id={'pay-user'}>{`${item.userId || ''}`}</span>
-              <label htmlFor={'pay-user'}>User</label>
-            </div>
+    loadPayment();
 
-            <div className={'col-sm-6 col-md-3 form-floating'}>
-              <Select id={'pay-method'} className={'form-control border-0 p-0'}
-                value={methods.filter(x => x.id === item.methodId)}
-                onChange={(e) => setItem((state) => ({ ...state, methodId: e?.id || 0, methodName: e?.name }))}
-                options={methods}
-                autoFocus
-                getOptionLabel={o => o.name}
-                getOptionValue={o => `${o.id}`}
-                styles={customStyles} placeholder={''} />
-              <label htmlFor={'pay-method'} className={'col-form-label mb-3 pt-3'}>Metode Pembayaran</label>
-            </div>
+    return () => { isLoaded = true; }
 
-            <div className={'col-sm-4 col-md-4 form-floating'}>
-              <NumberFormat value={item.amount} placeholder={'Jumlah'} id={'pay-amount'}
-                displayType={'input'}
-                className={'form-control'} thousandSeparator={true}
-                decimalScale={2}
-                onValueChange={e => setItem(state => ({ ...state, amount: e.floatValue || 0 }))}
-                fixedDecimalScale={false} />
-              <label htmlFor={'pay-amount'}>Jumlah</label>
-            </div>
+  }, [pay]);
 
-            <div className={'col form-floating'}>
-              <textarea className={'form-control'} id={'pay-desc'} value={item.descriptions || ''}
-                onChange={(e) => setItem(state => ({ ...state, descriptions: e.target.value }))} />
-              <label htmlFor={'pay-desc'}>Keterangan</label>
-            </div>
-            <div className={'col-auto form-inline p-1'}>
-              <button type={'submit'} className='btn btn-sm me-2 btn-primary mb-2'>Save</button>
-              <button type={'button'} className='btn me-2 btn-sm btn-warning mb-2'
-                onClick={(e) => {
-                  e.preventDefault();
-                  onCancel();
-                }}>Cancel</button>
-              <button type={'button'} disabled={item.id === 0} className='btn btn-sm btn-danger mb-2'
-                onClick={(e) => {
-                  e.preventDefault();
-                  onSave(item, 'DELETE')
-                }}
-              >Delete</button>
-            </div>
-          </div>
-        </form>
-      </DivRow>
-    )
+  const formSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSave(item, item.id === 0 ? 'POST' : 'PUT');
   }
 
+  return (
+    <DivRow>
+      <form onSubmit={(e) => formSubmit(e)} className={'container'}>
+        <div className={'row g-2'}>
+          <div className={'col-sm-3 col-md-3 form-floating'}>
+            <span className={'form-control bg-light'} id={'pay-date'}>{item.createdAt && new Date(item.createdAt).toLocaleDateString()}</span>
+            <label htmlFor={'pay-date'}>Tanggal</label>
+          </div>
+          <div className={'col-sm-3 col-md-2 form-floating'}>
+            <span className={'form-control bg-light'} id={'pay-user'}>{`${item.userId || ''}`}</span>
+            <label htmlFor={'pay-user'}>User</label>
+          </div>
+
+          <div className={'col-sm-6 col-md-3 form-floating'}>
+            <Select id={'pay-method'} className={'form-control border-0 p-0'}
+              value={methods.filter(x => x.id === item.methodId)}
+              onChange={(e) => setItem((state) => ({ ...state, methodId: e?.id || 0, methodName: e?.name }))}
+              options={methods}
+              autoFocus
+              getOptionLabel={o => o.name}
+              getOptionValue={o => `${o.id}`}
+              styles={customStyles} placeholder={''} />
+            <label htmlFor={'pay-method'} className={'col-form-label mb-3 pt-3'}>Metode Pembayaran</label>
+          </div>
+
+          <div className={'col-sm-4 col-md-4 form-floating'}>
+            <NumberFormat value={item.amount} placeholder={'Jumlah'} id={'pay-amount'}
+              displayType={'input'}
+              className={'form-control'} thousandSeparator={true}
+              decimalScale={2}
+              onValueChange={e => setItem(state => ({ ...state, amount: e.floatValue || 0 }))}
+              fixedDecimalScale={false} />
+            <label htmlFor={'pay-amount'}>Jumlah</label>
+          </div>
+
+          <div className={'col form-floating'}>
+            <textarea className={'form-control'} id={'pay-desc'} value={item.descriptions || ''}
+              onChange={(e) => setItem(state => ({ ...state, descriptions: e.target.value }))} />
+            <label htmlFor={'pay-desc'}>Keterangan</label>
+          </div>
+          <div className={'col-auto form-inline p-1'}>
+            <button type={'submit'} className='btn btn-sm me-2 btn-primary mb-2'>Save</button>
+            <button type={'button'} className='btn me-2 btn-sm btn-warning mb-2'
+              onClick={(e) => {
+                e.preventDefault();
+                onCancel();
+              }}>Cancel</button>
+            <button type={'button'} disabled={item.id === 0} className='btn btn-sm btn-danger mb-2'
+              onClick={(e) => {
+                e.preventDefault();
+                onSave(item, 'DELETE')
+              }}
+            >Delete</button>
+          </div>
+        </div>
+      </form>
+    </DivRow>
+  )
+}
 
 function ShowPayment(setCurrentPayment: (i: number) => void, index: number, item: iPayment): React.ReactNode {
-  return <DivRow onClick={() => setCurrentPayment(index)}>
+  return item.id === 0 ?
+  <DivRow onClick={() => setCurrentPayment(index)}><div role="button" className={'col cursor-pointer'}>Angsuran baru</div></DivRow>
+  : <DivRow onClick={() => setCurrentPayment(index)} role="button">
     <div className={'col-1'}>#{item.id}</div>
     <div className={'col-4'}>{item.createdAt && new Date(item.createdAt).toLocaleDateString()}</div>
     <div className={'col'}>{item.userId}</div>

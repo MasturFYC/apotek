@@ -41,14 +41,21 @@ export const OrderDetailList = () => {
     if (ctx.order && ctx.order.details && ctx.updateValue) {
       const currentIndex = selectedRow;
       const isNew = detail.id === 0;
+      const len = ctx.order.details.length - (isNew ? 0 : 1);
       //console.log(detail)
 
       ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
-        setSelectedRow(currentIndex + 1);
-        if (isNew && data) {
-          //setDetail(initDetail(data.orderId)) //(state) => ({...state, id: data.id}));
-          setDetail(initDetail(data.orderId))
-        }
+        const curIndex = currentIndex + 1;
+        //if (isNew && data) {
+        //setDetail(initDetail(data.orderId)) //(state) => ({...state, id: data.id}));
+        // isNew && data && setDetail(initDetail(data.orderId))
+        //console.log(len, currentIndex);
+        setSelectedRow(curIndex);
+        len === currentIndex
+          ? setDetail(initDetail(ctx?.order?.id || 0))
+          : ctx.order && ctx.order.details && setDetail(ctx.order.details[curIndex]);
+        //setSelectedRow(curIndex);
+        //}
         // else {
         //   console.log({ 'local': detail, 'updated': data })
         //   //setDetail(data);
@@ -86,8 +93,8 @@ export const OrderDetailList = () => {
         spec: data.product.spec,
         unitName: data.name,
         price: data.salePrice,
-        subtotal: (data.salePrice - detail.discount) * detail.qty,
-        realQty: data.content * detail.qty
+        subtotal: ((+data.salePrice) - (+detail.discount)) * (+detail.qty),
+        realQty: (+data.content) * (+detail.qty)
       }))
 
       const objRef = qtyRef.current;
@@ -104,7 +111,9 @@ export const OrderDetailList = () => {
     if (ctx.order && ctx.order.details && ctx.updateValue) {
       ctx.updateValue(detail, 'DELETE', (data) => {
         if (data) {
-          setSelectedRow(selectedRow-1);
+          const curIndex = selectedRow - 1;
+          setSelectedRow(curIndex);
+          ctx.order && ctx.order.details && setDetail(ctx.order.details[curIndex]);
         }
       });
     }
@@ -119,9 +128,9 @@ export const OrderDetailList = () => {
         <React.Fragment key={`fr-key-${i}`}>
           {selectedRow === i ?
             <DivRow key={`form-key-${i}`} isActive={true}>
-              <form onSubmit={(e) => {e.preventDefault();}} className={'container py-0'}>
+              <form onSubmit={(e) => { e.preventDefault(); }} className={'container py-0'}>
                 <div className={'row'}>
-                  <div className={'col-sm-5 form-inline g-2'}>
+                  <div className={'col-sm-5 col-md-4 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label htmlFor={'barcode'} className="sr-only">Barcode</label></div>
@@ -138,7 +147,7 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col-sm-7 form-inline g-2'}>
+                  <div className={'col-sm-7 col-md-8 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label htmlFor={'prod-name'} className="sr-only">Nama Barang</label></div>
@@ -147,7 +156,7 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col form-inline g-2'}>
+                  <div className={'col-md-2 col-sm-3 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label htmlFor={'det-qty'} className={'sr-only'}>Qty</label></div>
@@ -157,7 +166,7 @@ export const OrderDetailList = () => {
                         setDetail((state) => ({
                           ...state,
                           qty: qty,
-                          subtotal: qty * (state.price - state.discount)
+                          subtotal: qty * ((+state.price) - (+state.discount))
                         }))
                       }}
                         onKeyUp={(e) => {
@@ -175,7 +184,7 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col form-inline g-2'}>
+                  <div className={'col-md-2 col-sm-3 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-unit'}>Unit</label></div>
@@ -186,7 +195,7 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col-md-2 form-inline g-2'}>
+                  <div className={'col-md-2 col-sm-6 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-price'}>Harga</label></div>
@@ -197,18 +206,18 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col-md-2 form-inline g-2'}>
+                  <div className={'col-sm-3 col-md-2 form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-discount'}>Disc.</label></div>
                       </div>
-                      <NumberFormat getInputRef={discountRef} value={detail.discount} placeholder={'Quantity'} id={'det-discount'}
+                      <NumberFormat getInputRef={discountRef} value={detail.discount} placeholder={'Discount'} id={'det-discount'}
                         onValueChange={(e) => {
                           const discount = e.floatValue || 0;
                           setDetail((state) => ({
                             ...state,
                             discount: discount,
-                            subtotal: state.qty * (state.price - discount)
+                            subtotal: (+state.qty) * ((+state.price) - discount)
                           }))
                         }}
                         onKeyUp={(e) => {
@@ -225,12 +234,12 @@ export const OrderDetailList = () => {
                     </div>
                   </div>
 
-                  <div className={'col-md-3 form-inline g-2'}>
+                  <div className={'col-sm col-md form-inline g-2'}>
                     <div className="input-group">
                       <div className="input-group-prepend">
                         <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-subtotal'}>Subtotal</label></div>
                       </div>
-                      <NumberFormat value={detail.subtotal} placeholder={'Quantity'} id={'det-subtotal'}
+                      <NumberFormat value={detail.subtotal} placeholder={'Subtotal'} id={'det-subtotal'}
                         readOnly displayType={'text'}
                         className={'form-control'} thousandSeparator={true} decimalScale={0} />
                     </div>
@@ -246,31 +255,29 @@ export const OrderDetailList = () => {
                 </div>
               </form>
             </DivRow> :
-                      <DivRow key={`d-key-${i}`}
-                      isActive={i === selectedRow}
-                      onClick={() => {
-                        if (selectedRow !== i) {
-                          setSelectedRow(i);
-                          setDetail(d)
-                        } else {
-                          setSelectedRow(-1);
-                        }
-                      }}>
-                      <div className={'col-md-12'}>
-                        {d.id === 0 ? 'Add new details' :
-                          `${d.barcode} -
-                           ${d.productName},
-                           ${d.spec}`}
-                      </div>
-                      {d.id > 0 &&
-                        <div className={'col-md-12'}>
-                          <strong>{d.qty}</strong> {d.unitName} x
-                        (<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
-                          {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)
-                        {' = '} <NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
-                        </div>
-                      }
-                    </DivRow>
+            <DivRow key={`d-key-${i}`}
+              isActive={i === selectedRow}
+              onClick={() => {
+                if (selectedRow !== i) {
+                  setSelectedRow(i);
+                  setDetail(d)
+                } else {
+                  setSelectedRow(-1);
+                }
+              }} role="button">
+              {d.id === 0 ? <span>Add new details</span> :
+                <React.Fragment>
+                  <div className={'col-3 col-sm-3 col-md'}>#{d.id}</div>
+                  <div className={'col-3 col-sm-3 col-md'}>{d.barcode}</div>
+                  <div className={'col-6 col-sm-6 col-md-4'}>{d.productName}, {d.spec}</div>
+                  <div className={'col-6 col-sm-6 col-md-4 fst-italic'}>
+                  <span style={{display: 'inline-block', width: '30px', textAlign: 'right', paddingRight: '3px'}}>{d.qty}</span>
+                  <span style={{display: 'inline-block', width: '20px', textAlign: 'left'}}>{d.unitName}</span><span style={{display: 'inline-block', width: '15px', textAlign: 'center'}}>{' x '}</span>(<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
+                    {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)</div>
+                  <div className={'col-6 col-sm-6 col-md-2 fw-bold text-end'}><NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} /></div>
+                </React.Fragment>
+              }
+            </DivRow>
 
           }
         </React.Fragment>
