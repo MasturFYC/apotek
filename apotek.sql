@@ -27,7 +27,7 @@ BEGIN
    NEW.subtotal = (NEW.price - NEW.discount) * NEW.qty;
 
    UPDATE orders SET
-      total = total + NEW.subtotal 
+      total = total + NEW.subtotal
    WHERE id = NEW.order_id;
 
    NEW.created_at = now();
@@ -204,7 +204,7 @@ CREATE FUNCTION public.timestamp_on_update() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
-   NEW.updated_at = now(); 
+   NEW.updated_at = now();
    RETURN NEW;
 END;
 $$;
@@ -271,7 +271,7 @@ CREATE TABLE public.customers (
     city character varying(50) NOT NULL,
     phone character varying(25) NOT NULL,
     cell character varying(25),
-    zip character varying(25),
+    zip character varying(6),
     rayon_id smallint NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -322,9 +322,9 @@ CREATE TABLE public.order_details (
     order_id integer NOT NULL,
     product_id integer NOT NULL,
     unit_id smallint NOT NULL,
-    qty numeric(5,2) NOT NULL,
+    qty numeric(5,2) DEFAULT 0 NOT NULL,
     unit_name character varying(6) NOT NULL,
-    real_qty numeric(8,2) NOT NULL,
+    real_qty numeric(8,2) DEFAULT 0 NOT NULL,
     weight numeric(6,2) NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
@@ -744,7 +744,7 @@ COPY public.payments (id, order_id, method_id, amount, created_at, updated_at, d
 
 COPY public.products (id, code, name, spec, base_unit, base_price, base_weight, is_active, first_stock, unit_in_stock, category_id, supplier_id, warehouse_id, created_at, updated_at) FROM stdin;
 5	03-xxs	Antasida TRIFA 100 sss	wwww xxx sss	12323	123.00	10.50	t	123.00	123.00	21	3	2	2020-12-06 19:57:47.364152	2021-03-06 01:04:30.378148
-2	ccxdxx	Altamed Gloves. S 100`s	wwww 	12323	123.00	2.20	t	123.00	123.00	21	3	2	2020-12-06 19:56:54.459637	2021-03-06 01:14:30.501823
+2	ccxdxx	Altamed Gloves. S 100	wwww 	12323	123.00	2.20	t	123.00	123.00	21	3	2	2020-12-06 19:56:54.459637	2021-03-06 01:14:30.501823
 15	SK-01	Sampoerna Kretek	100 bks : 10 slop: 1 dus	bks	12000.00	0.50	t	0.00	0.00	21	3	4	2021-03-06 02:01:05.443938	2021-03-25 19:11:34.543816
 31	TBM	Terigu Beruang Merah	1 zak : 25kg	kg	2500.00	0.50	t	0.00	0.00	23	3	2	2021-03-09 22:38:15.955477	2021-03-10 00:59:03.592786
 41	ggf ss	Gudang Garam Filter	200 : 20 : 10	bks	2500.00	0.50	f	0.00	0.00	24	1	2	2021-03-09 22:49:05.029604	2021-03-25 19:13:38.115377
@@ -1567,4 +1567,3 @@ GRANT ALL ON SCHEMA public TO root;
 --
 -- PostgreSQL database dump complete
 --
-

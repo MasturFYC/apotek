@@ -81,6 +81,7 @@ const divRow = styled.div<{isActive?: boolean}>`
   &:last-child {
     border-bottom-left-radius:  6px;
     border-bottom-right-radius:  6px;
+    margin-bottom: 50px;
   }
 
   &:hover {

@@ -3,6 +3,7 @@ import { iOrderDetail, iUnit } from 'components/interfaces';
 import OrderContext, { OrderContextType } from 'components/context/order-context';
 import { DivRow, FLabel } from 'components/styles';
 import NumberFormat from 'react-number-format';
+import { IntegrityConstraintViolationError } from 'slonik';
 
 const initDetail = (id: number): iOrderDetail => {
   return {
@@ -25,23 +26,43 @@ const initDetail = (id: number): iOrderDetail => {
 }
 
 export const OrderDetailList = () => {
+  const divForm = useRef<HTMLDivElement>(null);
   const qtyRef = useRef<HTMLInputElement>(null);
   const discountRef = useRef<HTMLInputElement>(null);
   const barcodeRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
+  const [details, setDetails] = useState<iOrderDetail[]>([]);
   const ctx: OrderContextType = useContext(OrderContext);
   const [selectedRow, setSelectedRow] = useState(-1);
   const [detail, setDetail] = useState<iOrderDetail>(initDetail(ctx.order && ctx.order.id || 0))
-  //  const [detailId, setDetailId] = useState<number>(1);
 
-  const formSubmit = () => {
 
+  React.useEffect(() => {
+    let isLoaded = false;
+
+    const loadDetails = () => {
+      if (!isLoaded) {
+        setDetails(ctx.order?.details || [])
+      }
+    }
+
+    loadDetails();
+
+    return () => { isLoaded = true };
+
+  }, [ctx.order?.details])
+
+  const formSubmit = (e: FormEvent) => {
+
+    e.preventDefault();
     //    console.log('submit')
+    if (detail.productId === 0 || detail.productId === 0) return;
 
-    if (ctx.order && ctx.order.details && ctx.updateValue) {
+
+    if (details && ctx.updateValue) {
       const currentIndex = selectedRow;
       const isNew = detail.id === 0;
-      const len = ctx.order.details.length - (isNew ? 0 : 1);
+      const len = details.length - (isNew ? 0 : 1);
       //console.log(detail)
 
       ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
@@ -53,7 +74,7 @@ export const OrderDetailList = () => {
         setSelectedRow(curIndex);
         len === currentIndex
           ? setDetail(initDetail(ctx?.order?.id || 0))
-          : ctx.order && ctx.order.details && setDetail(ctx.order.details[curIndex]);
+          : details && setDetail(details[curIndex]);
         //setSelectedRow(curIndex);
         //}
         // else {
@@ -61,46 +82,57 @@ export const OrderDetailList = () => {
         //   //setDetail(data);
         //   //setSelectedRow(currentIndex);
         // }
+        executeScroll();
       });
     }
   }
 
-  const getProductByBarcode = async () => {
-    const baseUrl = `/api/unit/barcode`;
+  const executeScroll = () => divForm?.current?.scrollTo(0, 0);
 
-    const res = await fetch(baseUrl, {
-      method: 'POST',
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      },
-      body: JSON.stringify({ barcode: detail.barcode.trim() })
-    });
+  const getProductByBarcode = async (e: React.KeyboardEvent<HTMLInputElement>) => {
 
-    const data: iUnit | any = await res.json();
+    if (e.key === 'Enter') {
 
-    if (res.status !== 200) {
-      alert(data.message);
-    } else {
-      //const row = selectedRow;
-      //setSelectedRow(-1)
-      setDetail((state) => ({
-        ...state,
-        barcode: data.barcode,
-        productId: data.productId,
-        unitId: data.id,
-        productName: data.product.name,
-        weight: data.weight,
-        spec: data.product.spec,
-        unitName: data.name,
-        price: data.salePrice,
-        subtotal: ((+data.salePrice) - (+detail.discount)) * (+detail.qty),
-        realQty: (+data.content) * (+detail.qty)
-      }))
+      e.preventDefault();
+      //e.stopPropagation();
+      const baseUrl = `/api/unit/barcode`;
 
-      const objRef = qtyRef.current;
-      if (objRef) {
-        objRef.focus();
-        objRef.setSelectionRange(0, objRef.value.length)
+      const res = await fetch(baseUrl, {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8'
+        },
+        body: JSON.stringify({ barcode: detail.barcode.trim() })
+      });
+
+      const data: iUnit | any = await res.json();
+
+      if (res.status !== 200) {
+        alert(data.message);
+        e.stopPropagation();
+      } else {
+        //const row = selectedRow;
+        //setSelectedRow(-1)
+        setDetail((state) => ({
+          ...state,
+          barcode: data.barcode,
+          productId: data.productId,
+          unitId: data.id,
+          productName: data.product.name,
+          weight: data.weight,
+          spec: data.product.spec,
+          unitName: data.name,
+          price: data.salePrice,
+          subtotal: ((+data.salePrice) - (+detail.discount)) * (+detail.qty),
+          realQty: (+data.content) * (+detail.qty)
+        }))
+
+        const objRef = qtyRef.current;
+        if (objRef) {
+          objRef.focus();
+          objRef.setSelectionRange(0, objRef.value.length)
+        }
+
       }
     }
   }
@@ -108,14 +140,66 @@ export const OrderDetailList = () => {
   const deleteDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
-    if (ctx.order && ctx.order.details && ctx.updateValue) {
+    if (details && ctx.updateValue) {
+      const len = details.length - 1;
+      let curRow = selectedRow;
+/*
+      setDetails(state => ([
+        ...state.filter(x => x.id !== detail.id)
+      ]))
+      */
+      //const d = details[curRow]
+      if (len === selectedRow) {
+        --curRow;
+      }
+
+      if (len > 0 && selectedRow === 0) {
+
+        curRow++;
+      }
+
+      let curDetail: iOrderDetail | null = null;
+      if (len >= 0) {
+        curDetail = details[curRow];
+      } else {
+        curDetail = initDetail(ctx.order?.id || 0);
+      }
+
+      //if (len > 0 && selectedRow === 0) {
+      //  ++curRow;
+      //}
+
+      setSelectedRow(-1);
+
       ctx.updateValue(detail, 'DELETE', (data) => {
         if (data) {
-          const curIndex = selectedRow - 1;
-          setSelectedRow(curIndex);
-          ctx.order && ctx.order.details && setDetail(ctx.order.details[curIndex]);
+          //const curIndex = selectedRow - 1;
+          //setSelectedRow(-1);
+          /*
+          let curRow = selectedRow;
+          console.log(len, selectedRow)
+
+          if (len === selectedRow) {
+            --curRow;
+          } else {
+            if (len > 0) {
+              ++curRow;
+            } else {
+              --curRow;
+            }
+          }
+
+          if (curRow >= 0 && details) {
+            setDetail(details[curRow])
+          }
+          */
+
+          if (len > 0) {
+            curDetail && setDetail(curDetail)
+          }
+          setSelectedRow(selectedRow);
         }
-      });
+      })
     }
   }
 
@@ -123,12 +207,11 @@ export const OrderDetailList = () => {
 
   return (
     <React.Fragment>
-      {ctx.order && ctx.order.details && [...ctx.order.details,
-      initDetail(ctx.order.id)].map((d: iOrderDetail, i: number) => (
+      {details && [...details, initDetail(ctx.order?.id || 0)].map((d: iOrderDetail, i: number) => (
         <React.Fragment key={`fr-key-${i}`}>
           {selectedRow === i ?
             <DivRow key={`form-key-${i}`} isActive={true}>
-              <form onSubmit={(e) => { e.preventDefault(); }} className={'container py-0'}>
+              <form onSubmit={(e) => { formSubmit(e) }} className={'container py-0'}>
                 <div className={'row'}>
                   <div className={'col-sm-5 col-md-4 form-inline g-2'}>
                     <div className="input-group">
@@ -138,11 +221,7 @@ export const OrderDetailList = () => {
                       <input type={'text'} ref={barcodeRef} value={detail.barcode} placeholder={'barcode'} id={'barcode'}
                         onChange={(e) => setDetail((state) => ({ ...state, barcode: e.target.value }))}
                         onFocus={e => e.target.setSelectionRange(0, e.target.value.length)}
-                        onKeyUp={(e) => {
-                          if (e.key === 'Enter') {
-                            getProductByBarcode();
-                          }
-                        }}
+                        onKeyPress={(e) => getProductByBarcode(e)}
                         maxLength={25} autoFocus className={'form-control form-control'} />
                     </div>
                   </div>
@@ -169,15 +248,15 @@ export const OrderDetailList = () => {
                           subtotal: qty * ((+state.price) - (+state.discount))
                         }))
                       }}
-                        onKeyUp={(e) => {
+                        onKeyPress={(e) => {
                           // Cancel the default action, if needed
                           if (e.key === 'Enter') {
+                            e.preventDefault();
                             const inputElement = discountRef.current;
                             if (inputElement) {
                               inputElement.focus();
                               inputElement.setSelectionRange(0, inputElement.value.length)
                             }
-                            return false;
                           }
                         }}
                         className={'form-control'} thousandSeparator={true} decimalScale={2} fixedDecimalScale={false} />
@@ -220,16 +299,17 @@ export const OrderDetailList = () => {
                             subtotal: (+state.qty) * ((+state.price) - discount)
                           }))
                         }}
-                        onKeyUp={(e) => {
-                          // Cancel the default action, if needed
-                          if (e.key === 'Enter') {
-                            const btnElem = submitRef.current;
-                            if (btnElem) {
-                              btnElem.click();
-                              //inputElement.setSelectionRange(0, inputElement.value.length)
-                            }
-                          }
-                        }}
+
+                        // onKeyUp={(e) => {
+                        //   // Cancel the default action, if needed
+                        //   if (e.key === 'Enter') {
+                        //     const btnElem = submitRef.current;
+                        //     if (btnElem) {
+                        //       btnElem.click();
+                        //       //inputElement.setSelectionRange(0, inputElement.value.length)
+                        //     }
+                        //   }
+                        // }}
                         className={'form-control'} thousandSeparator={true} decimalScale={2} fixedDecimalScale={false} />
                     </div>
                   </div>
@@ -244,12 +324,13 @@ export const OrderDetailList = () => {
                         className={'form-control'} thousandSeparator={true} decimalScale={0} />
                     </div>
                   </div>
-                  <div className={'col-auto form-inline g-2'}>
-                    <button ref={submitRef} className='btn me-2 btn-primary mb-2' type={'button'}
-                      onClick={e => {
-                        e.preventDefault();
-                        formSubmit();
-                      }}>Save</button>
+                  <div ref={divForm} className={'col-auto form-inline g-2'}>
+                    <button ref={submitRef} className='btn me-2 btn-primary mb-2' type={'submit'}
+                    //  onClick={e => {
+                    //    e.preventDefault();
+                    //    formSubmit();
+                    //  }}
+                    >Save</button>
                     <button type={'button'} disabled={detail.id === 0} className='btn btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
                   </div>
                 </div>
@@ -271,8 +352,8 @@ export const OrderDetailList = () => {
                   <div className={'col-3 col-sm-3 col-md'}>{d.barcode}</div>
                   <div className={'col-6 col-sm-6 col-md-4'}>{d.productName}, {d.spec}</div>
                   <div className={'col-6 col-sm-6 col-md-4 fst-italic'}>
-                  <span style={{display: 'inline-block', width: '30px', textAlign: 'right', paddingRight: '3px'}}>{d.qty}</span>
-                  <span style={{display: 'inline-block', width: '20px', textAlign: 'left'}}>{d.unitName}</span><span style={{display: 'inline-block', width: '15px', textAlign: 'center'}}>{' x '}</span>(<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
+                    <span style={{ display: 'inline-block', width: '30px', textAlign: 'right', paddingRight: '3px' }}>{d.qty}</span>
+                    <span style={{ display: 'inline-block', width: '20px', textAlign: 'left' }}>{d.unitName}</span><span style={{ display: 'inline-block', width: '15px', textAlign: 'center' }}>{' x '}</span>(<NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
                     {' - '} <NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />)</div>
                   <div className={'col-6 col-sm-6 col-md-2 fw-bold text-end'}><NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} /></div>
                 </React.Fragment>
