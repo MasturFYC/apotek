@@ -38,11 +38,11 @@ const updateUnit = async (units: iUnit[]) => {
 const apiProduct: apiProductFunction = {
   searchProduct: async (text: string | string[]) => {
     return await db.query<iProduct>(
-      sql`SELECT p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active,
+      sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active,
       p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id,
       ${nestQuery(sql`SELECT
         u.id, u.barcode, u.name, u.content,
-        u.weight, u.margin, u.profit, 
+        u.weight, u.margin, u.profit,
         u.buy_price "buyPrice",
         u.agent_margin "agentMargin",
         u.member_margin "memberMargin",
@@ -56,7 +56,7 @@ const apiProduct: apiProductFunction = {
       WHERE position(${text} in LOWER(p.name)) > 0
       ORDER BY p.name`)
       .then(data => ([data.rows, undefined]))
-      .catch(error => ([undefined, error]))    
+      .catch(error => ([undefined, error]))
   }
   , getProduct: async (id: number) => {
    return await db.query<iProduct>(

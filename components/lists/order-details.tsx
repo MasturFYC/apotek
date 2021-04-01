@@ -32,27 +32,26 @@ export const OrderDetailList = () => {
   const barcodeRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
   const [dirty, setDirty] = React.useState<boolean>(false)
-  //const [details, setDetails] = useState<iOrderDetail[]>([]);
+  const [details, setDetails] = useState<iOrderDetail[]>([]);
   const ctx: OrderContextType = useContext(OrderContext);
   const [selectedRow, setSelectedRow] = useState(-1);
   const [detail, setDetail] = useState<iOrderDetail>(initDetail(ctx.order && ctx.order.id || 0))
 
-  /*
     React.useEffect(() => {
       let isLoaded = false;
-  
+
       const loadDetails = () => {
         if (!isLoaded) {
           setDetails(ctx.order?.details || [])
         }
       }
-  
+
       loadDetails();
-  
+
       return () => { isLoaded = true };
-  
+
     }, [ctx.order?.details])
-  */
+
   const formSubmit = (e: FormEvent) => {
 
     e.preventDefault();
@@ -60,10 +59,10 @@ export const OrderDetailList = () => {
     if (detail.productId === 0 || detail.productId === 0) return;
 
 
-    if (ctx.order && ctx.order.details && ctx.updateValue) {
+    if (details && ctx.updateValue) {
       const currentIndex = selectedRow;
       const isNew = detail.id === 0;
-      const len = ctx.order.details.length - (isNew ? 0 : 1);
+      const len = details.length - (isNew ? 0 : 1);
       //console.log(detail)
 
       ctx.updateValue(detail, isNew ? 'POST' : 'PUT', (data) => {
@@ -75,7 +74,7 @@ export const OrderDetailList = () => {
         setSelectedRow(curIndex);
         len === currentIndex
           ? setDetail(initDetail(ctx?.order?.id || 0))
-          : ctx.order && ctx.order.details && setDetail(ctx.order.details[curIndex]);
+          : details && setDetail(details[curIndex]);
         //setSelectedRow(curIndex);
         //}
         // else {
@@ -143,8 +142,8 @@ export const OrderDetailList = () => {
   const deleteDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
 
-    if (ctx.order && ctx.order.details && ctx.updateValue) {
-      const len = ctx.order.details.length - 1;
+    if (details && ctx.updateValue) {
+      const len = details.length - 1;
       let curRow = selectedRow;
       /*
             setDetails(state => ([
@@ -165,7 +164,7 @@ export const OrderDetailList = () => {
       */
       let curDetail: iOrderDetail | null = null;
       if (len > selectedRow) {
-        curDetail = ctx.order.details[selectedRow + 1];
+        curDetail = details[selectedRow + 1];
       }
       else {
         curDetail = initDetail(ctx.order?.id || 0);
@@ -227,7 +226,7 @@ export const OrderDetailList = () => {
         <div className={'col-1'}>HARGA</div>
         <div className={'col-1'}>DISC.</div>
       </DivRow>
-      {ctx.order && ctx.order.details && [...ctx.order.details, initDetail(ctx.order?.id || 0)].map((d: iOrderDetail, i: number) => (
+      {details && [...details, initDetail(ctx.order?.id || 0)].map((d: iOrderDetail, i: number) => (
         <React.Fragment key={`fr-key-${i}`}>
           {selectedRow === i ?
             <DivRow key={`form-key-${i}`} isActive={true}>
@@ -378,10 +377,10 @@ export const OrderDetailList = () => {
                   <div className={'col-3 col-sm-3 col-md-1 fst-italic'}>
                     <span style={{ display: 'inline-block', minWidth: '30px', textAlign: 'right', paddingRight: '3px' }}>{d.qty}</span>
                     <span style={{ display: 'inline-block', minWidth: '20px', textAlign: 'left' }}>{d.unitName}</span>
-                    {/* <span style={{ display: 'inline-block', width: '15px', textAlign: 'center' }}>{' x '} 
+                    {/* <span style={{ display: 'inline-block', width: '15px', textAlign: 'center' }}>{' x '}
                     </span> */}
                     </div>
-                    <div className={'col-3 col-sm-3 col-md fst-italic text-end'}>                    
+                    <div className={'col-3 col-sm-3 col-md fst-italic text-end'}>
                       <NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
                      </div>
                      <div className={'col-3 col-sm-3 col-md-1 fst-italic text-end'}><NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
