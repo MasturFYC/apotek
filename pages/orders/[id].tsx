@@ -16,6 +16,7 @@ import { OrderDetailList } from 'components/lists/order-details'
 import { DivRow, TabStyle } from 'components/styles'
 import NumberFormat from 'react-number-format'
 import apiPayment from 'pages/api/models/payment.model'
+import SearchProductForDetail from 'components/forms/search-for-detail-fom'
 
 type OrderPageParam = {
   methods: iPaymentMethod[];
@@ -26,8 +27,7 @@ type OrderPageParam = {
 const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, customers, methods }) => {
   const { query } = useRouter();
   const { order, isLoading, isError, mutate } = useOrder(parseInt('' + query.id));
-  const [showDetails, setShowDetails] = useState(true)
-  const [showPayments, setShowPayments] = useState(false)
+  const [tab, setTab] = React.useState(0);
 
   const refreshData = async (data: iOrderDetail, method: string, callback?: (data: iOrderDetail | null) => void) => {
 
@@ -137,13 +137,15 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
         <OrderForm />
         <div className={'container mt-5'}>
           <div className={'row ms-2'}>
-            <TabStyle isSelected={showDetails} onClick={() => { setShowDetails(true); setShowPayments(false) }} className={'col-auto rounded-top'}>Details</TabStyle>
-            <TabStyle isSelected={showPayments} onClick={() => { setShowDetails(false); setShowPayments(true) }} className={'col-auto rounded-top'}>Angsuran</TabStyle>
+            <TabStyle isSelected={tab===0} onClick={() => setTab(0)} className={'col-auto rounded-top'}>Details</TabStyle>
+            <TabStyle isSelected={tab===1} onClick={() => setTab(1)} className={'col-auto rounded-top'}>Angsuran</TabStyle>
+            <TabStyle isSelected={tab===2} onClick={() => setTab(2) } className={'col-auto rounded-top'}>Cari Produk</TabStyle>
           </div>
         </div>
         <div className={'container border-top bg-white pt-3'}>
-          {showDetails && <OrderDetailList />}
-          {showPayments && <PaymentList />}
+          {tab===0 && <OrderDetailList />}
+          {tab===1 && <PaymentList />}
+          {tab===2 && <SearchProductForDetail />}
         </div>
       </OrderProvider>
     </Layout >

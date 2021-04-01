@@ -1,10 +1,11 @@
-import db, { nestQuery, sql } from '../../../config';
+import db, { nestQuery, nestQuerySingle, sql } from '../../../config';
 import { iProduct, iUnit } from '../../../components/interfaces'
 
 type apiProductReturnType = Promise<any[] | (readonly iProduct[] | undefined)[]>;
 type apiUnitReturnType = Promise<any[] | (readonly iUnit[] | undefined)[]>;
 
 interface apiProductFunction {
+  searchProduct: (text: string) => apiProductReturnType,
   getProduct(id: number): apiProductReturnType;
   deleteProduct(id: number): apiProductReturnType;
   getProducts: () => apiProductReturnType; // same as above
@@ -35,8 +36,30 @@ const updateUnit = async (units: iUnit[]) => {
 }
 
 const apiProduct: apiProductFunction = {
-  getProduct: async (id: number) => {
+  searchProduct: async (text: string | string[]) => {
     return await db.query<iProduct>(
+      sql`SELECT p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active,
+      p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id,
+      ${nestQuery(sql`SELECT
+        u.id, u.barcode, u.name, u.content,
+        u.weight, u.margin, u.profit, 
+        u.buy_price "buyPrice",
+        u.agent_margin "agentMargin",
+        u.member_margin "memberMargin",
+        u.sale_price "salePrice",
+        u.agent_price "agentPrice",
+        u.member_price "memberPrice",
+        u.product_id "productId"
+        FROM units AS u
+        WHERE u.product_id = p.id`)} AS "units"
+      FROM products AS p
+      WHERE position(${text} in LOWER(p.name)) > 0
+      ORDER BY p.name`)
+      .then(data => ([data.rows, undefined]))
+      .catch(error => ([undefined, error]))    
+  }
+  , getProduct: async (id: number) => {
+   return await db.query<iProduct>(
       sql`SELECT code, name, spec, base_unit, base_price, base_weight, is_active,
       first_stock, unit_in_stock, category_id, supplier_id, warehouse_id
         FROM products
