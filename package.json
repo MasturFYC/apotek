@@ -12,6 +12,7 @@
     "go": "NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "bootstrap": "^5.0.0-beta3",
     "cors": "^2.8.5",
     "intl": "^1.2.5",
     "next": "^10.0.7",

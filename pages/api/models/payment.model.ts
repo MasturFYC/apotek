@@ -65,7 +65,7 @@ const apiPayment: apiPaymentFunction = {
   },
 
   insertPayment: async (c: iPayment) => {
-    console.log(c)
+    //console.log(c)
     return await db.query<iPayment>
       (
         sql`INSERT INTO payments (order_id, method_id, amount, descriptions, user_id)

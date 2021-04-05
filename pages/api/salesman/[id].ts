@@ -39,7 +39,7 @@ export default async function salesIDHandler(req: NextApiRequest, res: NextApiRe
   if (data) {
     res.status(200).json(data);
   } else {
-    console.log(error)
+    //console.log(error)
     res.status(403).json({ message: error.message })
   }
 }

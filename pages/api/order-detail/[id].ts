@@ -19,7 +19,7 @@ export default async function orderDetailHandler(req: NextApiRequest, res: NextA
         const { data } = req.body
 
         result = await api.insertDetail(data);
-        console.log(result)
+        //console.log(result)
       }
       break;
     case METHOD_DELETE:

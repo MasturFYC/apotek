@@ -39,7 +39,7 @@ export default async function supplierIDHandler(req: NextApiRequest, res: NextAp
   if (retData) {
     res.status(200).json(retData);
   } else {
-    console.log(error)
+    //console.log(error)
     res.status(403).json({ message: error.message })
   }
 }
