@@ -2,6 +2,7 @@
   "name": "learn-starter",
   "version": "0.1.0",
   "private": true,
+  "main": "server.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -25,6 +26,7 @@
     "react-tooltip": "^4.2.15",
     "slonik": "^23.6.2",
     "slonik-interceptor-field-name-transformation": "^1.5.3",
+    "slonik-interceptor-query-normalisation": "^1.1.10",
     "styled-components": "^5.2.1",
     "swr": "^0.3.11",
     "tailwindcss": "^2.0.2"

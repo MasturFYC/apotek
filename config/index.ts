@@ -27,6 +27,9 @@ import {
   createFieldNameTransformationInterceptor
 } from 'slonik-interceptor-field-name-transformation';
 //import { PrimitiveValueExpressionType } from 'slonik/dist/types';
+import {
+  createQueryNormalisationInterceptor
+} from 'slonik-interceptor-query-normalisation';
 
 
 //console.log(preset);
@@ -44,6 +47,9 @@ const db = createPool(process.env.DATABASE_URL || '',
     interceptors: [
       createFieldNameTransformationInterceptor({
         format: "CAMEL_CASE"
+      }),
+      createQueryNormalisationInterceptor({
+        stripComments: true
       })
     ]
     //     {
