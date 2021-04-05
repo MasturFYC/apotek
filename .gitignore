@@ -27,4 +27,8 @@ yarn-error.log*
 node_modules/
 .next/
 .vscode/
+<<<<<<< HEAD
 _static/
+=======
+_static/
+>>>>>>> 5b8b51d3e62afb49f1548bfc80de40b6257e75ce
