@@ -1,0 +1,4 @@
+.vscodeignore
+apotek.sql
+docker-compose.yml
+_static/
