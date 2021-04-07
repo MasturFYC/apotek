@@ -135,7 +135,7 @@ const main = async(connection = slonik) => {
   `
   try {
     const results = await connection.query(query)
-    console.log(results);
+    //console.log(results);
     return results
   } catch (error) {
     console.error(error);

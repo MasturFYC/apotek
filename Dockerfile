@@ -1,13 +1,13 @@
 FROM node:12
 
 ENV PORT 3000
-
+# ENV DATABASE_URL postgres://root:t2z00a8y@172.21.58.237:5432/apotek
 # Create app directory
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
 # Installing dependencies
-COPY package*.json /usr/src/app/
+COPY ./package*.json /usr/src/app/
 RUN npm install
 
 # Copying source files
