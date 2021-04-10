@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
+import Container from '@material-ui/core/Container';
 import styles from './layout.module.css'
 import utilStyles from '../styles/utils.module.css'
 import { AppContent, AppMain, AppTitle, AppHeader, AppMenu, DivMenu} from './styles'
@@ -9,7 +10,7 @@ const name = 'Apotek SR-II'
 export const siteTitle = name
 const Layout = ({ children, home, menuActive = 0, heading}: any) => {
   return (
-    <React.Fragment>
+    <Container maxWidth="md">
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,7 +80,7 @@ const Layout = ({ children, home, menuActive = 0, heading}: any) => {
           </Link>
         </div>
       )}
-    </React.Fragment>
+    </Container>
   )
 }
 

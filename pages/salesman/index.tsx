@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import useSWR from 'swr'
+
 import Layout, { siteTitle } from '../../components/layout'
 import { iSalesman } from '../../components/interfaces'
 import { SalesList } from '../../components/lists/sales-list'
@@ -86,7 +87,6 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <>
         {sales && sales.map((item: iSalesman, i: number) => {
           return <SalesList
             key={`cust-key-${i}`}
@@ -100,7 +100,6 @@ export default function Home() {
           />
         })
         }
-      </>
     </Layout>
   )
 }

@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
+
 import { iSalesman } from '../interfaces';
 
 export type SalesMethodType = {
@@ -18,9 +23,22 @@ export const salesInit: iSalesman = {
   phone: ''
 };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
+
+  btn: {
+    marginRight: 6
+  }
+}));
+
 export const SalesForm: React.FunctionComponent<SalesFormType> = ({
   data, reload
 }) => {
+  const css = useStyles();
   const [sales, setSales] = useState<iSalesman>(salesInit);
 
   React.useEffect(() => {
@@ -107,17 +125,18 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
         </div>
       </div>
-      <div className={'row g-2 mt-3'}>
-        <div className={'col'}>
-          <button style={{ width: '90px' }} type="submit" className={'btn no-shadow btn-primary me-2 mb-2'}>
-            Save</button>
+      <Grid container spacing={2} className={css.root}>
+        <Grid item xs={12}>
+          <Paper>
+          <Button variant={'contained'} color={'primary'} type={'submit'}
+          className={css.btn}>Save</Button>
 
-          <button style={{ width: '90px' }} type="button" className={'btn no-shadow btn-danger mb-2'}
+          <Button type={'button'} variant={'contained'} color={'secondary'}
             onClick={(e) => deleteSales(e)}
-            disabled={sales.id === 0}>
-            Delete</button>
-        </div>
-      </div>
+            disabled={sales.id === 0}>Delete</Button>
+            </Paper>
+        </Grid>
+      </Grid>
     </form>
   );
 };
