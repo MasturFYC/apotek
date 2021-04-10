@@ -1,0 +1,10 @@
+./.vscodeignore
+./apotek.sql
+./.gitignore
+./_static/
+./Dockerfile
+./docker-compose.yml
+./postcss.config.js
+./.vsnext
+./.next
+./.git

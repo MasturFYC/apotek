@@ -1,0 +1,171 @@
+.unitTable {
+  margin-top: 10px;
+  width: 100%;
+  background-color: #cecece;
+  border-collapse: collapse;
+}
+
+.unitTable tbody tr td input {
+  /* margin: 0px -5px 0px -5px; */
+  width: 100%;
+  padding: 2px 5px 2px 5px;
+  border: 0;
+}
+.unitTable tbody tr td input:active,
+.unitTable tbody tr td input[type="text"]:focus {
+  /* margin: 0px -5px 0px -5px; */
+  width: 100%;
+  outline: #fd7e14 solid 1px ;
+  padding: 2px 5px 2px 5px;
+  /* border-bottom: 1px soid ;*/
+}
+
+
+.unitTable tr th,
+.unitTable tr td {
+  font-size: 14px;
+  border: 1px solid #9c9c9c;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+.unitTable tr th:nth-child(1n+6) {
+  overflow-x: hidden;
+}
+
+.unitTable tr td:nth-child(1n+4) {
+  text-align: right;
+  overflow-x: hidden;
+}
+
+.unitTable tr:nth-child(odd) {
+  background-color: #ecefec;
+}
+.unitTable tr:nth-child(even) {
+  background-color: #e0e5e0;
+}
+
+.unitTable tr:nth-child(odd):hover {
+  background-color: #ccd9cc;
+}
+
+.unitTable tr:nth-child(even):hover {
+  background-color: #ccd9cc;
+}
+
+.unitTable th {
+  text-align: center;
+  background-color: #696969;
+  border-color: #3a3a3a;
+  color: #fcfcfc;
+  font-weight: 400;
+  padding: px 3px;
+  white-space: nowrap;
+}
+/*
+.unitTable tbody tr {
+  cursor: pointer;
+}
+*/
+
+.unitTable tr td:last-child {
+  padding: 0;
+  text-align: center;
+  background-color: #fff;
+}
+.unitTable tr td:first-child,
+.unitTable tr th:first-child {
+  width: 40px;
+  text-align: center;
+}
+
+.unitTable thead tr:nth-child(2n) th:nth-child(1n+1) {
+  padding-right: 3px;
+  padding-left: 3px;
+  background-color: #695959;
+}
+.unitTable thead tr:nth-child(2n) th:nth-child(1n+4) {
+  padding-right: 3px;
+  padding-left: 3px;
+  background-color: #495949;
+}
+
+.unitTable thead tr:nth-child(1n) th:nth-child(5n),
+.unitTable thead tr:nth-child(1n) th:nth-child(6n) {
+  padding-right: 3px;
+  padding-left: 3px;
+  min-width: 60px;
+}
+
+/*
+.unitTable tr:first-child th:first-child,
+.unitTable tr td:first-child {
+  display: none;
+}
+*/
+/* .unitTable tr td:first-child {
+  text-align: right;
+  padding-right: 6px;
+} */
+
+.textNum60 {
+  text-align: right;
+  /* width: 60px; */
+}
+
+.textNum80 {
+  text-align: right;
+  /* width: 80px; */
+}
+
+
+.unitTable td img {
+  display: inline;
+  margin-bottom: -4px;
+  margin-right: 4px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.tdInputNumber {
+  text-align: right;
+}
+
+.tdEdit {
+  text-align: left;
+  padding-right: 0;
+  padding-left: 0;
+  padding-top: 0;
+}
+
+.tdEdit2 {
+  text-align: right;
+  padding-top: 0;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.tdOff1 {
+  text-align: left;
+  padding-left: 3px;
+}
+
+.tdOff2 {
+  padding-right: 3px;
+  text-align: right;
+}
+
+.imgControl {
+  display: inline-block;
+  margin: -8px 2px 0 2px;
+  padding: 3px;
+  background-color: #fff;
+}
+
+.imgControl:hover {
+  background-color: #bbe6ff;
+}
+
+.imgControl:active {
+  background-color: #e0f3ff;
+}

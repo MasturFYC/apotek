@@ -1,0 +1,48 @@
+{
+  "name": "apotek-js",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./server.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prod": "next build && next export -o _static",
+    "custom": "node server.js",
+    "go": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "bootstrap": "^5.0.0-beta3",
+    "cors": "^2.8.5",
+    "intl": "^1.2.5",
+    "next": "^10.0.7",
+    "next-images": "^1.7.0",
+    "pg-native": "^3.0.0",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-preset-env": "^6.7.0",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "react-number-format": "^4.4.4",
+    "react-select": "^4.2.1",
+    "react-tooltip": "^4.2.15",
+    "slonik": "^23.6.2",
+    "slonik-interceptor-field-name-transformation": "^1.5.3",
+    "slonik-interceptor-query-normalisation": "^1.1.10",
+    "styled-components": "^5.2.1",
+    "swr": "^0.3.11",
+    "tailwindcss": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/classnames": "^2.2.11",
+    "@types/cors": "^2.8.10",
+    "@types/intl": "^1.2.0",
+    "@types/react": "^17.0.2",
+    "@types/react-dom": "^17.0.3",
+    "@types/react-select": "^4.0.13",
+    "@types/slonik": "^22.1.4",
+    "@types/styled-components": "^5.1.9",
+    "autoprefixer": "^10.1.0",
+    "postcss": "^8.2.1",
+    "typescript": "^4.2.3"
+  }
+}

@@ -1,0 +1,124 @@
+#bootstrap-overrides .form-control:focus {
+  color: inherit;
+  border-width: 2px;
+}
+
+.btn,
+.btn:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  border-width: 0;
+  outline: none;
+  box-shadow: none;
+}
+
+.form-floating>label {
+  padding-top: .75rem;
+  padding-left: 1rem;
+}
+.form-floating>.form-control:focus, .form-floating>.form-control:not(:placeholder-shown) {
+  padding-bottom: .35rem;
+}
+
+.form-control:focus
+/* textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus,
+.uneditable-input:focus */
+{
+  box-shadow: 0 0 0.135rem #0856ca;
+    /* border-color: rgba(82, 168, 236, 0.8);
+
+ */
+  /* IE6-9 */
+  /*
+   -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+   -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+   */
+  /* box-shadow: none; inset 0 px 0px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6); */
+}
+
+* {
+  box-sizing: border-box;
+  font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+html {
+  font-size: 0.815rem !important;
+}
+
+a {
+  color: #0070f3;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.cust-name {
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 3px 6px 5px 6px;
+  margin-left: -6px;
+  border-radius: 0.25rem;
+}
+.cust-name:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+.cust-name:active {
+  color: #fff;
+  background-color: #0856ca;
+}
+
+.btn-outline-dark {
+  background-color: #f8f9fa;
+  border-color: #6c757d;
+}
+.div-child {
+  margin-top: 0;
+  padding-top: 0;
+  /* padding-bottom: 6px; */
+}
+
+.see-child {
+  padding: 4px 6px;
+  border-radius: 0.25rem;
+  text-decoration: none;
+}
+
+.see-child img {
+    display: inline;
+    margin-right: 6px;
+    margin-top: -4px;
+    width: 18px;
+    height: 18px;
+}
+
+.see-child:hover {
+  background-color: #edeffe;
+  text-decoration: none;
+}
+
+.see-child:active {
+background-color: #e1e8fe;
+}
+
+.w85 {
+  width: 85px;
+}
