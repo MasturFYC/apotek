@@ -3,7 +3,6 @@ import dynamic from 'next/dynamic'
 // import { useRouter } from 'next/router'
 import useSWR from 'swr'
 import Category from '../components/category'
-import utilStyles from '../styles/utils.module.css'
 import { siteTitle } from '../components/layout'
 //import Layout, { siteTitle } from '../components/layout'
 
@@ -36,7 +35,7 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <section className={utilStyles.headingMd}>
+      <section>
         <p>Fine Young Canibals</p>
         <ul>
           {data.map((item: any, i: number) => (

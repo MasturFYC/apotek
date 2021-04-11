@@ -66,17 +66,19 @@ padding: 0px 13px 6px 13px;
 //   class?: string;
 // }
 
-const divRow = styled.div<{isActive?: boolean}>`
+const divRow = styled.div<{ isActive?: boolean }>`
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   border: 1px solid #e1e4e8;
   border-radius: 0;
   border-top: none;
+
   &:first-child {
     border-top: 1px solid #e1e4e8;
     border-top-left-radius:  06px;
     border-top-right-radius:  6px;
-  };
+  }
+
   &:last-child {
     border-bottom-left-radius:  6px;
     border-bottom-right-radius:  6px;
@@ -85,13 +87,21 @@ const divRow = styled.div<{isActive?: boolean}>`
 
   &:hover {
     background-color: #f1f7fc;
-  };
-  & > form {
+  }
+
+  form {
     margin-top: -0.25rem;
     margin-bottom: -0.5rem;
     padding: 1.5rem;
     background-color: #f1f7fc;
     border: 0;
+  }
+
+  img {
+    width: 16px;
+    margin-top: -2px;
+    vertical-align: middle;
+    margin-right: 3px;
   }
   ${props => props.isActive && 'background-color: #e9f1fa;'}
 `
@@ -159,7 +169,7 @@ export const DivMenu = styled.div.attrs({
   margin-bottom: 4px;
   padding-top: 2.5rem;
   white-space: nowrap;
-  & > a {
+  a {
     color: #212529;
     text-decoration: none;
     padding: 6px 12px 12px 12px;
@@ -175,10 +185,12 @@ export const DivMenu = styled.div.attrs({
       border-top-left-radius: 0.5rem;
       border-top-right-radius: 0.5rem;
     }
-    > img {
+    img {
       display: inline;
       margin-right: 6px;
-      margin-top: -2px;
+      margin-top: -3px;
+      width: 16px;
+      vertical-align: middle;
     }
   }
   > .an-active {
@@ -205,6 +217,6 @@ export const TabStyle = styled.div<iTabStyle>`
   padding-top: 5px;
   padding-bottom: 5px;
   border: 1px solid #dedede;
-  border-bottom: ${props => props.isSelected ? 'none' : '1px solid #dedede' };
-  background-color: ${props => props.isSelected ? '#ffffff' : '#f8f9fa' };
+  border-bottom: ${props => props.isSelected ? 'none' : '1px solid #dedede'};
+  background-color: ${props => props.isSelected ? '#ffffff' : '#f8f9fa'};
 `;

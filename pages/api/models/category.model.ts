@@ -73,7 +73,7 @@ const apiCategory: apiCategoryFunction = {
   }
   ,
   insertCategory: async (c: iCategory) => {
-    return await db.query<iCategory>
+    return await db.query
       (
         sql`INSERT INTO categories (name)
         VALUES (${c.name})
@@ -84,7 +84,7 @@ const apiCategory: apiCategoryFunction = {
   },
 
   updateCategory: async (id: number, c: iCategory) => {
-    return await db.query<iCategory>
+    return await db.query
       (
         sql`UPDATE categories  SET
         name = ${c.name}
@@ -96,7 +96,7 @@ const apiCategory: apiCategoryFunction = {
   },
 
   deleteCategory: async (id: number) => {
-    return await db.query<iCategory>
+    return await db.query
       (
         sql`DELETE FROM categories
         WHERE id = ${id}

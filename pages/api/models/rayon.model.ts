@@ -48,7 +48,7 @@ const apiRayon: apiRayonFunction = {
   },
 
   insertRayon: async (c: iRayon) => {
-    return await db.query<iRayon>
+    return await db.query
       (
         sql`INSERT INTO rayons (name, descriptions)
         VALUES (${c.name}, ${c.descriptions??null})
@@ -59,7 +59,7 @@ const apiRayon: apiRayonFunction = {
   },
 
   updateRayon: async (id: number, c: iRayon) => {
-    return await db.query<iRayon>
+    return await db.query
       (
         sql`UPDATE rayons  SET
         name = ${c.name}, descriptions = ${c.descriptions??null}
@@ -71,7 +71,7 @@ const apiRayon: apiRayonFunction = {
   },
 
   deleteRayon: async (id: number) => {
-    return await db.query<iRayon>
+    return await db.query
       (
         sql`DELETE FROM rayons
         WHERE id = ${id}

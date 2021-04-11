@@ -53,7 +53,7 @@ const apiSupplier: apiSupplierFunction = {
   },
 
   insertSupplier: async (c: iSupplier) => {
-    return await db.query<iSupplier>
+    return await db.query
       (
         sql`INSERT INTO suppliers (name, contact_name, street, city, phone, cell, zip)
         VALUES (${c.name}, ${c.contactName}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell??null}, ${c.zip??null})
@@ -64,7 +64,7 @@ const apiSupplier: apiSupplierFunction = {
   },
 
   updateSupplier: async (id: number, c: iSupplier) => {
-    return await db.query<iSupplier>
+    return await db.query
       (
         sql`UPDATE suppliers  SET
         name = ${c.name}, contact_name = ${c.contactName}, street = ${c.street},
@@ -77,7 +77,7 @@ const apiSupplier: apiSupplierFunction = {
   },
 
   deleteSupplier: async (id: number) => {
-    return await db.query<iSupplier>
+    return await db.query
       (
         sql`DELETE FROM suppliers
         WHERE id = ${id}

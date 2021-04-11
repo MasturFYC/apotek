@@ -66,7 +66,7 @@ const apiPayment: apiPaymentFunction = {
 
   insertPayment: async (c: iPayment) => {
     //console.log(c)
-    return await db.query<iPayment>
+    return await db.query
       (
         sql`INSERT INTO payments (order_id, method_id, amount, descriptions, user_id)
         VALUES (${c.orderId},${c.methodId},${c.amount},${c.descriptions || null}, ${c.userId} || '-')
@@ -77,7 +77,7 @@ const apiPayment: apiPaymentFunction = {
   },
 
   updatePayment: async (id: number, c: iPayment) => {
-    return await db.query<iPayment>
+    return await db.query
       (
         sql`UPDATE payments SET
           order_id = ${c.orderId}, method_id = ${c.methodId},
@@ -91,7 +91,7 @@ const apiPayment: apiPaymentFunction = {
   },
 
   deletePayment: async (id: number) => {
-    return await db.query<iPayment>
+    return await db.query
       (
         sql`DELETE FROM payments
         WHERE id = ${id}

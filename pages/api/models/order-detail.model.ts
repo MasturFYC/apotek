@@ -83,7 +83,7 @@ const apiOrderDetail: apiOrderDetailFunction = {
   },
   insertDetail: async (d: iOrderDetail) => {
     //console.log(d)
-    return await db.query<iOrderDetail>
+    return await db.query
       (sql`INSERT INTO order_details
  (order_id, product_id, unit_id, qty, unit_name, real_qty, weight, discount, profit, price, subtotal)
  VALUES (${d.orderId}, ${d.productId}, ${d.unitId}, ${d.qty}, ${d.unitName}, ${d.realQty}, ${d.weight}, ${d.discount}, ${d.profit}, ${d.price}, ${d.subtotal})
@@ -97,7 +97,7 @@ const apiOrderDetail: apiOrderDetailFunction = {
 
     //console.log(d)
 
-    return await db.query<iOrderDetail>
+    return await db.query
       (sql`UPDATE order_details SET
  order_id = ${d.orderId},
  product_id = ${d.productId},
@@ -117,7 +117,7 @@ const apiOrderDetail: apiOrderDetailFunction = {
   },
 
   deleteDetail: async (id: number) => {
-    return await db.query<iOrderDetail>
+    return await db.query
       (sql`DELETE FROM order_details WHERE id = ${id} RETURNING id`)
       .then(data => ([{ id: data.rows[0].id }, undefined]))
       .catch(error => ([undefined, error]));

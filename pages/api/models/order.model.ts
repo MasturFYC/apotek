@@ -91,7 +91,7 @@ const apiOrder: apiOrderFunction = {
   },
 
   insertOrder: async (c: iOrder) => {
-    return await db.query<iOrder>
+    return await db.query
       (
         sql`INSERT INTO orders (
           customer_id, sales_id, due_date,
@@ -112,7 +112,7 @@ const apiOrder: apiOrderFunction = {
   updateOrder: async (id: number, c: iOrder) => {
     //           due_date = ${sql`to_timestamp(${c.dueDate.replace('T', ' ')} / 1000.0)`}, total = ${c.total},
     //console.log(c.dueDate)
-    return await db.query<iOrder>
+    return await db.query
       (
         sql`UPDATE orders SET
           customer_id = ${c.customerId}, sales_id = ${c.salesId},
@@ -127,7 +127,7 @@ const apiOrder: apiOrderFunction = {
   },
 
   deleteOrder: async (id: number) => {
-    return await db.query<iOrder>
+    return await db.query
       (
         sql`DELETE FROM orders
         WHERE id = ${id}

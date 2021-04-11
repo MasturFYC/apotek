@@ -17,7 +17,7 @@ interface apiProductFunction {
 
 const apiUnit: apiProductFunction = {
   getProductByBarcode: async (barcode: string | string[]) => {
-    return await db.query<iUnit>
+    return await db.query
       (
         sql`SELECT u.id, u.barcode, u.name, u.content, u.weight, u.buy_price,
         u.margin, u.agent_margin, u.member_margin,
@@ -39,7 +39,7 @@ const apiUnit: apiProductFunction = {
   },
 
   getUnit: async (id: number) => {
-    return await db.query<iUnit>
+    return await db.query
       (
         sql`SELECT id, barcode, name, content, weight, buy_price,
           margin, agent_margin, member_margin,
@@ -52,7 +52,7 @@ const apiUnit: apiProductFunction = {
       .catch((error) => ([undefined, error]));
   }
   , getUnits: async () => {
-    return await db.query<iUnit>
+    return await db.query
       (
         sql`SELECT id, barcode, name, content, weight, buy_price,
           margin, agent_margin, member_margin,
@@ -79,7 +79,7 @@ const apiUnit: apiProductFunction = {
       .catch((error) => ([undefined, error]));
   }
   , insertUnit: async (p: iUnit) => {
-    return await db.query<iUnit>
+    return await db.query
       (
         sql`INSERT INTO units (barcode, name, content, weight, buy_price,
           margin, agent_margin, member_margin,
@@ -94,7 +94,7 @@ const apiUnit: apiProductFunction = {
       .catch((error) => ([undefined, error]));
   }
   , deleteUnit: async (id: number) => {
-    return await db.query<iUnit>
+    return await db.query
       (
         sql`DELETE FROM units
         WHERE id = ${id} RETURNING id`
