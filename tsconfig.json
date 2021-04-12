@@ -29,7 +29,8 @@
     "**/*.tsx",
     "./next.config.js",
     "src/globalStyle.js",
-    "./server.js"],
+    "./server.js",
+    "src"],
   "exclude": [
     "node_modules"
   ]

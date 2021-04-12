@@ -86,21 +86,19 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <div className={'row container'}>
-          {sales && sales.map((item: iSalesman, i: number) => {
-            return <SalesList
-              key={`cust-key-${i}`}
-              data={item}
-              index={i}
-              isSelected={isSelected && currentIndex === i}
-              property={{
-                onClick: selectSales
-              }}
-              refreshData={refreshSales}
-            />
-          })
-          }
-      </div>
+      {sales && sales.map((item: iSalesman, i: number) => {
+        return <SalesList
+          key={`cust-key-${i}`}
+          data={item}
+          index={i}
+          isSelected={isSelected && currentIndex === i}
+          property={{
+            onClick: selectSales
+          }}
+          refreshData={refreshSales}
+        />
+      })
+      }
     </Layout>
   )
 }

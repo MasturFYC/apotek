@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { iSalesman } from '../interfaces';
 import { SalesForm, salesInit, SalesMethodType } from 'components/forms/sales-form';
-import css from '../../styles/my-style.module.scss'
+import { DivRow, CustomerName } from '../styles'
 
 type SalesProperty = {
   backColor?: string;
@@ -17,8 +17,6 @@ type SalesListType = {
   isSelected: boolean;
   refreshData: (e: SalesMethodType, callback: Function) => void;
 };
-
-
 
 export const SalesList: React.FunctionComponent<SalesListType> = ({
   data, index, property, isSelected, refreshData
@@ -48,40 +46,34 @@ export const SalesList: React.FunctionComponent<SalesListType> = ({
 
   return (
     <React.Fragment>
-      <div key={`row-${index}`} className={`${isSelected && '' || ''} ${css.divRow}`}>
-          <div className={'col col-md-8'}>
-            <span className={css.focusEl}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                return false;
-              }} onClick={() => property?.onClick(index)}
+      <DivRow key={`${index}`} isActive={isSelected}>
+        <div className={'col col-md-8'}>
+          <CustomerName
+            onMouseDown={(e) => {
+              e.preventDefault();
+              return false;
+            }} onClick={() => property?.onClick(index)}
             role={'button'}>
-              {sales.id === 0 ? 'New Sales' : sales.name}
-            </span><br />
-            <span>{sales.street && `${sales.street} - `}{sales.city}{sales.zip && `, ${sales.zip}`}</span>
-            <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
-          </div>
+            {sales.id === 0 ? 'New Sales' : sales.name}
+          </CustomerName><br />
+          <span>{sales.street && `${sales.street} - `}{sales.city}{sales.zip && `, ${sales.zip}`}</span>
+          <br /><span>{sales.phone} {sales.cell && ` - ${sales.cell}` || ''}</span>
+        </div>
         <div className={'col col-md-4'}>
           {sales.id !== 0 &&
-            <div>
-              <Link href={`/salesman/orders/${sales.id}`}>
-                <a className={'see-child'}><img src={'/images/product.svg'} />Lihat Order</a>
-              </Link>
-            </div>}
+            <Link href={`/salesman/orders/${sales.id}`}>
+              <a className={'see-child'}><img src={'/images/product.svg'} />Lihat Order</a>
+            </Link>}
         </div>
-      </div>
+      </DivRow>
       {isSelected &&
-        <div key={`row-form-${sales.id}`} className={css.divRow}>
-          <div>
-          <div>
+        <DivRow key={`row-form-${sales.id}`}>
           <SalesForm
             key={`cust-sel-${index}`}
             data={sales}
             reload={e => reloadData(e)}
           />
-          </div>
-          </div>
-        </div>
+        </DivRow>
       }
     </React.Fragment>
 

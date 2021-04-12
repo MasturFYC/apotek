@@ -12,6 +12,7 @@
     "go": "NODE_ENV=production node server.js"
   },
   "dependencies": {
+    "@babel/runtime": "^7.12.5",
     "bootstrap": "^5.0.0-beta3",
     "cors": "latest",
     "intl": "latest",
@@ -25,9 +26,10 @@
     "react-number-format": "latest",
     "react-select": "latest",
     "react-tooltip": "latest",
+    "sass": "^1.32.8",
     "slonik": "latest",
-    "slonik-interceptor-field-name-transformation": "latest",
-    "slonik-interceptor-query-normalisation": "latest",
+    "slonik-interceptor-field-name-transformation": "^1.5.3",
+    "slonik-interceptor-query-normalisation": "^1.1.10",
     "styled-components": "latest",
     "swr": "latest",
     "tailwindcss": "latest"
@@ -35,15 +37,14 @@
   "devDependencies": {
     "@types/cors": "latest",
     "@types/intl": "latest",
-    "@types/material-ui": "latest",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
-    "@types/react-jss": "^10.0.0",
     "@types/react-select": "latest",
     "@types/slonik": "latest",
     "@types/styled-components": "latest",
     "autoprefixer": "latest",
+    "postcss": "^8.2.10",
     "typescript": "latest"
   }
 }

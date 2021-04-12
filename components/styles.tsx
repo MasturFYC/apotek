@@ -4,8 +4,7 @@ export const CustomerName = styled.span`
   cursor: pointer;
   display: inline-block;
   font-weight: 700;
-  font-size: 1rem;
-  padding: 3px 6px 5px 6px;
+  padding: 1px 6px 3px 6px;
   margin-left: -6px;
   border-radius: 0.25rem;
   &:hover {
@@ -122,8 +121,8 @@ export const DivHead = styled.div`
 export const AppMain = styled.main.attrs({
   className: 'section'
 })`
-  margin-top: 2.0rem;
-  margin-bottom: 1.0rem;
+//  padding-top: 2.0rem;
+//  padding-bottom: 1.0rem;
   background-color: #ffffff;
 `
 export const AppTitle = styled.div.attrs({ className: 'container bg-light' })` &&& {
@@ -134,12 +133,12 @@ export const AppTitle = styled.div.attrs({ className: 'container bg-light' })` &
 
 }
 `
-
 export const AppContent = styled.section.attrs({
   className: 'container'
 })` &&& {
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  margin-top: 2.0rem;
+  margin-bottom: 2.0rem;
+//  background-color: #cecece;
 }
 `
 
@@ -165,14 +164,13 @@ export const AppMenu = styled.section.attrs({
 export const DivMenu = styled.div.attrs({
   className: 'text-dark container'
 })` &&& {
-  font-size: 10pt;
   margin-bottom: 4px;
   padding-top: 2.5rem;
   white-space: nowrap;
   a {
     color: #212529;
     text-decoration: none;
-    padding: 6px 12px 12px 12px;
+    padding: 6px 12px 13px 12px;
     &:hover {
       border-bottom: 2px solid #adb5bd;
       background-color: #edeffe;

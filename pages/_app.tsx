@@ -1,6 +1,6 @@
 import React from 'react';
 import { AppProps } from 'next/app'
-import 'bootstrap/dist/css/bootstrap.css'
+import '../styles/global.scss'
 
 function App(props: AppProps) {
   const { Component, pageProps } = props;

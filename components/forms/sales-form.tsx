@@ -20,16 +20,6 @@ export const salesInit: iSalesman = {
   phone: ''
 };
 
-const css = {
-  root: styled.div`
-    & > * {
-      margin: 2;
-    }
-  `,
-  btn: styled.button`
-    margin-right: 6;
-`};
-
 export const SalesForm: React.FunctionComponent<SalesFormType> = ({
   data, reload
 }) => {
@@ -65,13 +55,13 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
 
   return (
     <form className={'form-floating'} onSubmit={submitForm}>
-      <div className={'row'}>
-        <div className={'col-md-12 form-floating mb-2'}>
+      <div className={'row g-2'}>
+        <div className={'col-md-12 form-floating'}>
           <input id={'txt-name'} className={'form-control'}
             type={'text'} value={sales.name} autoFocus={true}
             onChange={(e) => setSales({ ...sales, name: e.target.value })}
             placeholder={'Enter Name'} />
-          <label htmlFor={'txt-name'} className={'mx-0 col-form-label'}>Nama Sales</label>
+          <label htmlFor={'txt-name'} className={'col-form-label'}>Nama Sales</label>
         </div>
 
         <div className={'col-md-12'}>
@@ -120,13 +110,14 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
         </div>
       </div>
-      <div className={css.root}>
+      <div className={'row pt-3'}>
         <div>
           <div>
             <button type={'submit'}
-              className={css.btn}>Save</button>
+              className={'btn btn-sm btn-primary me-2'}>Save</button>
 
             <button type={'button'}
+              className={'btn btn-sm btn-danger'}
               onClick={(e) => deleteSales(e)}
               disabled={sales.id === 0}>Delete</button>
           </div>

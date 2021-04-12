@@ -1,12 +1,23 @@
 const path = require('path')
 const withImages = require('next-images')
 
+
+module.exports = {
+  mode: 'production',
+  future: {
+    webpack5: true,
+  },
+  webpack: function (config, options) {
+    config.experiments = {};
+    return config;
+  },
+};
+
 module.exports = {
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
   },
 }
-
 
 module.exports = withImages()
 
@@ -44,15 +55,3 @@ module.exports = {
     return config
   },
 }
-
-module.exports = {
-  mode: 'production',
-  future: {
-    webpack5: true,
-  },
-  webpack: function (config, options) {
-    config.experiments = {};
-    return config;
-  },
-};
-

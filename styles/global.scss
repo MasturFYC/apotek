@@ -1,0 +1,32 @@
+$enable-shadows: false;
+$primary: rgb(0, 19, 223);
+
+$body-color:  #333;
+$body-bg: #ffffff;
+
+$font-size-base:              0.85rem; // Assumes the browser default, typically `16px`
+$font-size-sm:                $font-size-base * .85;
+$font-size-lg:                $font-size-base * 1.15;
+
+
+//$input-btn-focus-width:       0;
+// $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width #cecece;
+
+
+//$input-btn-focus-width: 0.15rem;
+
+@import '../node_modules/bootstrap/scss/bootstrap.scss';
+
+.form-control:focus {
+  //border-color: #28a745;
+  //border-width: 0.15rem;
+  //border: 2px solid #17a2b8;
+  //outline: 2px solid #17a2b8;
+  box-shadow: 0 0 0 0.1rem $input-btn-focus-color inset;
+  //outline-width: 0.25rem;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus {
+  outline: thin dotted;
+  outline-offset: -2px;
+  box-shadow: none; // 0 0 0 0.25rem $input-btn-focus-color inset;
+}
