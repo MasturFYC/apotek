@@ -1,13 +1,11 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import useSWR from 'swr'
-import styled from 'styled-components';
 
 import Layout, { siteTitle } from '../../components/layout'
 import { iSalesman } from '../../components/interfaces'
 import { SalesList } from '../../components/lists/sales-list'
 import { SalesMethodType } from '../../components/forms/sales-form'
-
 
 const revalidationOptions = {
   revalidateOnFocus: false,
@@ -27,21 +25,11 @@ const initSales: iSalesman = {
   zip: ''
 }
 
-const css = {
-  root: styled.div`
-    flex-grow: 1;
-  `,
-  paper: styled.div`
-    text-align: left;
-    color: #cecece
-  `
-}
 
 export default function Home() {
   const { data: sales, error, mutate } = useSWR(`/api/salesman`, fetcher, revalidationOptions);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
-
 
   if (error) return <div>{error.message}</div>
   if (!sales) return <div>{'Loading...'}</div>
@@ -98,8 +86,7 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      <div className={css.root}>
-        <div className={css.paper}>
+      <div className={'row container'}>
           {sales && sales.map((item: iSalesman, i: number) => {
             return <SalesList
               key={`cust-key-${i}`}
@@ -113,7 +100,6 @@ export default function Home() {
             />
           })
           }
-        </div>
       </div>
     </Layout>
   )
@@ -129,32 +115,3 @@ const fetcher = async (url: string) => {
 
   return [...data, initSales];
 }
-
-
-// type colorReducerType = {
-//   color: string;
-//   index: number;
-//   currentIndex: number;
-//   isSelected: boolean;
-// }
-
-// const backColors: string[] = ['#f8f9fa', '#e9ecef', '#f1f8ff']
-// const initSelected: colorReducerType = {
-//   color: backColors[0],
-//   index: 0,
-//   currentIndex: -1,
-//   isSelected: false
-// }
-
-// type colorReducerAction = {
-//   index: number;
-//   currentIndex: number;
-//   isSelected: boolean;
-// }
-
-// const colorReducer = (state: colorReducerType, action: colorReducerAction) => {
-//   if (action.isSelected) {
-//     return { ...state, color: backColors[2] }
-//   }
-//   return state;
-// }
