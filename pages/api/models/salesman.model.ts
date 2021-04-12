@@ -84,7 +84,7 @@ const apiSales: apiSalesFunction = {
   },
 
   insertSales: async (c: iSalesman) => {
-    return await db.query<iSalesman>
+    return await db.query
       (
         sql`INSERT INTO salesmans (name, street, city, phone, cell, zip)
         VALUES (${c.name}, ${c.street}, ${c.city}, ${c.phone}, ${c.cell || null}, ${c.zip || null})
@@ -95,7 +95,7 @@ const apiSales: apiSalesFunction = {
   },
 
   updateSales: async (id: number, c: iSalesman) => {
-    return await db.query<iSalesman>
+    return await db.query
       (
         sql`UPDATE salesmans SET
         name = ${c.name}, street = ${c.street}, city = ${c.city}, phone = ${c.phone},
@@ -108,7 +108,7 @@ const apiSales: apiSalesFunction = {
   },
 
   deleteSales: async (id: number) => {
-    return await db.query<iSalesman>
+    return await db.query
       (
         sql`DELETE FROM salesmans
         WHERE id = ${id}

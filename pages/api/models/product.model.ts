@@ -37,7 +37,8 @@ const updateUnit = async (units: iUnit[]) => {
 
 const apiProduct: apiProductFunction = {
   searchProduct: async (text: string | string[]) => {
-    return await db.query<iProduct>(
+    return await db.query
+      (
       sql`SELECT p.id, p.code, p.name, p.spec, p.base_unit, p.base_price, p.base_weight, p.is_active,
       p.first_stock, p.unit_in_stock, p.category_id, p.supplier_id, p.warehouse_id,
       ${nestQuery(sql`SELECT
@@ -59,7 +60,7 @@ const apiProduct: apiProductFunction = {
       .catch(error => ([undefined, error]))
   }
   , getProduct: async (id: number) => {
-   return await db.query<iProduct>(
+   return await db.query(
       sql`SELECT code, name, spec, base_unit, base_price, base_weight, is_active,
       first_stock, unit_in_stock, category_id, supplier_id, warehouse_id
         FROM products
@@ -70,7 +71,7 @@ const apiProduct: apiProductFunction = {
   },
 
   deleteProduct: async (id: number) => {
-    return await db.query<iProduct>(
+    return await db.query(
       sql`DELETE FROM products
         WHERE id = ${id}
         RETURNING id`)
@@ -80,7 +81,7 @@ const apiProduct: apiProductFunction = {
   },
 
   getProducts: async () => {
-    return await db.query<iProduct>(
+    return await db.query(
       sql`SELECT code, name, spec, base_unit, base_price, base_weight, is_active,
         first_stock, unit_in_stock, category_id, supplier_id, warehouse_id
         FROM products
@@ -97,7 +98,7 @@ const apiProduct: apiProductFunction = {
       }
     }
 
-    return await db.query<iProduct>(
+    return await db.query(
       sql`UPDATE products SET
         name = ${p.name}, code = ${p.code}, spec = ${p.spec ?? null}, base_unit = ${p.baseUnit},
         base_price = ${p.basePrice}, base_weight = ${p.baseWeight}, is_active = ${p.isActive},
@@ -110,7 +111,7 @@ const apiProduct: apiProductFunction = {
   },
 
   insertProduct: async (p: iProduct) => {
-    return await db.query<iProduct>(
+    return await db.query(
       sql`INSERT INTO products (code, name, spec, base_unit, base_price, base_weight, is_active, first_stock, category_id, supplier_id, warehouse_id, unit_in_stock)
         VALUES (${p.code}, ${p.name}, ${p.spec || null }, ${p.baseUnit}, ${p.basePrice}, ${p.baseWeight}, ${p.isActive}, ${p.firstStock}, ${p.categoryId}, ${p.supplierId}, ${p.warehouseId}, ${0})
         RETURNING id`)
@@ -125,7 +126,7 @@ const apiProduct: apiProductFunction = {
    */
   getUnits: async (id: number) => {
     /*
-    return await db.query<iProduct>(
+    return await db.query(
       sql`SELECT p.id, p.code, p.name, p.spec, p.baseUnit, p.basePrice, p.baseWeight, p.isActive, p.firstStock, p.unit_in_stock, p.categoryId, p.supplierId, p.warehouseId,
       ${nestQuery(sql`SELECT id, barcode, name, content, weight, buy_price,
         margin, agent_margin, member_margin,
@@ -137,7 +138,7 @@ const apiProduct: apiProductFunction = {
       WHERE p.id = ${id}`)
       */
 
-    return await db.query<iUnit[]>(
+    return await db.query(
       sql`SELECT id, barcode, name, content, weight, buy_price,
         margin, agent_margin, member_margin,
         sale_price, agent_price, member_price,

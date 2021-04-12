@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import useSWR from 'swr'
+import styled from 'styled-components';
 
 import Layout, { siteTitle } from '../../components/layout'
 import { iSalesman } from '../../components/interfaces'
@@ -24,6 +25,16 @@ const initSales: iSalesman = {
   phone: '',
   cell: '',
   zip: ''
+}
+
+const css = {
+  root: styled.div`
+    flex-grow: 1;
+  `,
+  paper: styled.div`
+    text-align: left;
+    color: #cecece
+  `
 }
 
 export default function Home() {
@@ -87,19 +98,23 @@ export default function Home() {
       <Head>
         <title>{siteTitle}</title>
       </Head>
-        {sales && sales.map((item: iSalesman, i: number) => {
-          return <SalesList
-            key={`cust-key-${i}`}
-            data={item}
-            index={i}
-            isSelected={isSelected && currentIndex === i}
-            property={{
-              onClick: selectSales
-            }}
-            refreshData={refreshSales}
-          />
-        })
-        }
+      <div className={css.root}>
+        <div className={css.paper}>
+          {sales && sales.map((item: iSalesman, i: number) => {
+            return <SalesList
+              key={`cust-key-${i}`}
+              data={item}
+              index={i}
+              isSelected={isSelected && currentIndex === i}
+              property={{
+                onClick: selectSales
+              }}
+              refreshData={refreshSales}
+            />
+          })
+          }
+        </div>
+      </div>
     </Layout>
   )
 }

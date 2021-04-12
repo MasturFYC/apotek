@@ -1,5 +1,5 @@
 import db, { sql } from '../../../config';
-import { iCustomer, iDataList } from '../../../components/interfaces'
+import { iCustomer } from '../../../components/interfaces'
 
 
 type apiCustomerReturnType = Promise<any[] | (readonly iCustomer[] | undefined)[]>;
@@ -17,7 +17,7 @@ interface apiProductFunction {
 
 const apiCustomer: apiProductFunction = {
   getCustomer: async (id: number) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
@@ -30,7 +30,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   getListCustomers: async () => {
-    return await db.query<iDataList>
+    return await db.query
       (
         sql`SELECT t.id, t.name
         FROM customers AS t
@@ -40,7 +40,7 @@ const apiCustomer: apiProductFunction = {
       .catch(error => ([undefined, error]));
   }
   ,  getCustomers: async () => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
@@ -52,7 +52,7 @@ const apiCustomer: apiProductFunction = {
       .catch(error => ([undefined, error]));
   },
   searchCustomers: async (_name: string, limit: number, offset: number) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
@@ -66,7 +66,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   getCustomersByRayon: async (rayonId: number) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`SELECT t.id, t.name, t.street, t.city, t.phone,
           t.cell, t.zip, t.rayon_id, t.created_at, t.updated_at,
@@ -80,7 +80,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   insertCustomer: async (c: iCustomer) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`INSERT INTO customers (name, street, city, phone,
           cell, zip, rayon_id, credit_limit, customer_type, descriptions)
@@ -93,7 +93,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   updateCustomer: async (id: number, c: iCustomer) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`UPDATE customers  SET
         name = ${c.name}, street = ${c.street}, city = ${c.city}, phone = ${c.phone},
@@ -108,7 +108,7 @@ const apiCustomer: apiProductFunction = {
   },
 
   deleteCustomer: async (id: number) => {
-    return await db.query<iCustomer>
+    return await db.query
       (
         sql`DELETE FROM customers
         WHERE id = ${id}

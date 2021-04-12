@@ -50,7 +50,7 @@ const apiWarehouse: apiWarehouseFunction = {
   },
 
   insertWarehouse: async (c: iWarehouse) => {
-    return await db.query<iWarehouse>
+    return await db.query
       (
         sql`INSERT INTO warehouses (name, location)
         VALUES (${c.name}, ${c.location??null})
@@ -61,7 +61,7 @@ const apiWarehouse: apiWarehouseFunction = {
   },
 
   updateWarehouse: async (id: number, c: iWarehouse) => {
-    return await db.query<iWarehouse>
+    return await db.query
       (
         sql`UPDATE warehouses  SET
         name = ${c.name}, location = ${c.location??null}
@@ -73,7 +73,7 @@ const apiWarehouse: apiWarehouseFunction = {
   },
 
   deleteWarehouse: async (id: number) => {
-    return await db.query<iWarehouse>
+    return await db.query
       (
         sql`DELETE FROM warehouses
         WHERE id = ${id}

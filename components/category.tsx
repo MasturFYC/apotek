@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 export default function Category({ category }: any) {
   return (
-    <li>
-      <Link href="/category/[id]" as={`/category/${category.id}`}>
+    <li key={`li-${category.id}`}>
+      <Link href="/product/category/[id]" as={`/product/category/${category.id}`}>
         <a>{category.name}</a>
       </Link>
     </li>
