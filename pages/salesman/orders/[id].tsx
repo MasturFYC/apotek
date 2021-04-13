@@ -5,16 +5,17 @@ import React, { useState } from 'react'
 import useSWR from 'swr'
 import Layout, { siteTitle } from '../../../components/layout'
 import { iSalesman, iOrder, iCustomer } from '../../../components/interfaces'
-import { CustomerName, DivRow } from '../../../components/styles'
+import { DivRow, FocusSpan } from '../../../components/styles'
+// import { MutatorCallback } from 'swr/dist/types'
 
-const salesOrder: React.FunctionComponent = () => {
+const SalesOrder: React.FunctionComponent = () => {
   const { query } = useRouter();
   const { salesman, isLoading, isError } = useSalesman(parseInt('' + query.id));
   const [showOrderDetail, setShowOrderDetail] = useState(false)
   const [showPayment, setShowPayment] = useState(false)
 
-  if (isError) return <div>{isError.message}</div>
-  if (isLoading) return <div>Loading...</div>
+    if (isError) return <div>{isError.message}</div>
+    if (isLoading) return <div>Loading...</div>
 
   // const refreshData = (data: iOrder, method: string) => {
   //   if (salesman && salesman.orders) {
@@ -64,7 +65,9 @@ const salesOrder: React.FunctionComponent = () => {
           </p>
         </div>
         <div className={'col-md-3 col-sm-3 mb-3'}>
-          <button className={'btn btn-success'}>Add New Order</button>
+          <Link href={`/orders/0`}>
+            <a className={'btn btn-success btn-sm py-1 px-3'}>New Order</a>
+          </Link>
         </div>
       </div >
       {sales.orders &&
@@ -79,7 +82,7 @@ const salesOrder: React.FunctionComponent = () => {
 
   const ShowCustomer = (customer: iCustomer) => (
     <div>
-      <CustomerName><Link href={`/customer/${customer.id}`}><a>{customer.name}</a></Link></CustomerName><br />
+      <FocusSpan><Link href={`/customer/${customer.id}`}><a>{customer.name}</a></Link></FocusSpan><br />
       <span>{customer.street} - {customer.city}{customer.zip && `, ${customer.zip}`}</span><br />
       <span>Telp. {customer.phone}{customer.cell && ` / ${customer.cell}`}</span>
     </div>
@@ -112,7 +115,7 @@ const salesOrder: React.FunctionComponent = () => {
               setShowOrderDetail(false)
             }}>Payments</button>
             <Link href={`/orders/${item.id}`}>
-              <a className={'btn btn-success bn-sm py-1 px-3'}>Open</a>
+              <a className={'btn btn-success btn-sm py-1 px-3'}>Open</a>
             </Link>
           </div>
           {showOrderDetail && <ShowOrderDetail orderId={item.id} />}
@@ -142,6 +145,13 @@ const revalidationOptions = {
   refreshWhenHidden: false,
   refreshInterval: 0
 };
+
+// type SalesmanDataType = {
+//   salesmane: iSalesman;
+//   isLoading: boolean;
+//   isError: boolean;
+//   mutate: (data?: iSalesman | Promise<iSalesman> | MutatorCallback<iSalesman> | undefined, shouldRevalidate?: boolean | undefined) => {}
+// }
 
 const useSalesman = (id: number) => {
   const baseUrl: any = () => id && `/api/salesman/orders/${id}`;
@@ -182,7 +192,7 @@ const fetcher = async (url: string): Promise<iSalesman> => {
 //   }
 // }
 
-export default salesOrder;
+export default SalesOrder;
 
 // const initOrderDetail: iOrderDetail = {
 //   id: 0,
@@ -205,32 +215,32 @@ export default salesOrder;
 const ShowOrderDetail: React.FunctionComponent<{ orderId: number }> = ({ orderId }) => {
   orderId;
   //const [orderDetails, setOrderDetails] = useState<iOrderDetail[]>([]);
- /*
-  React.useEffect(() => {
-    let isLoaded = false;
+  /*
+   React.useEffect(() => {
+     let isLoaded = false;
 
-    const loadDetails = async () => {
-      const res = await fetch(`/order/details/${orderId}`)
-      const data: iOrderDetail[] | any = await res.json()
+     const loadDetails = async () => {
+       const res = await fetch(`/order/details/${orderId}`)
+       const data: iOrderDetail[] | any = await res.json()
 
-      if (res.status !== 200) {
-        throw new Error(data.message)
-      }
+       if (res.status !== 200) {
+         throw new Error(data.message)
+       }
 
-      if (!isLoaded) {
-        setOrderDetails(data)
-      }
+       if (!isLoaded) {
+         setOrderDetails(data)
+       }
 
-    }
+     }
 
-    loadDetails();
+     loadDetails();
 
-    return () => {
-      isLoaded = false;
-    }
+     return () => {
+       isLoaded = false;
+     }
 
-  })
-  */
+   })
+   */
   return (
     <div>Details</div>
   )

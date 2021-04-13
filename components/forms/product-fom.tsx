@@ -300,7 +300,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[7]}
               placeholder={labels[7]}
               value={product.categoryId}
-              style={{ marginBottom: 2 }}
+              style={{ marginBottom: 2, paddingLeft: 8 }}
               onChange={e => {
                 const i: number = parseInt(e.target.value);
                 setProduct(prevState => ({ ...prevState, categoryId: i }));
@@ -314,7 +314,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[8]}
               placeholder={labels[8]}
               value={product.supplierId}
-              style={{ marginBottom: 2 }}
+              style={{ marginBottom: 2, paddingLeft: 8 }}
               onChange={e => {
                 setProduct(prevState => ({ ...prevState, supplierId: +e.target.value }));
               }}>{[{ id: 0, name: 'Pilih Supplier...' }, ...params.suppliers].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>
@@ -327,7 +327,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
               id={ids[9]}
               placeholder={labels[9]}
               value={product.warehouseId}
-              style={{ marginBottom: 2 }}
+              style={{ marginBottom: 2, paddingLeft: 8 }}
               onChange={e => {
                 setProduct(prevState => ({ ...prevState, warehouseId: +e.target.value }));
               }}>{[{ id: 0, name: 'Pilih Gudang...' }, ...params.warehouses].map((item, index) => <option key={index} value={item.id}>{item.name}</option>)}</select>

@@ -1,3 +1,6 @@
+
+@import "../node_modules/bootstrap/scss/functions";
+@import '../node_modules/bootstrap/scss/variables';
 $enable-shadows: false;
 $primary: rgb(0, 19, 223);
 
@@ -12,8 +15,15 @@ $font-size-lg:                $font-size-base * 1.15;
 //$input-btn-focus-width:       0;
 // $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width #cecece;
 
+$form-floating-height:            add(3.5rem, $input-height-border);
+$form-floating-padding-x:         $input-padding-x;
+$form-floating-padding-y:         1rem;
+$form-floating-input-padding-t:   1.625rem;
+$form-floating-input-padding-b:   .625rem;
+$form-floating-label-opacity:     .65;
+$form-floating-label-transform:   scale(.85) translateY(-.5rem) translateX(.4rem);
+$form-floating-transition:        opacity .1s ease-in-out, transform .1s ease-in-out;
 
-//$input-btn-focus-width: 0.15rem;
 
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
@@ -29,6 +39,6 @@ $font-size-lg:                $font-size-base * 1.15;
 }
 .btn:focus, .btn:active:focus, .btn.active:focus {
   outline: thin dotted;
-  outline-offset: -2px;  
+  outline-offset: -2px;
   box-shadow: none; // 0 0 0 0.25rem $input-btn-focus-color inset;
 }

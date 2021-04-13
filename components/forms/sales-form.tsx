@@ -75,14 +75,14 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
 
           <div className={'row gx-2'}>
-            <div className={'col-md-8 col-lg-8 form-floating mb-2'}>
+            <div className={'col-7 col-md-8 col-lg-8 form-floating mb-2'}>
               <input id={'txt-city'} className={'form-control'}
                 type={'text'} value={sales.city} placeholder={'Kota / kecamatan / kabupaten'}
                 onChange={(e) => setSales({ ...sales, city: e.target.value })} />
               <label htmlFor={'txt-city'} className={'col-form-label'}>Kota</label>
             </div>
 
-            <div className={'col-md-4 col-lg-4 form-floating mb-2'}>
+            <div className={'col-5 col-md-4 col-lg-4 form-floating mb-2'}>
               <input className={'form-control'}
                 id={'txt-zip'}
                 placeholder={'Kode Pos'}
@@ -93,14 +93,14 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
           </div>
 
           <div className={'row g-2'}>
-            <div className={'col-md-6 form-floating'}>
+            <div className={'col-6 col-md-6 form-floating'}>
               <input id={"txt-phone"} type={'text'}
                 placeholder={'Nomor contact'} className={'form-control'} value={sales.phone}
                 onChange={(e) => setSales({ ...sales, phone: e.target.value })} />
               <label htmlFor={'txt-phone'} className={'col-form-label'}>Telephone</label>
             </div>
 
-            <div className={'col-md-6 form-floating'}>
+            <div className={'col-6 col-md-6 form-floating'}>
               <input id={"txt-cell"} type={'text'}
                 placeholder={'Nomor handphone / cellular'}
                 className={'form-control'} value={sales.cell || ''}

@@ -112,9 +112,10 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
     }
   }
 
-
-  if (isError) return <div>{isError.message}</div>
-  if (isLoading) return <div>Loading...</div>
+  if (parseInt('' + query.id) > 0) {
+    if (isError) return <div>{isError.message}</div>
+    if (isLoading) return <div>Loading...</div>
+  }
 
   const ctx: OrderContextType = {
     order: order,
@@ -126,7 +127,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
   }
 
   return (
-    <Layout home menuActive={1} heading={order && `Order: #${order.id}`}>
+    <Layout home menuActive={1} heading={`Order: #${order && order.id || 0}`}>
       <Head>
         <title>Order - {siteTitle}</title>
       </Head>
@@ -139,11 +140,13 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
             <TabStyle isSelected={tab===2} onClick={() => setTab(2) } className={'col-auto rounded-top'}>Cari Produk</TabStyle>
           </div>
         </div>
-        <div className={'container border-top bg-white pt-3'}>
-          {tab===0 && <OrderDetailList />}
-          {tab===1 && <PaymentList />}
-          {tab===2 && <SearchProductForDetail />}
-        </div>
+        {parseInt('' + query.id) > 0 &&
+          <div className={'container border-top bg-white pt-3'}>
+            {tab === 0 && <OrderDetailList />}
+            {tab === 1 && <PaymentList />}
+            {tab === 2 && <SearchProductForDetail />}
+          </div>
+        }
       </OrderProvider>
     </Layout >
   )

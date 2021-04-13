@@ -22,6 +22,22 @@ export const CustomerName = styled.span`
   }
 `;
 
+export const FocusSpan = styled(CustomerName)`
+`
+
+export const QtyLabel = styled.span`
+  display: inline-block;
+  min-width: 30px;
+  text-align: right;
+  padding-right: 3px;
+`
+
+export const UnitLabel = styled.span`
+  display: inline-block;
+  min-width: 20px;
+  text-align: left;
+`
+
 interface iDivActive {
   index: number;
   refId: number;
@@ -125,12 +141,14 @@ export const AppMain = styled.main.attrs({
 //  padding-bottom: 1.0rem;
   background-color: #ffffff;
 `
-export const AppTitle = styled.div.attrs({ className: 'container bg-light' })` &&& {
+export const AppTitle = styled.div.attrs({ className: 'container-fluid bg-light' })` &&& {
   font-weight: 400;
   text-align: left;
   font-size: 1.5rem;
+  color: #0856ca;
+  padding-top: 6px;
+  padding-bottom: 0;
   margin-bottom: 0rem;
-
 }
 `
 export const AppContent = styled.section.attrs({
@@ -162,10 +180,10 @@ export const AppMenu = styled.section.attrs({
 }
 `
 export const DivMenu = styled.div.attrs({
-  className: 'text-dark container'
+  className: 'text-dark container sticky-top'
 })` &&& {
   margin-bottom: 4px;
-  padding-top: 2.5rem;
+  padding-top: 1.5rem;
   white-space: nowrap;
   a {
     color: #212529;

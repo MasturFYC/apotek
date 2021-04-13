@@ -96,11 +96,11 @@ const apiOrder: apiOrderFunction = {
         sql`INSERT INTO orders (
           customer_id, sales_id, due_date,
           total, cash, status, user_id,
-          descriptions,
+          descriptions
         )
         VALUES (
-          ${c.customerId}, ${c.salesId},  ${c.dueDate},
-          ${c.cash}, ${c.status}, ${c.userId || null},
+          ${c.customerId}, ${c.salesId},  ${dateParam(c.dueDate)},
+          ${0}, ${c.cash}, ${c.status}, ${c.userId || null},
           ${c.descriptions || null}
         )
         RETURNING *`

@@ -56,7 +56,7 @@ export const SupplierList: React.FunctionComponent<SupplierListType> = ({
   return (
     <React.Fragment>
       <DivRow key={`row-${index}`} isActive={isSelected}>
-        <div className={'col-sm-8 col-md-8'}>
+        <div className={'col-8 col-sm-8 col-md-8'}>
           <CustomerName
             onMouseDown={(e) => {
               e.preventDefault();
@@ -68,17 +68,17 @@ export const SupplierList: React.FunctionComponent<SupplierListType> = ({
           <span>{supplier.street && `${supplier.street} - `}{supplier.city}{supplier.zip && `, ${supplier.zip}`}</span>
           <br /><strong>{supplier.contactName}</strong> <span>{supplier.phone} {supplier.cell && ` - ${supplier.cell}` || ''}</span>
         </div>
-        <div className={'col-sm-4 col-md-4 text-nowrap'}>
+        <div className={'col-4 col-sm-4 col-md-4 text-nowrap'}>
           {supplier.id !== 0 &&
-            <div className={'d-flex flex-row-reverse'}>
+            <div className={'d-flex g-3 flex-row-reverse'}>
               <Link href={`/supplier/orders/${supplier.id}`}>
-                <a className={'see-child overflow-hidden'}><img src={'/images/supplier.svg'} crossOrigin={'anonymous'} />
-                Lihat Stock
+                <a className={'see-child px-3 overflow-hidden'}><img src={'/images/supplier.svg'} />
+                Stock
                 </a>
               </Link>
               <Link href={`/product/supplier/${supplier.id}`}>
-                <a className={'see-child overflow-hidden'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />
-                Data Produk
+                <a className={'see-child overflow-hidden'}><img src={'/images/product.svg'} />
+                Produk
                 </a>
               </Link>
             </div>}

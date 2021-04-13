@@ -17,6 +17,7 @@ export default async function orderHandler(req: NextApiRequest, res: NextApiResp
     case METHOD_POST:
       {
         const { data } = req.body
+        //console.log(data)
         result = await api.insertOrder(data);
       }
       break;

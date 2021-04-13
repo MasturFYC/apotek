@@ -12,6 +12,7 @@ const initOrder: iOrder = {
   remainPayment: 0,
   salesId: 0,
   total: 0,
+  userId: 'Mastur',
   createdAt: new Date().toLocaleDateString(),
   status: 0,
   details: []

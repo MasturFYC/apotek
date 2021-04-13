@@ -3,11 +3,12 @@ const withImages = require('next-images')
 
 
 module.exports = {
-  mode: 'production',
+  // mode: 'production',
   future: {
     webpack5: true,
   },
   webpack: function (config, options) {
+    console.log(options.webpack.version);
     config.experiments = {};
     return config;
   },

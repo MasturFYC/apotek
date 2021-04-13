@@ -11,6 +11,6 @@ export default async function BarcodeUnitHandler(req: NextApiRequest, res: NextA
   if (data) {
     res.status(200).json(data);
   } else {
-    res.status(404).json({ message: error.message })
+    res.status(404).json({ message: "Produk yang anda cari tidak ditemukan!", error: error })
   }
 }

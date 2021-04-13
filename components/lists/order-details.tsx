@@ -1,7 +1,7 @@
 import React, { FormEvent, useContext, useRef, useState } from 'react';
 import { iOrderDetail, iUnit } from 'components/interfaces';
 import OrderContext, { OrderContextType } from 'components/context/order-context';
-import { DivRow } from 'components/styles';
+import { DivRow, QtyLabel, UnitLabel } from 'components/styles';
 import NumberFormat from 'react-number-format';
 
 const initDetail = (id: number): iOrderDetail => {
@@ -25,6 +25,7 @@ const initDetail = (id: number): iOrderDetail => {
 }
 
 export const OrderDetailList = () => {
+  const refBottom = useRef<HTMLSpanElement>(null);
   const divForm = useRef<HTMLDivElement>(null);
   const qtyRef = useRef<HTMLInputElement>(null);
   const discountRef = useRef<HTMLInputElement>(null);
@@ -88,7 +89,7 @@ export const OrderDetailList = () => {
     }
   }
 
-  const executeScroll = () => divForm?.current?.scrollTo(0, 0);
+  const executeScroll = () => refBottom?.current?.scrollIntoView({ behavior: "smooth" })
 
   const getProductByBarcode = async (e: React.KeyboardEvent<HTMLInputElement>) => {
 
@@ -108,10 +109,11 @@ export const OrderDetailList = () => {
 
       const data: iUnit | any = await res.json();
 
+      //console.log(res.status)
       if (res.status !== 200) {
         setDirty(false);
         alert(data.message);
-        e.stopPropagation();
+        //e.stopPropagation();
       } else {
         //const row = selectedRow;
         //setSelectedRow(-1)
@@ -218,13 +220,13 @@ export const OrderDetailList = () => {
   return (
     <React.Fragment>
       <DivRow>
-        <div className={'col-1'}>#ID</div>
-        <div className={'col-1'}>BARCODE</div>
-        <div className={'col-1'}>QTY</div>
-        <div className={'col-1'}>UNIT</div>
-        <div className={'col-1'}>HARGA</div>
-        <div className={'col-1'}>HARGA</div>
-        <div className={'col-1'}>DISC.</div>
+        <div className={'col-3 col-sm-3 col-md-1'}>#ID</div>
+        <div className={'col-3 col-sm-3 col-md'}>BARCODE</div>
+        <div className={'col-6 col-sm-6 col-md-4'}>Nama Barang</div>
+        <div className={'col-3 col-sm-3 col-md'}><QtyLabel>QTY/</QtyLabel><UnitLabel>UNIT</UnitLabel></div>
+        <div className={'col-3 col-sm-3 col-md text-end'}>HARGA</div>
+        <div className={'col-3 col-sm-3 col-md-1 text-end'}>DISC.</div>
+        <div className={'col-3 col-sm-3 col-md-2 text-end'}>Subtotal</div>
       </DivRow>
       {details && [...details, initDetail(ctx.order?.id || 0)].map((d: iOrderDetail, i: number) => (
         <React.Fragment key={`fr-key-${i}`}>
@@ -233,7 +235,7 @@ export const OrderDetailList = () => {
               <form onSubmit={(e) => { formSubmit(e) }} className={'container py-0'}>
                 <div className={'row'}>
                   <div className={'col-sm-5 form-inline col-md-4 g-2'}>
-                    <div className={'input-group'}>
+                    <div className={'input-group input-group-sm'}>
                       <div className="input-group-text" id={'barcode'}><label htmlFor={'ctl-barcode'}>Barcode</label></div>
                       <input type={'text'} ref={barcodeRef} value={detail.barcode}
                         placeholder={'barcode'} aria-describedby={'barcode'}
@@ -248,24 +250,30 @@ export const OrderDetailList = () => {
                   </div>
 
                   <div className={'col-sm-7 col-md-8 form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label htmlFor={'prod-name'} className="sr-only">Nama Barang</label></div>
-                      <input value={`${detail.productName}${detail.spec && `, ${detail.spec}`}`} placeholder={'Nama Barang'} id={'prod-name'} className={'form-control'} readOnly />
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text"><label htmlFor={'prod-name'} className="sr-only">Nama Barang</label></div>
+                      <input tabIndex={-1} value={`${detail.productName}${detail.spec && `, ${detail.spec}`}`} placeholder={'Nama Barang'} id={'prod-name'} className={'form-control'} readOnly />
                     </div>
                   </div>
 
                   <div className={'col-3 col-sm-3 col-md-2 form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label htmlFor={'det-qty'} className={'sr-only'}>Qty</label></div>
-                      <NumberFormat getInputRef={qtyRef} value={detail.qty} placeholder={'Quantity'} id={'det-qty'} onValueChange={(e) => {
-                        const qty = e.floatValue || 0;
-                        setDetail((state) => ({
-                          ...state,
-                          qty: qty,
-                          subtotal: qty * ((+state.price) - (+state.discount))
-                        }));
-                        setDirty(true);
-                      }}
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text">
+                        <label htmlFor={'det-qty'} className={'sr-only form-label-sm'}>Qty</label></div>
+                      <NumberFormat
+                        getInputRef={qtyRef}
+                        value={detail.qty}
+                        placeholder={'Quantity'}
+                        id={'det-qty'}
+                        onValueChange={(e) => {
+                          const qty = e.floatValue || 0;
+                          setDetail((state) => ({
+                            ...state,
+                            qty: qty,
+                            subtotal: qty * ((+state.price) - (+state.discount))
+                          }));
+                          setDirty(true);
+                        }}
                         onKeyPress={(e) => {
                           // Cancel the default action, if needed
                           if (e.key === 'Enter') {
@@ -277,31 +285,34 @@ export const OrderDetailList = () => {
                             }
                           }
                         }}
-                        className={'form-control'} thousandSeparator={true} decimalScale={2} fixedDecimalScale={false} />
+                        className={'form-control'}
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        fixedDecimalScale={false} />
                     </div>
                   </div>
 
                   <div className={'col-3 col-md-2 col-sm-3 form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-unit'}>Unit</label></div>
-                      <input type={'text'} value={detail.unitName} placeholder={'Unit'} id={'det-unit'}
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-unit'}>Unit</label></div>
+                      <input type={'text'} tabIndex={-1} value={detail.unitName} placeholder={'Unit'} id={'det-unit'}
                         readOnly
                         className={'form-control'} />
                     </div>
                   </div>
 
                   <div className={'col-6 col-md-2 col-sm-6 form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-price'}>Harga</label></div>
-                      <NumberFormat value={detail.price} placeholder={'Harga'} id={'det-price'}
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-price'}>Harga</label></div>
+                      <NumberFormat tabIndex={-1} value={detail.price} placeholder={'Harga'} id={'det-price'}
                         displayType={'text'} readOnly
                         className={'form-control'} thousandSeparator={true} decimalScale={0} fixedDecimalScale={false} />
                     </div>
                   </div>
 
                   <div className={'col-3 col-sm-3 col-md-2 form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-discount'}>Disc.</label></div>
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-discount'}>Disc.</label></div>
                       <NumberFormat getInputRef={discountRef} value={detail.discount} placeholder={'Discount'} id={'det-discount'}
                         onValueChange={(e) => {
                           const discount = e.floatValue || 0;
@@ -328,21 +339,21 @@ export const OrderDetailList = () => {
                   </div>
 
                   <div className={'col col-sm col-md form-inline g-2'}>
-                    <div className="input-group">
-                        <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-subtotal'}>Subtotal</label></div>
+                    <div className="input-group input-group-sm">
+                      <div className="input-group-text"><label className={'sr-only'} htmlFor={'det-subtotal'}>Subtotal</label></div>
                       <NumberFormat value={detail.subtotal} placeholder={'Subtotal'} id={'det-subtotal'}
                         readOnly displayType={'text'}
                         className={'form-control'} thousandSeparator={true} decimalScale={0} />
                     </div>
                   </div>
                   <div ref={divForm} className={'col-auto form-inline g-2'}>
-                    <button ref={submitRef} disabled={!dirty} className='btn me-2 btn-primary mb-2' type={'submit'}
+                    <button ref={submitRef} disabled={!dirty} className='btn btn-sm me-2 btn-primary mb-2' type={'submit'}
                     //  onClick={e => {
                     //    e.preventDefault();
                     //    formSubmit();
                     //  }}
                     >Save</button>
-                    <button type={'button'} disabled={detail.id === 0} className='btn btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
+                    <button type={'button'} disabled={detail.id === 0} className='btn btn-sm btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
                   </div>
                 </div>
               </form>
@@ -359,12 +370,12 @@ export const OrderDetailList = () => {
               }} role="button">
               {d.id === 0 ? <span>Add new details</span> :
                 <React.Fragment>
-                  <div className={'col-3 col-sm-3 col-md'}>#{d.id}</div>
+                  <div className={'col-3 col-sm-3 col-md-1'}>#{d.id}</div>
                   <div className={'col-3 col-sm-3 col-md'}>{d.barcode}</div>
                   <div className={'col-6 col-sm-6 col-md-4'}>{d.productName}{d.spec && `, ${d.spec}`}</div>
-                  <div className={'col-3 col-sm-3 col-md-1 fst-italic'}>
-                    <span style={{ display: 'inline-block', minWidth: '30px', textAlign: 'right', paddingRight: '3px' }}>{d.qty}</span>
-                    <span style={{ display: 'inline-block', minWidth: '20px', textAlign: 'left' }}>{d.unitName}</span>
+                  <div className={'col-3 col-sm-3 col-md fst-italic'}>
+                    <QtyLabel>{d.qty}</QtyLabel>
+                    <UnitLabel>{d.unitName}</UnitLabel>
                     {/* <span style={{ display: 'inline-block', width: '15px', textAlign: 'center' }}>{' x '}
                     </span> */}
                   </div>
@@ -379,6 +390,7 @@ export const OrderDetailList = () => {
             </DivRow>
 
           }
+          <span ref={refBottom}>{' '}</span>
         </React.Fragment>
       ))}
     </React.Fragment>

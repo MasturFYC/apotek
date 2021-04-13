@@ -5,7 +5,7 @@ import useSWR from 'swr'
 import Layout, { siteTitle } from '../../components/layout'
 import { iCategory } from '../../components/interfaces'
 import { revalidationOptions, categoryFetcher } from '../../components/fetcher'
-import { DivRow } from '../../components/styles' // ' components/styles'
+import { DivRow, FocusSpan } from '../../components/styles' // ' components/styles'
 
 const initCategory: iCategory = {
   id: 0,
@@ -56,16 +56,16 @@ export default function Home() {
       {categories && [...categories, initCategory].map((item: iCategory, index: number) => (
         <React.Fragment key={`fragment-${index}`}>
           <DivRow key={`cat-key-${index}`} isActive={(currentIndex === index) && isSelected }>
-            <div className={'col-4 pt-1'}>
-              <span
+            <div className={'col-8 pt-1'}>
+              <FocusSpan
                 role={'button'}
                 onClick={() => { setSelectedCategory(index) }}
                 className={'cust-name'}>
                 {item.id === 0 ? 'New Category' : item.name}
-              </span>
+              </FocusSpan>
             </div>
             {item.id !== 0 &&
-              <div className={'col-md-4 d-flex flex-row-reverse'}>
+              <div className={'col-4 col-md-4 d-flex flex-row-reverse'}>
                 <Link href={`/product/category/${item.id}`}>
                   <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
                 </Link>

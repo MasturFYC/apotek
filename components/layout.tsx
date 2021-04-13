@@ -32,36 +32,25 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
         />
       </Head>
       <AppHeader>
-        <div>
-          <div>
-            <div>
-              <div color="inherit" aria-label="menu">
-                <div />
+        <nav className="navbar container-fluid navbar-light bg-dark">
+          <div className="container-fluid">
+            {home ? (
+              <div className={'bg-dark text-white container'}>
+                <h4 className={'text-start'}><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} /> {name}</h4>
               </div>
-              <div>
-                {name}
-              </div>
-              <button color="inherit">Login</button>
-            </div>
-            {/*
-        {home ? (
-          <div className={'bg-dark text-white container-fluid py-2 mb-3'}>
-            <h3 className={'mt-3 text-start container'}><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} /> {name}</h3>
+            ) : (
+              <h2>
+                <Link href="/">
+                  <a><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} />{name}</a>
+                </Link>
+              </h2>
+            )}
           </div>
-        ) : (
-          <h2 className={css.headingLg}>
-            <Link href="/">
-              <a className={css.colorInherit}><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} />{name}</a>
-            </Link>
-          </h2>
-        )} */}
-
-          </div>
-        </div>
+        </nav>
       </AppHeader>
+      <AppTitle><div className={'container pt-3'}>{heading && heading}</div></AppTitle>
       <AppMenu>
-        <AppTitle>{heading && heading}</AppTitle>
-        <DivMenu className={'text-dark container'}>
+        <DivMenu>
           <Link href="/customer">
             <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} />Pelanggan</a>
           </Link>
@@ -86,7 +75,9 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
         </DivMenu>
       </AppMenu>
       <AppContent>
-        {children}
+        <div className={'container'}>
+          {children}
+          </div>
       </AppContent>
       {!home && (
         <div>
