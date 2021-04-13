@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+//import styled from 'styled-components';
 
 import { iSalesman } from '../interfaces';
 
@@ -54,7 +54,7 @@ export const SalesForm: React.FunctionComponent<SalesFormType> = ({
   };
 
   return (
-    <form className={'form-floating'} onSubmit={submitForm}>
+    <form onSubmit={submitForm}>
       <div className={'row g-2'}>
         <div className={'col-md-12 form-floating'}>
           <input id={'txt-name'} className={'form-control'}
