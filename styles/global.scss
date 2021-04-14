@@ -1,42 +1,42 @@
 
 @import "../node_modules/bootstrap/scss/functions";
-@import '../node_modules/bootstrap/scss/variables';
-$enable-shadows: false;
-$primary: rgb(0, 19, 223);
+// @import '../node_modules/bootstrap/scss/variables';
+//$enable-shadows: false;
+$box-color: rgb(0, 19, 223);
 
 $body-color:  #333;
 $body-bg: #ffffff;
 
-$font-size-base:              0.85rem; // Assumes the browser default, typically `16px`
-$font-size-sm:                $font-size-base * .85;
-$font-size-lg:                $font-size-base * 1.15;
+// $font-size-base:              0.85rem; // Assumes the browser default, typically `16px`
+// $font-size-sm:                $font-size-base * .85;
+// $font-size-lg:                $font-size-base * 1.15;
 
 
 //$input-btn-focus-width:       0;
 // $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width #cecece;
 
-$form-floating-height:            add(3.5rem, $input-height-border);
-$form-floating-padding-x:         $input-padding-x;
-$form-floating-padding-y:         1rem;
-$form-floating-input-padding-t:   1.625rem;
-$form-floating-input-padding-b:   .625rem;
-$form-floating-label-opacity:     .65;
-$form-floating-label-transform:   scale(.85) translateY(-.5rem) translateX(.4rem);
-$form-floating-transition:        opacity .1s ease-in-out, transform .1s ease-in-out;
+// $form-floating-height:            add(3.0rem, $input-height-border);
+// $form-floating-padding-x:         $input-padding-x;
+// $form-floating-padding-y:         0.75rem;
+// $form-floating-input-padding-t:   1.325rem;
+// $form-floating-input-padding-b:   .625rem;
+// $form-floating-label-opacity:     .65;
+// $form-floating-label-transform:   scale(.85) translateY(-.35rem) translateX(.15rem);
+// $form-floating-transition:        opacity .1s ease-in-out, transform .1s ease-in-out;
 
 
 @import '../node_modules/bootstrap/scss/bootstrap.scss';
 
 .form-control:focus {
-  //border-color: #28a745;
-  //border-width: 0.15rem;
+  border-color: $input-btn-focus-color;
+  border-width: 1px;
   //border: 2px solid #17a2b8;
   //outline: 2px solid #17a2b8;
-  border: 1px solid $input-btn-focus-color;
   outline: none;
   box-shadow: 0 0 0 1px $input-btn-focus-color inset;
   //outline-width: 0.25rem;
 }
+
 .btn:focus, .btn:active:focus, .btn.active:focus {
   outline: thin dotted;
   outline-offset: -2px;

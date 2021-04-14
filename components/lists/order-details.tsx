@@ -232,7 +232,7 @@ export const OrderDetailList = () => {
         <React.Fragment key={`fr-key-${i}`}>
           {selectedRow === i ?
             <DivRow key={`form-key-${i}`} isActive={true}>
-              <form onSubmit={(e) => { formSubmit(e) }} className={'container py-0'}>
+              <form onSubmit={(e) => { formSubmit(e); } } className={'container py-0'}>
                 <div className={'row'}>
                   <div className={'col-sm-5 form-inline col-md-4 g-2'}>
                     <div className={'input-group input-group-sm'}>
@@ -242,7 +242,7 @@ export const OrderDetailList = () => {
                         id={'ctl-barcode'}
                         onChange={(e) => {
                           setDetail((state) => ({ ...state, barcode: e.target.value }));
-                        }}
+                        } }
                         onFocus={e => e.target.setSelectionRange(0, e.target.value.length)}
                         onKeyPress={(e) => getProductByBarcode(e)}
                         maxLength={25} autoFocus className={'form-control'} />
@@ -273,7 +273,7 @@ export const OrderDetailList = () => {
                             subtotal: qty * ((+state.price) - (+state.discount))
                           }));
                           setDirty(true);
-                        }}
+                        } }
                         onKeyPress={(e) => {
                           // Cancel the default action, if needed
                           if (e.key === 'Enter') {
@@ -281,10 +281,10 @@ export const OrderDetailList = () => {
                             const inputElement = discountRef.current;
                             if (inputElement) {
                               inputElement.focus();
-                              inputElement.setSelectionRange(0, inputElement.value.length)
+                              inputElement.setSelectionRange(0, inputElement.value.length);
                             }
                           }
-                        }}
+                        } }
                         className={'form-control'}
                         thousandSeparator={true}
                         decimalScale={2}
@@ -322,7 +322,7 @@ export const OrderDetailList = () => {
                             subtotal: (+state.qty) * ((+state.price) - discount)
                           }));
                           setDirty(true);
-                        }}
+                        } }
 
                         // onKeyUp={(e) => {
                         //   // Cancel the default action, if needed
@@ -348,10 +348,6 @@ export const OrderDetailList = () => {
                   </div>
                   <div ref={divForm} className={'col-auto form-inline g-2'}>
                     <button ref={submitRef} disabled={!dirty} className='btn btn-sm me-2 btn-primary mb-2' type={'submit'}
-                    //  onClick={e => {
-                    //    e.preventDefault();
-                    //    formSubmit();
-                    //  }}
                     >Save</button>
                     <button type={'button'} disabled={detail.id === 0} className='btn btn-sm btn-danger mb-2' onClick={(e) => deleteDetail(e)}>Delete</button>
                   </div>
@@ -363,11 +359,11 @@ export const OrderDetailList = () => {
               onClick={() => {
                 if (selectedRow !== i) {
                   setSelectedRow(i);
-                  setDetail(d)
+                  setDetail(d);
                 } else {
                   setSelectedRow(-1);
                 }
-              }} role="button">
+              } } role="button">
               {d.id === 0 ? <span>Add new details</span> :
                 <React.Fragment>
                   <div className={'col-3 col-sm-3 col-md-1'}>#{d.id}</div>
@@ -377,7 +373,7 @@ export const OrderDetailList = () => {
                     <QtyLabel>{d.qty}</QtyLabel>
                     <UnitLabel>{d.unitName}</UnitLabel>
                     {/* <span style={{ display: 'inline-block', width: '15px', textAlign: 'center' }}>{' x '}
-                    </span> */}
+                              </span> */}
                   </div>
                   <div className={'col-3 col-sm-3 col-md fst-italic text-end'}>
                     <NumberFormat value={d.price} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
@@ -385,11 +381,8 @@ export const OrderDetailList = () => {
                   <div className={'col-3 col-sm-3 col-md-1 fst-italic text-end'}><NumberFormat value={d.discount} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} />
                   </div>
                   <div className={'col-3 col-sm-3 col-md-2 fw-bold text-end'}><NumberFormat value={d.subtotal} displayType={'text'} thousandSeparator={true} decimalScale={0} renderText={e => <span>{e}</span>} /></div>
-                </React.Fragment>
-              }
-            </DivRow>
-
-          }
+                </React.Fragment>}
+            </DivRow>}
           <span ref={refBottom}>{' '}</span>
         </React.Fragment>
       ))}

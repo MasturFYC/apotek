@@ -104,6 +104,10 @@ const divRow = styled.div<{ isActive?: boolean }>`
     background-color: #f1f7fc;
   }
 
+  a {
+    text-decoration: none;
+  }
+
   form {
     margin-top: -0.25rem;
     margin-bottom: -0.5rem;
