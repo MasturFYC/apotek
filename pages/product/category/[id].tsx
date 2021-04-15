@@ -18,7 +18,8 @@ type CategoryPageParam = {
   warehouses: iWarehouse[];
 }
 
-const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, suppliers, warehouses }) => {
+const categoryPage: React.FunctionComponent<CategoryPageParam> = 
+({ categories, suppliers, warehouses }) => {
   const { query } = useRouter();
   const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
 
@@ -50,6 +51,7 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> = ({ categories, 
       newData && mutate({ ...category, products: newData }, false);
     }
   }
+  
   const childParam: PropertyContextType = {
     products: category && category.products || undefined,
     categories: categories,

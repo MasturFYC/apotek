@@ -39,11 +39,13 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
                 <h4 className={'text-start'}><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} /> {name}</h4>
               </div>
             ) : (
-              <h2>
-                <Link href="/">
-                  <a><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} />{name}</a>
-                </Link>
-              </h2>
+              <div className={'bg-dark text-white container'}>
+                <h4 className={'text-start'}>
+                  <Link href="/">
+                    <a><img src={'/favicon-32x32.png'} style={{ display: 'inline', marginRight: '.5rem' }} />{name}</a>
+                  </Link>
+                </h4>
+              </div>
             )}
           </div>
         </nav>
@@ -54,7 +56,7 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
           <Link href="/customer">
             <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} />Pelanggan</a>
           </Link>
-          <Link href="/category">
+          <Link href="/product">
             <a className={`${menuActive === 1 && 'an-active'}`}><img src={'/images/product.svg'} />Product</a>
           </Link>
           <Link href="/salesman">
@@ -77,15 +79,15 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
       <AppContent>
         <div className={'container'}>
           {children}
-          </div>
+        </div>
       </AppContent>
-      {!home && (
+      {/* {!home && (
         <div>
           <Link href="/">
             <a>← Back to home</a>
           </Link>
         </div>
-      )}
+      )} */}
     </React.Fragment>)
 }
 

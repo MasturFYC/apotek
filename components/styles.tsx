@@ -165,7 +165,7 @@ export const AppContent = styled.section.attrs({
 `
 
 export const AppHeader = styled.header.attrs({
-  className: 'bg-light'
+  className: ' bg-light '
 })` &&& {
   display: flex;
   white-space: nowrap;
