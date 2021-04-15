@@ -1,5 +1,5 @@
 import db, { dateParam, nestQuery, nestQuerySingle, sql } from '../../../config';
-import { iOrder } from '../../../components/interfaces';
+import { iOrder, iOrderDetail, iPayment } from '../../../components/interfaces';
 
 type apiOrderReturnType = Promise<any[] | (readonly iOrder[] | undefined)[]>;
 
@@ -10,6 +10,8 @@ interface apiOrderFunction {
   updateOrder(id: number, p: iOrder): apiOrderReturnType;
   insertOrder(p: iOrder): apiOrderReturnType;
   deleteOrder(id: number): apiOrderReturnType;
+  getDetails(id: number): Promise<any[] | (readonly iOrderDetail[] | undefined)[]>;
+  getPayments(id: number): Promise<any[] | (readonly iPayment[] | undefined)[]>;
 }
 // : SqlSqlTokenType<QueryResultRowType<string>>
 /*
@@ -44,7 +46,40 @@ const dateParam = (dateObj: Date) => {
               WHERE u.id = d.unit_id
           `)} as unit
 */
+
 const apiOrder: apiOrderFunction = {
+  getPayments: async (id: number) => {
+    return await db.query(sql`SELECT
+      m.id, pm.name as "methodName", m.user_id,
+      m.amount, m.descriptions,
+      m.created_at, m.updated_at
+    FROM payments AS m
+    INNER JOIN payment_methods AS pm ON pm.id = m.method_id
+    WHERE m.order_id = ${id}
+    ORDER BY m.id`)
+    .then((data) => ([data.rows, undefined]))
+    .catch((error) => ([undefined, error]))
+  },
+
+  getDetails: async (id: number) => {
+    // SELECT d.id, d.qty, d.weight, d.order_id, d.product_id,
+    //   d.unit_id, d.unit_name, d.real_qty, d.profit, d.weight, d.price, d.discount, d.subtotal,
+    //   d.created_at, d.updated_at, p.name "productName", p.spec, u.barcode
+    //   FROM order_details AS d
+
+    return await db.query(sql`
+    SELECT d.id, d.qty, d.unit_name, d.price, d.discount, d.subtotal,
+      p.name "productName", p.spec
+    FROM order_details AS d
+    INNER JOIN units AS u ON u.id = d.unit_id
+    INNER JOIN products AS p ON p.id = u.product_id
+    WHERE d.order_id = ${id}
+    ORDER BY d.id
+    `)
+    .then((data) => ([data.rows, undefined]))
+    .catch((error) => ([undefined, error]))
+  },
+
   getOrder: async (id: number) => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date, t.total, t.cash,
@@ -52,7 +87,7 @@ const apiOrder: apiOrderFunction = {
         t.created_at, t.updated_at,
         ${nestQuerySingle(sql`SELECT c.id, c.name, c.street, c.city, c.phone, c.cell, c.zip, c.credit_limit "creditLimit", c.descriptions, c.rayon_id "rayonId", c.created_at "createdAt", c.updated_at "updatedAt" FROM customers AS c WHERE c.id = t.customer_id`)} AS customer,
         ${nestQuerySingle(sql`SELECT s.id, s.name, s.street, s.city, s.phone, s.cell, s.zip, s.created_at "createdAt", s.updated_at "updatedAt" FROM salesmans AS s WHERE s.id = t.sales_id`)} AS salesman,
-        ${nestQuery(sql`SELECT m.id, pm.name as "methodName", m.order_id "orderId", m.method_id "methodId", m.amount, m.descriptions, m.created_at "createdAt", m.updated_at "updatedAt" FROM payments AS m INNER JOIN payment_methods AS pm ON pm.id = m.method_id WHERE m.order_id = t.id ORDER BY id`)} AS payments,
+        ${nestQuery(sql`SELECT m.id, pm.name as "methodName", m.order_id "orderId", m.method_id "methodId", m.amount, m.descriptions, m.created_at "createdAt", m.updated_at "updatedAt" FROM payments AS m INNER JOIN payment_methods AS pm ON pm.id = m.method_id WHERE m.order_id = t.id ORDER BY m.id`)} AS payments,
         ${nestQuery(sql`
           SELECT d.id,
           d.qty, d.weight,

@@ -35,7 +35,7 @@ const apiSales: apiSalesFunction = {
           `)} AS customer
           FROM orders AS p
           WHERE p.sales_id = t.id
-          ORDER BY p.id`
+          ORDER BY p.id DESC`
         )} AS orders
       FROM salesmans AS t
       WHERE t.id = ${id}`)

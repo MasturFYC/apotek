@@ -1,13 +1,13 @@
 
 @import "../node_modules/bootstrap/scss/functions";
-// @import '../node_modules/bootstrap/scss/variables';
+//@import '../node_modules/bootstrap/scss/variables';
 //$enable-shadows: false;
 $box-color: rgb(0, 19, 223);
 
 $body-color:  #333;
 $body-bg: #ffffff;
 
-// $font-size-base:              0.85rem; // Assumes the browser default, typically `16px`
+$font-size-base:              0.9rem; // Assumes the browser default, typically `16px`
 // $font-size-sm:                $font-size-base * .85;
 // $font-size-lg:                $font-size-base * 1.15;
 
@@ -15,13 +15,13 @@ $body-bg: #ffffff;
 //$input-btn-focus-width:       0;
 // $input-btn-focus-box-shadow:  0 0 0 $input-btn-focus-width #cecece;
 
-// $form-floating-height:            add(3.0rem, $input-height-border);
+//$form-floating-height:            add(3.0rem, $input-height-border);
 // $form-floating-padding-x:         $input-padding-x;
 // $form-floating-padding-y:         0.75rem;
 // $form-floating-input-padding-t:   1.325rem;
 // $form-floating-input-padding-b:   .625rem;
 // $form-floating-label-opacity:     .65;
-// $form-floating-label-transform:   scale(.85) translateY(-.35rem) translateX(.15rem);
+//$form-floating-label-transform:   scale(.85) translateY(-.5rem) translateX(.15rem);
 // $form-floating-transition:        opacity .1s ease-in-out, transform .1s ease-in-out;
 
 

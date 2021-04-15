@@ -23,6 +23,7 @@ export const SalesList: React.FunctionComponent<SalesListType> = ({
 }) => {
 
   const [sales, setSales] = React.useState<iSalesman>(salesInit);
+
   React.useEffect(() => {
     let isLoaded = false;
 
