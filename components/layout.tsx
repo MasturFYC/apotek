@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import React from 'react'
-import { AppContent, AppHeader, AppTitle, AppMenu, DivMenu } from './styles';
+import { AppContent, AppHeader, AppTitle, DivMenu } from './styles';
 
 const name = 'Apotek SR-II'
 export const siteTitle = name;
@@ -12,24 +12,8 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
     <React.Fragment>
       <Head>
         <meta name="viewport" content="minimum-scale=1, width=device-width, initial-scale=1" />
-        <meta
-          name="description"
-          content="Learn how to build a personal website using Next.js"
-        />
-        <meta http-equiv="origin-trial" content="TOKEN_GOES_HERE" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta
-          property="og:image"
-          content={`https://og-image.now.sh/${encodeURI(
-            siteTitle
-          )}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}
-        />
         <meta name="og:title" content={siteTitle} />
-        <link rel="icon" href="/favicon.ico" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-        />
+        <meta property="og:image" content={`https://og-image.now.sh/${encodeURI(siteTitle)}.png?theme=light&md=0&fontSize=75px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fnextjs-black-logo.svg`}/>
       </Head>
       <AppHeader>
         <nav className="navbar container-fluid navbar-light bg-dark">
@@ -51,8 +35,8 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
         </nav>
       </AppHeader>
       <AppTitle><div className={'container pt-3'}>{heading && heading}</div></AppTitle>
-      <AppMenu>
-        <DivMenu>
+      <section className={'bg-light border-bottom pb-2'}>
+        <DivMenu className={'text-dark container'}>
           <Link href="/customer">
             <a className={`${menuActive === 0 && 'an-active'}`}><img src={'/images/customer.svg'} />Pelanggan</a>
           </Link>
@@ -75,7 +59,7 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
             <a className={`${menuActive === 6 && 'an-active'}`}><img src={'/images/rayon.svg'} />Rayon</a>
           </Link>
         </DivMenu>
-      </AppMenu>
+      </section>
       <AppContent>
         <div className={'container'}>
           {children}

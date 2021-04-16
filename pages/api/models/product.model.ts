@@ -8,7 +8,7 @@ interface apiProductFunction {
   searchProduct: (text: string) => apiProductReturnType,
   getProduct(id: number): apiProductReturnType;
   deleteProduct(id: number): apiProductReturnType;
-  getProducts: (limit: number, offset: number) => apiProductReturnType; // same as above
+  getProducts: (offset: number, limit: number) => apiProductReturnType; // same as above
   updateProduct(id: number, p: iProduct, includeUnit: boolean): apiProductReturnType;
   insertProduct(p: iProduct): apiProductReturnType;
   getUnits(id: number): apiUnitReturnType;
@@ -80,12 +80,12 @@ const apiProduct: apiProductFunction = {
 
   },
 
-  getProducts: async (limit: number, offset: number) => {
+  getProducts: async (offset: number, limit: number) => {
     return await db.query(
       sql`SELECT id, code, name, spec, base_unit, base_price, base_weight, is_active,
         first_stock, unit_in_stock, category_id, supplier_id, warehouse_id
         FROM products
-        ORDER BY name
+        ORDER BY id
         OFFSET ${offset} LIMIT ${limit}
         `)
       .then(data => ([data.rows, undefined]))

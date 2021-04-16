@@ -81,7 +81,7 @@ padding: 0px 13px 6px 13px;
 //   class?: string;
 // }
 
-const divRow = styled.div<{ isActive?: boolean }>`
+const MyDivRow = styled.div<{ isActive?: boolean }>`
   padding-top: 0.25rem;
   padding-bottom: 0.5rem;
   border: 1px solid #e1e4e8;
@@ -124,7 +124,7 @@ const divRow = styled.div<{ isActive?: boolean }>`
   }
   ${props => props.isActive && 'background-color: #e9f1fa;'}
 `
-export const DivRow = styled(divRow).attrs({
+export const DivRow = styled(MyDivRow).attrs({
   className: 'row'
 })``
 
@@ -164,9 +164,7 @@ export const AppContent = styled.section.attrs({
 }
 `
 
-export const AppHeader = styled.header.attrs({
-  className: ' bg-light '
-})` &&& {
+export const AppHeader = styled.header`
   display: flex;
   white-space: nowrap;
   flex-direction: column;
@@ -176,16 +174,9 @@ export const AppHeader = styled.header.attrs({
     width: 24px;
     margin-right: 0.5rem
   }
-}
 `
-export const AppMenu = styled.section.attrs({
-  className: 'border-bottom bg-light pb-2'
-})` &&& {
-}
-`
-export const DivMenu = styled.div.attrs({
-  className: 'text-dark container sticky-top'
-})` &&& {
+
+export const DivMenu = styled.div`
   margin-bottom: 4px;
   padding-top: 1.5rem;
   white-space: nowrap;
@@ -216,7 +207,6 @@ export const DivMenu = styled.div.attrs({
   > .an-active {
     border-bottom: 2px solid #fd7e14;
   }
-}
 `
 
 const formLabel = styled.label.attrs({

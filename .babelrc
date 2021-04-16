@@ -1,0 +1,23 @@
+{
+  "presets": ["next/babel"],
+  "plugins": [
+    ["react-html-attrs"],
+    [
+      "module-resolver",
+      {
+        "root": ["./"],
+        "alias": {
+          "~components": "./components"   //ignore this
+        }
+      }
+    ],
+    [
+      "styled-components",
+      {
+        "ssr": true,
+        "displayName": true,
+        "preprocess": false
+      }
+    ]
+  ]
+}

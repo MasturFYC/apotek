@@ -4,13 +4,13 @@ import apiProduct from '../../models/product.model'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
 
   const pids = req.query;
-  const limit: number = +pids.pid[0];
-  const offset: number = +pids.pid[1];
-  
+  const offset: number = +pids.pid[0];
+  const limit: number = +pids.pid[1];
+
   // console.log(limit, offset)
 
-  const result = await apiProduct.getProducts(limit, offset);
-  
+  const result = await apiProduct.getProducts(offset,limit);
+
   // console.log(result)
   const [data, error] = result;
   //console.log(data, error)
