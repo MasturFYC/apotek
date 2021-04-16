@@ -222,9 +222,9 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
 
   return (
     <form onSubmit={(e) => formSubmit(e)}>
-      <div className={`form-floating g-3`}>
+      <div className={`form-floating`}>
         <div className={'row'}>
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-9 col-md-6 form-floating mb-2'}>
             <input autoFocus type="text" className={'form-control'}
               id={ids[0]}
               placeholder={labels[0]}
@@ -233,7 +233,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[0]} className={'col-form-label mx-2'}>{labels[0]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-3 col-md-6 form-floating mb-2'}>
             <input className={'form-control'} type="text"
               id={ids[1]}
               placeholder={labels[1]}
@@ -242,7 +242,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[1]} className={'col-form-label mx-2'}>{labels[1]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-md-6 form-floating mb-2'}>
             <input className={'form-control'} type="text"
               id={ids[2]}
               placeholder={labels[2]}
@@ -251,7 +251,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[2]} className={'col-form-label mx-2'}>{labels[2]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-4 col-md-6 form-floating mb-2'}>
             <input className={'form-control'} type="text"
               id={ids[3]}
               placeholder={labels[3]}
@@ -260,7 +260,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[3]} className={'col-form-label mx-2'}>{labels[3]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-4 col-md-6 form-floating mb-2'}>
             <NumberFormat
               id={ids[4]}
               className={'form-control'}
@@ -277,7 +277,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[4]} className={'col-form-label mx-2'}>{labels[4]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-4 col-md-6 form-floating mb-2'}>
             <NumberFormat
               id={ids[5]}
               className={'form-control'}
@@ -294,7 +294,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[5]} className={'col-form-label mx-2'}>{labels[5]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-6 col-md-6 form-floating mb-2'}>
             <select className={'form-control'}
               aria-label="Floating label select example"
               id={ids[7]}
@@ -308,7 +308,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[7]} className={'col-form-label mx-2'}>{labels[7]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-6 col-md-6 form-floating mb-2'}>
             <select className={'form-control'}
               aria-label="Floating label select example"
               id={ids[8]}
@@ -321,7 +321,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[8]} className={'col-form-label mx-2'}>{labels[8]}</label>
           </div>
 
-          <div className={'col-md-6 form-floating mb-3'}>
+          <div className={'col-7 col-md-6 form-floating mb-2'}>
             <select className={'form-control'}
               aria-label="Floating label select example"
               id={ids[9]}
@@ -334,7 +334,7 @@ const EditProduct: React.FunctionComponent<updateProductParam> = ({
             <label htmlFor={ids[9]} className={'col-form-label mx-2'}>{labels[9]}</label>
           </div>
 
-          <div className={'col-md-6 form-check g-3'}>
+          <div className={'col-auto col-md-6 form-check g-3'}>
             <input className={'form-check-input ms-0 me-3'}
               type={'checkbox'}
               checked={product.isActive}

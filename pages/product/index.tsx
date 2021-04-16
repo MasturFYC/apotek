@@ -1,15 +1,60 @@
 import Head from 'next/head'
 import React from 'react'
 import Layout, { siteTitle } from '../../components/layout'
-import { iProduct } from '../../components/interfaces'
-import { DivRow } from '../../components/styles'
+import { iCategory, iProduct, iSupplier, iWarehouse } from '../../components/interfaces'
+//import { DivRow } from '../../components/styles'
+import { useVisibility } from '../../components/useVisibility'
+import { ShowProducts } from '../../components/forms/product-fom'
+import { PropertyProvider } from '../../components/context/propery-context'
 
 export default function ProductHome() {
   const [isVisible, objRef] = useVisibility<HTMLDivElement>()
-  const [limit, setLimit] = React.useState(5);
+  const [limit, setLimit] = React.useState(10);
   const [offset, setOffset] = React.useState(0);
   const [products, setProducts] = React.useState<iProduct[]>([]);
-  const [pos, setPos] = React.useState(0);
+  const [categories, setCategories] = React.useState<iCategory[]>([]);
+  const [suppliers, setSuppliers] = React.useState<iSupplier[]>([]);
+  const [warehouses, setWarehouses] = React.useState<iWarehouse[]>([]);
+
+  React.useEffect(() => {
+    let isLoaded = false;
+
+    const loadCategories = async () => {
+      if (!isLoaded) {
+        const res = await fetch('/api/category/list');
+        const data: iCategory[] | any = await res.json();
+        if (res.status === 200 && data) {
+          setCategories(data)
+        }
+      }
+    }
+
+    const loadSuppliers = async () => {
+      const res = await fetch('/api/supplier/list');
+      if (!isLoaded) {
+        const data: iSupplier[] | any = await res.json();
+        if (res.status === 200 && data) {
+          setSuppliers(data)
+        }
+      }
+    }
+
+    const loadWarehouses = async () => {
+      const res = await fetch('/api/warehouse/list');
+      if (!isLoaded) {
+        const data: iWarehouse[] | any = await res.json();
+        if (res.status === 200 && data) {
+          setWarehouses(data)
+        }
+      }
+    }
+
+    loadCategories();
+    loadSuppliers();
+    loadWarehouses();
+
+    return () => {isLoaded = true;}
+  }, [])
 
   React.useEffect(() => {
     let isLoaded = true;
@@ -38,57 +83,37 @@ export default function ProductHome() {
       <Head>
         <title>Poducts - {siteTitle}</title>
       </Head>
-      <ShowAllProducts productLists={products} />
-      <div ref={objRef} className={'container'}></div >
+      {/* <ShowAllProducts productLists={products} /> */}
+      <PropertyProvider value={{
+        products: products,
+        categories: categories,
+        suppliers: suppliers,
+        warehouses: warehouses,
+        // updateValue: null
+      }}>
+        <ShowProducts />
+      </PropertyProvider>
+      <div ref={objRef} />
     </Layout>
   )
 }
 
-
-function useVisibility<HTMLDivElement>(
-  offset = 0, throttleMilliseconds = 100
-): [boolean, React.RefObject<HTMLDivElement>] {
-  const [isVisible, setIsVisible] = React.useState(true);
-  const currentElement = React.useRef<HTMLDivElement | null>(null); //(null);
-
-  const onScroll = () => {
-
-    const el: HTMLDivElement | null = currentElement && currentElement.current || null;
-
-    if (!el) {
-      setIsVisible(false)
-      return
-    }
-
-    const top = el.getBoundingClientRect().top;
-    setIsVisible(((top + offset) >= 0) && ((top - offset) <= window.innerHeight));
-    console.log(isVisible ? 'true' : 'false')
-  }
-
-  React.useEffect(() => {
-    document.addEventListener('scroll', onScroll, true)
-    return () => document.removeEventListener('scroll', onScroll, true)
-  })
-
-  return [isVisible, currentElement]
-}
-
-const ShowAllProducts: React.FunctionComponent<{ productLists: iProduct[] }> =
-  ({ productLists }) => {
-    return (
-      <React.Fragment>
-        {productLists && productLists.map((p: iProduct, i: number) => (
-          <DivRow key={`p-${i}`}>
-            <div className={'col'}>
-              {p.name}<br />
-              {p.spec}<br />
-              {p.basePrice}<br />
-              {p.baseUnit}<br />
-              {p.baseWeight}
-            </div>
-          </DivRow>
-        )
-        )}
-      </React.Fragment>
-    )
-  }
+// const ShowAllProducts: React.FunctionComponent<{ productLists: iProduct[] }> =
+//   ({ productLists }) => {
+//     return (
+//       <React.Fragment>
+//         {productLists && productLists.map((p: iProduct, i: number) => (
+//           <DivRow key={`p-${i}`}>
+//             <div className={'col'}>
+//               {p.name}<br />
+//               {p.spec}<br />
+//               {p.basePrice}<br />
+//               {p.baseUnit}<br />
+//               {p.baseWeight}
+//             </div>
+//           </DivRow>
+//         )
+//         )}
+//       </React.Fragment>
+//     )
+//   }
