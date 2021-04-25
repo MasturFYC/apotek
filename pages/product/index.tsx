@@ -24,7 +24,8 @@ export default function ProductHome() {
         const res = await fetch('/api/category/list');
         const data: iCategory[] | any = await res.json();
         if (res.status === 200 && data) {
-          setCategories(data)
+          setCategories(data);
+	  setLimit(10);
         }
       }
     }
