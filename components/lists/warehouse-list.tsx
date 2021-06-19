@@ -63,12 +63,12 @@ export const WarehouseList: React.FunctionComponent<SupplierListType> = ({
             {warehouse.id !== 0 &&
               <div className={'overflow-hidden d-flex flex-row-reverse'}>
                 <Link href={`/warehouse/orders/${warehouse.id}`}>
-                  <a className={'see-child text-center overflow-hidden'}><img src={'/images/warehouse.png'} crossOrigin={'anonymous'} />
+                  <a className={'see-child text-center overflow-hidden'}><img alt="Warehouse" src={'/images/warehouse.png'} crossOrigin={'anonymous'} />
                   <span className={'overflow-hidden'}>Lihat Stock</span>
                 </a>
                 </Link>
                 <Link href={`/product/warehouse/${warehouse.id}`}>
-                  <a className={'see-child text-center overflow-hidden'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />
+                  <a className={'see-child text-center overflow-hidden'}><img alt="Product" src={'/images/product.svg'} crossOrigin={'anonymous'} />
                 <span className={'overflow-hidden'}>Data Produk</span>
                 </a>
                 </Link>

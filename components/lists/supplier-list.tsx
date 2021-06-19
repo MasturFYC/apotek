@@ -72,12 +72,12 @@ export const SupplierList: React.FunctionComponent<SupplierListType> = ({
           {supplier.id !== 0 &&
             <div className={'d-flex g-3 flex-row-reverse'}>
               <Link href={`/supplier/orders/${supplier.id}`}>
-                <a className={'see-child px-3 overflow-hidden'}><img src={'/images/supplier.svg'} />
+                <a className={'see-child px-3 overflow-hidden'}><img alt="Supplier" src={'/images/supplier.svg'} />
                 Stock
                 </a>
               </Link>
               <Link href={`/product/supplier/${supplier.id}`}>
-                <a className={'see-child overflow-hidden'}><img src={'/images/product.svg'} />
+                <a className={'see-child overflow-hidden'}><img alt="Product" src={'/images/product.svg'} />
                 Produk
                 </a>
               </Link>

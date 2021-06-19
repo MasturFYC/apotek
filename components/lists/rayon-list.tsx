@@ -64,7 +64,7 @@ export const RayonList: React.FunctionComponent<RayonListType> = ({
               <div className={'overflow-hidden d-flex flex-row-reverse'}>
                 <Link href={`/customer/rayon/${rayon.id}`}>
                 <a className={'see-child text-center overflow-hidden'}>
-                  <img src={'/images/customer.svg'} />
+                  <img alt="Customer" src={'/images/customer.svg'} />
                   <span className={'overflow-hidden'}>Pelanggan</span>
                 </a>
                 </Link>

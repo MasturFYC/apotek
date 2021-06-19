@@ -6,6 +6,7 @@ import Layout, { siteTitle } from '../../components/layout'
 import { iCategory } from '../../components/interfaces'
 import { revalidationOptions, categoryFetcher } from '../../components/fetcher'
 import { DivRow, FocusSpan } from '../../components/styles' // ' components/styles'
+//import ProductImage from '../public/images/product.svg'
 
 const initCategory: iCategory = {
   id: 0,
@@ -67,7 +68,9 @@ export default function Home() {
             {item.id !== 0 &&
               <div className={'col-4 col-md-4 d-flex flex-row-reverse'}>
                 <Link href={`/product/category/${item.id}`}>
-                  <a className={'see-child'}><img src={'/images/product.svg'} crossOrigin={'anonymous'} />Lihat Produk</a>
+                  <a className={'see-child'}> 
+                  <img alt='Product' src={'../public/images/product.svg'} />
+                  Lihat Produk</a>
                 </Link>
               </div>
             }
@@ -116,7 +119,7 @@ const EditCategory: React.FunctionComponent<EditCategoryParam> = ({
     return () => {
       isLoaded = true;
     }
-  }, [])
+  }, [data])
 
 
   const submitForm = async (e: FormEvent) => {

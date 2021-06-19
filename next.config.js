@@ -1,7 +1,7 @@
 const path = require('path')
 const withImages = require('next-images')
 
-module.exports = withImages()
+module.exports = withImages();
 
 module.exports = {
   async headers() {
@@ -25,6 +25,16 @@ module.exports = {
       },
     ]
   },
+  /*
+  future: {
+    webpack5: true,
+  },
+  webpack: function (config, options) {
+    console.log('test webpack:', options.webpack.version);
+    config.experiments = {};
+    return config;
+  },
+  */
   trailingSlash: true,
   webpackDevMiddleware: config => {
     config.watchOptions = {
@@ -36,13 +46,6 @@ module.exports = {
   },
   sassOptions: {
     includePaths: [path.join(__dirname, 'styles')],
-  },
-  future: {
-    webpack5: true,
-  },
-  webpack: function (config, options) {
-    console.log('test webpack:', options.webpack.version);
-    config.experiments = {};
-    return config;
-  },
+  }
 }
+

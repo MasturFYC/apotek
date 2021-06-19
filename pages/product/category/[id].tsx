@@ -18,10 +18,10 @@ type CategoryPageParam = {
   warehouses: iWarehouse[];
 }
 
-const categoryPage: React.FunctionComponent<CategoryPageParam> = 
+const CategoryPage: React.FunctionComponent<CategoryPageParam> = 
 ({ categories, suppliers, warehouses }) => {
   const { query } = useRouter();
-  const { category, isLoading, isError, mutate } = useCategory(parseInt('' + query.id));
+  const { category, isLoading, isError, mutate } = UseCategory(parseInt('' + query.id));
 
   if (isError) return <div>{isError.message}</div>
   if (isLoading) return <div>Loading...</div>
@@ -73,7 +73,7 @@ const categoryPage: React.FunctionComponent<CategoryPageParam> =
 }
 
 
-const useCategory = (id: number) => {
+const UseCategory = (id: number) => {
   const baseUrl: any = () => id && `/api/category/${id}`;
   const { data, error, mutate } = useSWR<iCategory, Error>(baseUrl, fetcher, revalidationOptions);
 
@@ -168,4 +168,4 @@ const fetcher = async (url: string): Promise<iCategory> => {
   return data;
 }
 
-export default categoryPage;
+export default CategoryPage;

@@ -348,7 +348,7 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                   <td className={styles.tdOff2}><NumberFormat displayType={'text'} thousandSeparator={true} decimalScale={0} value={item.agentPrice} /></td>
                   <td>
                     {item.id > 0 &&
-                      <img title="Hapus" className={`${styles.imgControl}`} height="16px" src={'/images/delete.svg'} onClick={() => deleteUnit(item.id)} />
+                      <img title="Hapus" alt="Hapus" className={`${styles.imgControl}`} height={16} src={"/images/delete.svg"} onClick={() => deleteUnit(item.id)} />
                     }
                   </td>
                 </React.Fragment> :
@@ -396,9 +396,9 @@ const Unit: React.FunctionComponent<UnitType> = (props) => {
                     className={styles.tdInputNumber
                     } /></td>
                   <td>
-                    {formDirty && <img title="Simpan" className={`${styles.imgControl}`} height="16px" src={'/images/edit.svg'} onClick={updateUnit} />}
+                    {formDirty && <img alt="Simpan" title="Simpan" className={`${styles.imgControl}`} height="16px" src={'/images/edit.svg'} onClick={updateUnit} />}
                     {item.id > 0 &&
-                      <img title="Hapus" className={styles.imgControl} height="16px" src={'/images/delete.svg'} onClick={() => deleteUnit(item.id)} />
+                      <img alt="Hapus" title="Hapus" className={styles.imgControl} height="16px" src={'/images/delete.svg'} onClick={() => deleteUnit(item.id)} />
                     }
                   </td>
                 </React.Fragment>}
@@ -548,7 +548,7 @@ function useOutsideAlerter(ref: any, clearSelection: Function) {
       // Unbind the event listener on clean up
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref]);
+  }, [ref,clearSelection]);
 }
 
 

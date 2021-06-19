@@ -63,7 +63,7 @@ export const SalesList: React.FunctionComponent<SalesListType> = ({
         <div className={'col col-md-4'}>
           {sales.id !== 0 &&
             <Link href={`/salesman/orders/${sales.id}`}>
-              <a className={'see-child'}><img src={'/images/product.svg'} />Lihat Order</a>
+              <a className={'see-child'}><img alt="Product" src={'/images/product.svg'} />Lihat Order</a>
             </Link>}
         </div>
       </DivRow>

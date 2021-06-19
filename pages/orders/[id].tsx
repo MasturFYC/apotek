@@ -21,9 +21,9 @@ type OrderPageParam = {
   salesmans: iDataList[];
 }
 
-const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, customers, methods }) => {
+const OrderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, customers, methods }) => {
   const { query } = useRouter();
-  const { order, isLoading, isError, mutate } = useOrder(parseInt('' + query.id));
+  const { order, isLoading, isError, mutate } = UseOrder(parseInt('' + query.id));
   const [tab, setTab] = React.useState(0);
 
   const refreshData = async (data: iOrderDetail, method: string, callback?: (data: iOrderDetail | null) => void) => {
@@ -152,7 +152,7 @@ const orderPage: React.FunctionComponent<OrderPageParam> = ({ salesmans, custome
   )
 }
 
-const useOrder = (id: number) => {
+const UseOrder = (id: number) => {
   const baseUrl: any = () => id && `/api/orders/${id}`;
   const { data, error, mutate } = useSWR<iOrder, Error>(baseUrl, fetcher, revalidationOptions);
 
@@ -222,4 +222,4 @@ const fetcher = async (url: string): Promise<iOrder> => {
   return data;
 }
 
-export default orderPage;
+export default OrderPage;

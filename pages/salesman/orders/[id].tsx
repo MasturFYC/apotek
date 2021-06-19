@@ -8,6 +8,7 @@ import Layout, { siteTitle } from '../../../components/layout'
 import { iSalesman, iOrder, iCustomer, iOrderDetail, iPayment } from '../../../components/interfaces'
 import { DivRow, FocusSpan } from '../../../components/styles'
 // import { MutatorCallback } from 'swr/dist/types'
+//import CustomerLogo from '/images/customer.svg'
 
 const SalesOrder: React.FunctionComponent = () => {
   const { query } = useRouter();
@@ -211,7 +212,7 @@ const ShowOrderDetail: React.FunctionComponent<{ orderId: number }> = ({ orderId
       isLoaded = false;
     }
 
-  }, []);
+  }, [orderId]);
 
   return (
     <div className={'container'}>
@@ -279,7 +280,7 @@ function ShowOrderItem(index: number, item: iOrder): JSX.Element {
       <div className={'col-6 col-md-6 mb-3'}>
         <div className={'row'}>
           <div className={'col-1'}>
-            <img src={'/images/customer.svg'} style={{ width: 32, marginTop: 6 }} />
+            <img alt="Customer" src={'/images/customer.svg'} style={{ width: 32, marginTop: 6 }} /> 
           </div>
           <div className={'col-11 ps-3'}>
             <ShowCustomer customer={item.customer} />
@@ -335,7 +336,7 @@ const ShowPayments: React.FunctionComponent<{ orderId: number }> = ({ orderId })
       isLoaded = false;
     }
 
-  }, []);
+  }, [orderId]);
 
   return (
     <div className={'container'}>

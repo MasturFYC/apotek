@@ -55,7 +55,7 @@ export default function ProductHome() {
     loadWarehouses();
 
     return () => {isLoaded = true;}
-  }, [])
+  }, [limit, offset])
 
   React.useEffect(() => {
     let isLoaded = true;
@@ -77,7 +77,7 @@ export default function ProductHome() {
     loadData();
 
     return () => { isLoaded = false; }
-  }, [isVisible])
+  }, [isVisible, limit, offset])
 
   return (
     <Layout home menuActive={1} heading={'Data Barang'}>
