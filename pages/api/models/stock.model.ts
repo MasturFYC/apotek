@@ -1,16 +1,16 @@
 import db, { dateParam, nestQuery, nestQuerySingle, sql } from '../../../config';
-import { iStock, iStockDetail, iPayment } from '../../../components/interfaces';
+import { iOrder, iOrderDetail, iPayment } from '../../../components/interfaces';
 
-type apiStockReturnType = Promise<any[] | (readonly iStock[] | undefined)[]>;
+type apiOrderReturnType = Promise<any[] | (readonly iOrder[] | undefined)[]>;
 
-interface apiStockFunction {
-  getStock(id: number): apiStockReturnType;
-  getAllStock: () => apiStockReturnType; // same as above
-  // getStockBySales: (id: number) => apiStockReturnType;
-  updateStock(id: number, p: iStock): apiStockReturnType;
-  insertStock(p: iStock): apiStockReturnType;
-  deleteStock(id: number): apiStockReturnType;
-  getDetails(id: number): Promise<any[] | (readonly iStockDetail[] | undefined)[]>;
+interface apiOrderFunction {
+  getOrder(id: number): apiOrderReturnType;
+  getAllOrder: () => apiOrderReturnType; // same as above
+  // getOrderBySales: (id: number) => apiOrderReturnType;
+  updateOrder(id: number, p: iOrder): apiOrderReturnType;
+  insertOrder(p: iOrder): apiOrderReturnType;
+  deleteOrder(id: number): apiOrderReturnType;
+  getDetails(id: number): Promise<any[] | (readonly iOrderDetail[] | undefined)[]>;
   getPayments(id: number): Promise<any[] | (readonly iPayment[] | undefined)[]>;
 }
 // : SqlSqlTokenType<QueryResultRowType<string>>
@@ -47,7 +47,7 @@ const dateParam = (dateObj: Date) => {
           `)} as unit
 */
 
-const apiStock: apiStockFunction = {
+const apiOrder: apiOrderFunction = {
   getPayments: async (id: number) => {
     return await db.query(sql`SELECT
       m.id, pm.name as "methodName", m.user_id,
@@ -80,7 +80,7 @@ const apiStock: apiStockFunction = {
     .catch((error) => ([undefined, error]))
   },
 
-  getStock: async (id: number) => {
+  getOrder: async (id: number) => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date, t.total, t.cash,
         t.payment, t.remain_payment, t.user_id, t.descriptions, t.status,
@@ -114,7 +114,7 @@ const apiStock: apiStockFunction = {
       .catch((error) => ([undefined, error]))
   }
 
-  , getAllStock: async () => {
+  , getAllOrder: async () => {
     return await db.query(
       sql`SELECT t.id, t.customer_id, t.sales_id, t.due_date,
       t.total, t.cash, t.payment, t.remain_payment, t.status,
@@ -125,7 +125,7 @@ const apiStock: apiStockFunction = {
       .catch((error) => ([undefined, error]))
   },
 
-  insertStock: async (c: iStock) => {
+  insertOrder: async (c: iOrder) => {
     return await db.query
       (
         sql`INSERT INTO orders (
@@ -144,7 +144,7 @@ const apiStock: apiStockFunction = {
       .catch(error => ([undefined, error]));
   },
 
-  updateStock: async (id: number, c: iStock) => {
+  updateOrder: async (id: number, c: iOrder) => {
     //           due_date = ${sql`to_timestamp(${c.dueDate.replace('T', ' ')} / 1000.0)`}, total = ${c.total},
     //console.log(c.dueDate)
     return await db.query
@@ -161,7 +161,7 @@ const apiStock: apiStockFunction = {
       .catch(error => ([undefined, error]));
   },
 
-  deleteStock: async (id: number) => {
+  deleteOrder: async (id: number) => {
     return await db.query
       (
         sql`DELETE FROM orders
@@ -173,4 +173,4 @@ const apiStock: apiStockFunction = {
   }
 }
 
-export default apiStock;
+export default apiOrder;

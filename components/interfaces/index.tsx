@@ -180,3 +180,54 @@ export const customerTypes: CustomerType[] = [
   { id: 2, name: 'Member' },
   { id: 1, name: 'Umum' },
 ]
+
+export interface iStockPayment {
+  id: number;
+  stockId: number;
+  methodId: number;
+  amount: number;
+  descriptions?: string;
+  userId: string,
+  methodName?: string;
+  stock?: iStock;
+  paymentMethod?: iPaymentMethod;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface iStock {
+  id: number;
+  supplierId: number;
+  dueDate: string;
+  total: number;
+  cash: number;
+  payment: number;
+  remain: number;
+  status: number;
+  userId?: string;
+  descriptions?: string;
+  supplier?: iSupplier;
+  details?: iStockDetail[];
+  payments?: iStockPayment[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface iStockDetail {
+  id: number;
+  orderId: number;
+  productId: number;
+  unitId: number;
+  qty: number;
+  realQty: number;
+  barcode: string;
+  productName: string;
+  spec: string;
+  unitName: string;
+  price: number;
+  discount: number;
+  subtotal: number;
+  stock?: iStock;
+  product?: iProduct;
+  unit?: iUnit;
+}

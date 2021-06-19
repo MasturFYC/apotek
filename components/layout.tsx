@@ -58,6 +58,9 @@ const Layout = ({ children, home, menuActive = 0, heading }: any) => {
           <Link href="/rayon">
             <a className={`${menuActive === 6 && 'an-active'}`}><img src={'/images/rayon.svg'} />Rayon</a>
           </Link>
+          <Link href="/stock">
+            <a className={`${menuActive === 7 && 'an-active'}`}><img src={'/images/rayon.svg'} />Stock</a>
+          </Link>
         </DivMenu>
       </section>
       <AppContent>
