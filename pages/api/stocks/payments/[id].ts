@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import api from '../../models/order.model'
+import api from '../../models/stock.model'
 
 
-export default async function orderPaymentHandler(req: NextApiRequest, res: NextApiResponse) {
+export default async function stockPaymentHandler(req: NextApiRequest, res: NextApiResponse) {
 
   const id: number = req.query.id ? +req.query.id : 0;
 

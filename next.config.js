@@ -1,24 +1,6 @@
 const path = require('path')
 const withImages = require('next-images')
 
-module.exports = {
-  // mode: 'production',
-  future: {
-    webpack5: true,
-  },
-  webpack: function (config, options) {
-    console.log(options.webpack.version);
-    config.experiments = {};
-    return config;
-  },
-};
-
-module.exports = {
-  sassOptions: {
-    includePaths: [path.join(__dirname, 'styles')],
-  },
-}
-
 module.exports = withImages()
 
 module.exports = {
@@ -43,9 +25,7 @@ module.exports = {
       },
     ]
   },
-}
-
-module.exports = {
+  trailingSlash: true,
   webpackDevMiddleware: config => {
     config.watchOptions = {
       poll: 1000,
@@ -53,5 +33,16 @@ module.exports = {
     }
 
     return config
+  },
+  sassOptions: {
+    includePaths: [path.join(__dirname, 'styles')],
+  },
+  future: {
+    webpack5: true,
+  },
+  webpack: function (config, options) {
+    console.log('test webpack:', options.webpack.version);
+    config.experiments = {};
+    return config;
   },
 }
