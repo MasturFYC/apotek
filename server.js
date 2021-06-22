@@ -15,7 +15,7 @@ app.prepare().then(() => {
     const parsedUrl = new URL(req.url, baseUrl); //, true)
     const { pathname, query } = parsedUrl
 
-    console.log(pathname, query)
+    //console.log(pathname, query)
 
     if (pathname === '/a') {
       app.render(req, res, '/a', query)

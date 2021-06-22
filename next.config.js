@@ -25,16 +25,16 @@ module.exports = {
       },
     ]
   },
-  /*
+  
   future: {
-    webpack5: true,
+    webpack5: false,
   },
   webpack: function (config, options) {
     console.log('test webpack:', options.webpack.version);
     config.experiments = {};
     return config;
   },
-  */
+  
   trailingSlash: true,
   webpackDevMiddleware: config => {
     config.watchOptions = {

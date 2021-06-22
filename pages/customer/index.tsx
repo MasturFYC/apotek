@@ -1,128 +1,137 @@
-import Head from 'next/head'
-import React, { useState } from 'react'
-import useSWR from 'swr'
-import Layout, { siteTitle } from '../../components/layout'
-import { iCustomer, iRayon } from '../../components/interfaces'
-import { initCustomer } from '../../components/forms/customer-form'
-import { CustomerList } from '../../components/lists/customer-list'
-import { revalidationOptions } from '../../components/fetcher'
-
+import Head from "next/head";
+import React, { useState } from "react";
+import useSWR from "swr";
+import Layout, { siteTitle } from "../../components/layout";
+import { iCustomer, iRayon } from "../../components/interfaces";
+import { initCustomer } from "../../components/forms/customer-form";
+import { CustomerList } from "../../components/lists/customer-list";
+import { revalidationOptions } from "../../components/fetcher";
 
 export default function Home() {
-  const { data: customers, error, mutate } = useSWR<iCustomer[]>(`/api/customer`, fetcher, revalidationOptions);
+  const {
+    data: customers,
+    error,
+    mutate,
+  } = useSWR<iCustomer[]>(`/api/customer`, fetcher, revalidationOptions);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [isSelected, setIsSelected] = useState(false);
-  const [rayons, setRayons] = useState<iRayon[]>([])
+  const [rayons, setRayons] = useState<iRayon[]>([]);
 
   React.useEffect(() => {
     let isLoaded = false;
 
     const loadRayon = async () => {
-      const res = await fetch('/api/rayon')
+      const res = await fetch("/api/rayon");
       const data: iRayon[] | any = await res.json();
 
       if (res.status !== 200) {
-        alert(data.message)
+        alert(data.message);
       } else {
-        setRayons(data)
+        setRayons(data);
       }
-    }
+    };
     if (!isLoaded) {
-      loadRayon()
+      loadRayon();
     }
 
     return () => {
-      isLoaded = true
-    }
-  }, [])
+      isLoaded = true;
+    };
+  }, []);
 
-
-  if (error) return <div>{error.message}</div>
-  if (!customers) return <div>{'Loading...'}</div>
+  if (error) return <div>{error.message}</div>;
+  if (!customers) return <div>{"Loading..."}</div>;
 
   const selectCustomer = (i: number) => {
-    setIsSelected((i === currentIndex) ? !isSelected : true)
-    setCurrentIndex(i)
+    setIsSelected(i === currentIndex ? !isSelected : true);
+    setCurrentIndex(i);
     // dispatchSelectedColor({
     //   index: i,
     //   currentIndex: i,
     //   isSelected: (i === currentIndex) ? !isSelected : true
     // })
-  }
+  };
 
-  const refreshCustomer = async (e: { method: string, data: iCustomer }, callback: Function) => {
-    const url = `/api/customer/${e.data.id}`
+  const refreshCustomer = async (
+    e: { method: string; data: iCustomer },
+    callback: Function
+  ) => {
+    const url = `/api/customer/${e.data.id}`;
     const fetchOptions = {
       method: e.method,
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+        "Content-type": "application/json; charset=UTF-8",
       },
-      body: JSON.stringify(e.data)
-    }
+      body: JSON.stringify(e.data),
+    };
 
     const res = await fetch(url, fetchOptions);
     const data: iCustomer | any = await res.json();
 
     if (res.status === 200) {
       switch (e.method) {
-        case 'DELETE':
+        case "DELETE":
           {
-            mutate(customers.filter(item => item.id !== e.data.id), false);
+            mutate(
+              customers.filter((item) => item.id !== e.data.id),
+              false
+            );
             setCurrentIndex(-1);
           }
           break;
-        case 'POST':
+        case "POST":
           {
             mutate([...customers, data], false);
-            setCurrentIndex(customers.length + 1 || -1)
+            setCurrentIndex(customers.length + 1 || -1);
           }
           break;
-        case 'PUT':
+        case "PUT":
           {
             customers.splice(currentIndex, 1, data);
-            mutate(customers, false)
+            mutate(customers, false);
           }
           break;
       }
-      callback(data)
+      callback(data);
     } else {
-      callback(null)
-      alert(data.message)
+      callback(null);
+      alert(data.message);
     }
-
-
-  }
+  };
 
   return (
-    <Layout home menuActive={0} heading={'Data Pelanggan'}>
+    <Layout home menuActive={0} heading={"Data Pelanggan"}>
       <Head>
         <title>{siteTitle}</title>
       </Head>
-      {customers && [...customers, initCustomer].map((item: iCustomer, i: number) => {
-        return <CustomerList
-          key={`cust-key-${i}`}
-          data={item}
-          index={i}
-          refreshData={refreshCustomer}
-          rayons={rayons}
-          isSelected={isSelected && currentIndex === i}
-          property={{ onClick: selectCustomer }} />
-      })}
+      {customers &&
+        [...customers, initCustomer].map((item: iCustomer, i: number) => {
+          return (
+            <CustomerList
+              key={`cust-key-${i}`}
+              data={item}
+              index={i}
+              refreshData={refreshCustomer}
+              rayons={rayons}
+              isSelected={isSelected && currentIndex === i}
+              property={{ onClick: selectCustomer }}
+            />
+          );
+        })}
     </Layout>
-  )
+  );
 }
 
 const fetcher = async (url: string) => {
-  const res = await fetch(url)
-  const data: any = await res.json()
+  const res = await fetch(url);
+  const data: any = await res.json();
 
   if (res.status !== 200) {
-    throw new Error(data.message)
+    throw new Error(data.message);
   }
 
   return data;
-}
-
+};
 
 // type colorReducerType = {
 //   color: string;

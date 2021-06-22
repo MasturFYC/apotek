@@ -1,10 +1,15 @@
-import React, { useContext, useState } from 'react';
-import Select from 'react-select';
-import Router from 'next/router';
-import NumberFormat from 'react-number-format';
-import { iDataList, iOrder } from '../interfaces';
-import OrderContext, { initOrder, OrderContextType } from '../context/order-context';
-import { FLabel } from 'components/styles';
+import React, { useContext, useState } from "react";
+import Select from "react-select";
+import Router from "next/router";
+import NumberFormat from "react-number-format";
+import moment from "moment";
+//import Moment from "react-moment";
+import { iDataList, iOrder } from "../interfaces";
+import OrderContext, {
+  initOrder,
+  OrderContextType,
+} from "../context/order-context";
+import { FLabel } from "components/styles";
 
 export const OrderForm = () => {
   const ctx: OrderContextType = useContext(OrderContext);
@@ -15,11 +20,13 @@ export const OrderForm = () => {
     const loadOrder = () => {
       //console.log('test')
       if (!isLoaded) {
-        setOrder(ctx.order && ctx.order || initOrder);
+        setOrder((ctx.order && ctx.order) || initOrder);
       }
     };
     loadOrder();
-    return () => { isLoaded = true; };
+    return () => {
+      isLoaded = true;
+    };
   }, [ctx.order]);
 
   const deleteData = async (e: React.MouseEvent) => {
@@ -28,10 +35,10 @@ export const OrderForm = () => {
     e.preventDefault();
 
     const res = await fetch(baseUrl, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
-      }
+        "Content-type": "application/json; charset=UTF-8",
+      },
     });
 
     const data: any = await res.json();
@@ -39,7 +46,7 @@ export const OrderForm = () => {
     if (res.status !== 200) {
       alert(data.message);
     } else {
-      Router.push(`/salesman/orders/${order.salesId}`)
+      Router.push(`/salesman/orders/${order.salesId}`);
       //ctx.updateValue && ctx.updateValue(data, 'DELETE')
       //updateCommand({ data: order, method: 'delete' });
     }
@@ -63,9 +70,9 @@ export const OrderForm = () => {
     //console.log(order.dueDate)
 
     const res = await fetch(baseUrl, {
-      method: order.id === 0 ? 'POST' : 'PUT',
+      method: order.id === 0 ? "POST" : "PUT",
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+        "Content-type": "application/json; charset=UTF-8",
       },
       body: JSON.stringify({
         data: {
@@ -77,9 +84,9 @@ export const OrderForm = () => {
           //total: order.total,
           status: order.status,
           userId: order.userId,
-          descriptions: order.descriptions
-        }
-      })
+          descriptions: order.descriptions,
+        },
+      }),
     });
 
     const data: iOrder | any = await res.json();
@@ -95,19 +102,24 @@ export const OrderForm = () => {
       if (order.id === 0) {
         Router.push(`/orders/${data.id}`);
       } else {
-        ctx.mutate && ctx.mutate({
-          ...ctx.order,
-          id: data.id, cash: data.cash,
-          customerId: data.customerId,
-          dueDate: data.dueDate,
-          salesId: data.salesId,
-          total: data.total,
-          payment: data.payment,
-          remainPayment: data.remainPayment,
-          status: data.status,
-          userId: data.userId,
-          descriptions: data.descriptions
-        }, false);
+        ctx.mutate &&
+          ctx.mutate(
+            {
+              ...ctx.order,
+              id: data.id,
+              cash: data.cash,
+              customerId: data.customerId,
+              dueDate: data.dueDate,
+              salesId: data.salesId,
+              total: data.total,
+              payment: data.payment,
+              remainPayment: data.remainPayment,
+              status: data.status,
+              userId: data.userId,
+              descriptions: data.descriptions,
+            },
+            false
+          );
       }
     }
 
@@ -116,81 +128,213 @@ export const OrderForm = () => {
 
   return (
     <form onSubmit={(e) => formSubmit(e)}>
-      <div className={'row'}>
-        <div className={'col-md-6 mb-2'}>
-          <div className={'row g-2'}>
-
-            <div className={'col-md-6 form-floating'}>
-              <input tabIndex={-1} type={'text'} className={'form-control'} id={'order-date'} defaultValue={order.createdAt && new Date(order.createdAt).toLocaleDateString()} readOnly />
-              <FLabel htmlFor={'order-date'}>Tanggal Order</FLabel>
+      <div className={"row"}>
+        <div className={"col-md-6 mb-2"}>
+          <div className={"row g-2"}>
+            <div className={"col-md-6 form-floating"}>
+              <input
+                tabIndex={-1}
+                type={"text"}
+                className={"form-control"}
+                id={"order-date"}
+                defaultValue={moment(order.createdAt).format("DD/MM/YYYY")}
+                readOnly
+              />
+              <FLabel htmlFor={"order-date"}>Tanggal Order</FLabel>
             </div>
 
-            <div className={'col-md-6 form-floating'}>
-              <input value={new Date(order.dueDate).toLocaleDateString()} type={'text'} defaultChecked date-date-format={'dd/mm/yyyy'} className={'form-control'} id={'due-date'} onChange={(e) => setOrder((state) => ({ ...state, dueDate: e.target.value }))} />
-              <FLabel htmlFor={'due-date'}>Jatuh Tempo</FLabel>
+            <div className={"col-md-6 form-floating"}>
+              <input
+                value={moment(order.dueDate).format("DD/MM/YYYY")}
+                type={"text"}
+                className={"form-control"}
+                id={"due-date"}
+                onChange={(e) =>
+                  setOrder((state) => ({ ...state, dueDate: e.target.value }))
+                }
+              />
+              <FLabel htmlFor={"due-date"}>Jatuh Tempo</FLabel>
             </div>
 
-            <div className={'col-md-12 form-floating'}>
-              <Select autoFocus id={'customer-id'} className={'form-control border-0 p-0'} value={ctx.customers.filter(x => x.id === order.customerId)} onChange={(e) => setOrder((state) => ({ ...state, customerId: e?.id || 0 }))} options={ctx.customers} getOptionLabel={o=>o.name} getOptionValue={o => `${o.id}`} styles={customStyles} placeholder={'Pilih pelanggan...'} />
-              <label htmlFor={'customer-id'} className={'col-form-label mb-3 pt-2'}>Pelanggan</label>
+            <div className={"col-md-12 form-floating"}>
+              <Select
+                autoFocus
+                id={"customer-id"}
+                className={"form-control border-0 p-0"}
+                value={ctx.customers.filter((x) => x.id === order.customerId)}
+                onChange={(e) =>
+                  setOrder((state) => ({ ...state, customerId: e?.id || 0 }))
+                }
+                options={ctx.customers}
+                getOptionLabel={(o) => o.name}
+                getOptionValue={(o) => `${o.id}`}
+                styles={customStyles}
+                placeholder={"Pilih pelanggan..."}
+              />
+              <label
+                htmlFor={"customer-id"}
+                className={"col-form-label mb-3 pt-2"}
+              >
+                Pelanggan
+              </label>
             </div>
 
-            <div className={'col-md-12 form-floating'}>
-              <Select id={'sales-id'} className={'form-control border-0 p-0'} value={ctx.salesmans.filter(x => x.id === order.salesId)} onChange={(e) => setOrder((state) => ({ ...state, salesId: e?.id || 0 }))} options={ctx.salesmans} getOptionLabel={o=>o.name} getOptionValue={o => `${o.id}`} styles={customStyles} placeholder={'Pilih sales...'} />
-              <label htmlFor={'sales-id'} className={'col-form-label pt-2'}>Sales</label>
+            <div className={"col-md-12 form-floating"}>
+              <Select
+                id={"sales-id"}
+                className={"form-control border-0 p-0"}
+                value={ctx.salesmans.filter((x) => x.id === order.salesId)}
+                onChange={(e) =>
+                  setOrder((state) => ({ ...state, salesId: e?.id || 0 }))
+                }
+                options={ctx.salesmans}
+                getOptionLabel={(o) => o.name}
+                getOptionValue={(o) => `${o.id}`}
+                styles={customStyles}
+                placeholder={"Pilih sales..."}
+              />
+              <label htmlFor={"sales-id"} className={"col-form-label pt-2"}>
+                Sales
+              </label>
             </div>
 
-            <div className={'col-md-12 form-floating'}>
-              <input tabIndex={-1} type={'text'} className={'form-control'} id={'user-id'} value={order.userId || ''} readOnly />
-              <FLabel htmlFor={'user-id'}>Last update by user</FLabel>
+            <div className={"col-md-12 form-floating"}>
+              <input
+                tabIndex={-1}
+                type={"text"}
+                className={"form-control"}
+                id={"user-id"}
+                value={order.userId || ""}
+                readOnly
+              />
+              <FLabel htmlFor={"user-id"}>Last update by user</FLabel>
             </div>
-
           </div>
         </div>
 
-        <div className={'col-md-6'}>
-          <div className={'row g-2'}>
-
-            <div className={'col-md-6 form-floating'}>
-              <NumberFormat displayType={'text'} id={'total-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.total} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <FLabel htmlFor={'total-order'}>Total Order</FLabel>
+        <div className={"col-md-6"}>
+          <div className={"row g-2"}>
+            <div className={"col-md-6 form-floating"}>
+              <NumberFormat
+                displayType={"text"}
+                id={"total-order"}
+                className={"form-control"}
+                thousandSeparator={true}
+                readOnly
+                value={order.total}
+                decimalScale={0}
+                fixedDecimalScale={false}
+                placeholder={"Pembayaran Cash"}
+              />
+              <FLabel htmlFor={"total-order"}>Total Order</FLabel>
             </div>
 
-            <div className={'col-md-6 form-floating'}>
-              <NumberFormat id={'cash-order'} className={'form-control'} thousandSeparator={true} value={order.cash} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"}
+            <div className={"col-md-6 form-floating"}>
+              <NumberFormat
+                id={"cash-order"}
+                className={"form-control"}
+                thousandSeparator={true}
+                value={order.cash}
+                decimalScale={0}
+                fixedDecimalScale={false}
+                placeholder={"Pembayaran Cash"}
                 onValueChange={(e) => {
                   const cash = e.floatValue || 0;
                   const remain = +(order.total - (+order.payment + cash));
-                  setOrder((state) => ({ ...state, cash: cash, remainPayment: remain }));
-                }} />
-              <FLabel htmlFor={'cash-order'}>Cash</FLabel>
+                  setOrder((state) => ({
+                    ...state,
+                    cash: cash,
+                    remainPayment: remain,
+                  }));
+                }}
+              />
+              <FLabel htmlFor={"cash-order"}>Cash</FLabel>
             </div>
 
-            <div className={'col-md-6 form-floating'}>
-              <NumberFormat tabIndex={-1} displayType={'text'} id={'payment-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.payment} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <FLabel htmlFor={'payment-order'}>Angsuran</FLabel>
+            <div className={"col-md-6 form-floating"}>
+              <NumberFormat
+                tabIndex={-1}
+                displayType={"text"}
+                id={"payment-order"}
+                className={"form-control"}
+                thousandSeparator={true}
+                readOnly
+                value={order.payment}
+                decimalScale={0}
+                fixedDecimalScale={false}
+                placeholder={"Pembayaran Cash"}
+              />
+              <FLabel htmlFor={"payment-order"}>Angsuran</FLabel>
             </div>
 
-            <div className={'col-md-6 form-floating'}>
-              <NumberFormat tabIndex={-1} displayType={'text'} id={'remain-order'} className={'form-control'} thousandSeparator={true} readOnly value={order.remainPayment} decimalScale={0} fixedDecimalScale={false} placeholder={"Pembayaran Cash"} />
-              <FLabel htmlFor={'remain-order'}>Sisa Bayar</FLabel>
+            <div className={"col-md-6 form-floating"}>
+              <NumberFormat
+                tabIndex={-1}
+                displayType={"text"}
+                id={"remain-order"}
+                className={"form-control"}
+                thousandSeparator={true}
+                readOnly
+                value={order.remainPayment}
+                decimalScale={0}
+                fixedDecimalScale={false}
+                placeholder={"Pembayaran Cash"}
+              />
+              <FLabel htmlFor={"remain-order"}>Sisa Bayar</FLabel>
             </div>
 
-            <div className={'col-md-12 form-floating'}>
-              <textarea style={{ height: '70px' }} className={'form-control'} id={'order-desc'} value={order.descriptions || ''} placeholder={'Keterangan'} onChange={(e) => setOrder((state) => ({ ...state, descriptions: e.target.value }))} />
-              <FLabel htmlFor={'order-desc'}>Keterangan</FLabel>
+            <div className={"col-md-12 form-floating"}>
+              <textarea
+                style={{ height: "70px" }}
+                className={"form-control"}
+                id={"order-desc"}
+                value={order.descriptions || ""}
+                placeholder={"Keterangan"}
+                onChange={(e) =>
+                  setOrder((state) => ({
+                    ...state,
+                    descriptions: e.target.value,
+                  }))
+                }
+              />
+              <FLabel htmlFor={"order-desc"}>Keterangan</FLabel>
             </div>
 
-            <div className={'col-7 col-sm col-md form-floating'}>
-              <Select id={'order-status'} className={'form-control border-0 p-0'} value={statusOptions.filter(x => x.id === order.status)} onChange={(e) => setOrder((state) => ({ ...state, status: e?.id || 0 }))} options={statusOptions} getOptionLabel={option => option.name} getOptionValue={option => `${option.id}`} styles={customStyles} placeholder={'Order Status'} />
-              <label htmlFor={'order-status'} className={'col-form-label mb-3 pt-2'}>Status</label>
+            <div className={"col-7 col-sm col-md form-floating"}>
+              <Select
+                id={"order-status"}
+                className={"form-control border-0 p-0"}
+                value={statusOptions.filter((x) => x.id === order.status)}
+                onChange={(e) =>
+                  setOrder((state) => ({ ...state, status: e?.id || 0 }))
+                }
+                options={statusOptions}
+                getOptionLabel={(option) => option.name}
+                getOptionValue={(option) => `${option.id}`}
+                styles={customStyles}
+                placeholder={"Order Status"}
+              />
+              <label
+                htmlFor={"order-status"}
+                className={"col-form-label mb-3 pt-2"}
+              >
+                Status
+              </label>
             </div>
 
-            <div className={'col-auto col-sm-auto col-md-auto pt-2'}>
-              <button type={'submit'} className='btn me-2 btn-primary mb-3'>Save</button>
-              <button type={'button'} disabled={order.id === 0} onClick={(e) => deleteData(e)} className='btn btn-danger mb-3'>Delete</button>
+            <div className={"col-auto col-sm-auto col-md-auto pt-2"}>
+              <button type={"submit"} className="btn me-2 btn-primary mb-3">
+                Save
+              </button>
+              <button
+                type={"button"}
+                disabled={order.id === 0}
+                onClick={(e) => deleteData(e)}
+                className="btn btn-danger mb-3"
+              >
+                Delete
+              </button>
             </div>
-
           </div>
         </div>
       </div>
@@ -199,20 +343,20 @@ export const OrderForm = () => {
 };
 
 const customStyles = {
-  input: () => ({marginTop: 8, paddingTop: 12, marginLeft: 9}),
-   valueContainer: () => ({
-     height: 46,
-  //   margin: '-10px 0px 0px 7px',
+  input: () => ({ marginTop: 8, paddingTop: 12, marginLeft: 9 }),
+  valueContainer: () => ({
+    height: 46,
+    //   margin: '-10px 0px 0px 7px',
   }),
-   // , s:any
-   singleValue: (p:any) => ({...p, marginTop: 6, marginLeft: 9})
-}
+  // , s:any
+  singleValue: (p: any) => ({ ...p, marginTop: 6, marginLeft: 9 }),
+};
 
 const statusOptions: iDataList[] = [
-  { id: 0, name: 'Pending' },
-  { id: 1, name: 'Open' },
-  { id: 2, name: 'Closed' }
-]
+  { id: 0, name: "Pending" },
+  { id: 1, name: "Open" },
+  { id: 2, name: "Closed" },
+];
 
 // const DefaultOption = ({ name }: any) => {
 //   return <option value={0}>{name}</option>
